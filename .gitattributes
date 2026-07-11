@@ -1,0 +1,10 @@
+# Keep text files LF in the repo regardless of local core.autocrlf (Windows global = true)
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.mp4 binary
+*.webm binary
+*.ico binary

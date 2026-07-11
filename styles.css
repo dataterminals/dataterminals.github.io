@@ -1,0 +1,286 @@
+/* dataterminals.github.io — warm, identity-forward landing page
+   Palette pulled from the oxblood/sepia background loop. No external assets. */
+
+:root {
+  --bg-0: #100804;            /* deepest warm black */
+  --bg-1: #1c0f0a;            /* oxblood base */
+  --bg-2: #2a140d;            /* warmer highlight for the gradient */
+  --ink: #f1e7da;             /* warm bone — primary text */
+  --ink-dim: #c8b3a3;         /* muted taupe — secondary */
+  --ink-faint: #94796a;       /* faint — meta */
+  --accent: #d8794c;          /* terracotta ember — links / hover */
+  --accent-soft: #e6a271;     /* softer warm gold */
+  --hair: rgba(241, 231, 218, 0.13);
+  --hair-strong: rgba(241, 231, 218, 0.26);
+
+  --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --maxw: 660px;
+  --pad: clamp(1.5rem, 5vw, 3rem);
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--bg-0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.55;
+}
+
+/* ---- Background: blurred looping video + tinted fallback + scrim ---- */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  /* Warm oxblood fallback — this is what shows until a video is dropped in,
+     and behind any video whose frame is transparent while loading. */
+  background:
+    radial-gradient(120% 130% at 72% 8%, var(--bg-2) 0%, transparent 46%),
+    linear-gradient(158deg, #241009 0%, var(--bg-1) 52%, var(--bg-0) 100%);
+}
+
+.bg__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
+  /* Slightly blurred, per the brief; scale hides the soft blur edge. */
+  filter: blur(4px) saturate(1.06) contrast(1.02);
+  transform: scale(1.09);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+.bg__video.is-ready { opacity: 1; }
+
+.bg__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(115% 95% at 26% 22%, transparent 0%, rgba(16, 8, 4, 0.70) 100%),
+    linear-gradient(185deg, rgba(16, 8, 4, 0.50) 0%, rgba(16, 8, 4, 0.40) 40%, rgba(16, 8, 4, 0.86) 100%);
+}
+
+/* Faint film grain for the analog/classical feel (self-contained SVG noise). */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Layout ---- */
+main {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding: max(var(--pad), env(safe-area-inset-top)) var(--pad) var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2.2rem, 6vh, 3.6rem);
+  /* Legibility insurance over busy footage — imperceptible over dark footage. */
+  text-shadow: 0 1px 2px rgba(8, 4, 2, 0.5);
+}
+
+/* ---- Identity hero ---- */
+.hero__mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.hero__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 14px 1px rgba(216, 121, 76, 0.7);
+}
+
+.hero__name {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.7rem, 8vw, 4.7rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.hero__tagline {
+  margin: 1.05rem 0 0;
+  max-width: 42ch;
+  font-size: clamp(1rem, 2.3vw, 1.16rem);
+  color: var(--ink-dim);
+}
+
+/* ---- Links (editorial index) ---- */
+.links__eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 0.35rem;
+}
+
+.links__list {
+  border-top: 1px solid var(--hair);
+}
+
+.link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.2rem;
+  padding: 1.05rem 0.2rem 1.0rem;
+  border-bottom: 1px solid var(--hair);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.3s var(--ease), padding-left 0.3s var(--ease), background 0.3s var(--ease);
+}
+.link:hover,
+.link:focus-visible {
+  border-bottom-color: var(--hair-strong);
+  padding-left: 0.55rem;
+  outline: none;
+}
+.link:focus-visible {
+  background: rgba(241, 231, 218, 0.05);
+  border-radius: 6px;
+}
+
+.link__main { min-width: 0; flex: 1 1 15rem; }
+
+.link__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.16rem, 2.7vw, 1.42rem);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: color 0.25s var(--ease);
+}
+.link:hover .link__title,
+.link:focus-visible .link__title { color: var(--accent-soft); }
+
+.link__arrow {
+  font-family: var(--sans);
+  font-size: 0.95em;
+  color: var(--ink-faint);
+  transform: translateX(-2px);
+  opacity: 0;
+  transition: transform 0.3s var(--ease), opacity 0.3s var(--ease), color 0.25s var(--ease);
+}
+.link:hover .link__arrow,
+.link:focus-visible .link__arrow {
+  opacity: 1;
+  transform: translateX(2px);
+  color: var(--accent);
+}
+
+.link__blurb {
+  margin: 0.28rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-dim);
+  max-width: 46ch;
+}
+
+.link__meta {
+  flex: 0 0 auto;
+  align-self: baseline;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.link__meta.is-shown { opacity: 1; }
+.link__meta .dot { opacity: 0.5; margin: 0 0.4em; }
+.link__meta .star { color: var(--accent-soft); }
+
+/* ---- Footer ---- */
+.foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+.foot a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.foot a:hover,
+.foot a:focus-visible {
+  color: var(--accent-soft);
+  border-bottom-color: var(--hair-strong);
+  outline: none;
+}
+.foot__sep { opacity: 0.4; }
+
+/* ---- Entrance motion ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise 0.9s var(--ease) forwards;
+}
+.reveal:nth-child(1) { animation-delay: 0.05s; }
+.reveal:nth-child(2) { animation-delay: 0.16s; }
+.reveal:nth-child(3) { animation-delay: 0.27s; }
+.links .link { opacity: 0; transform: translateY(10px); animation: rise 0.7s var(--ease) forwards; }
+.links .link:nth-child(1) { animation-delay: 0.30s; }
+.links .link:nth-child(2) { animation-delay: 0.38s; }
+.links .link:nth-child(3) { animation-delay: 0.46s; }
+.links .link:nth-child(4) { animation-delay: 0.54s; }
+
+@keyframes rise {
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- Reduced motion: kill the video + all entrance motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .bg__video { display: none; }
+  .bg__video, .reveal, .links .link, .link__arrow, * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal, .links .link { opacity: 1; transform: none; }
+  .link__meta { opacity: 1; }
+}
+
+/* ---- Small screens ---- */
+@media (max-width: 480px) {
+  main { justify-content: flex-end; padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom)); gap: 2rem; }
+  .link__meta { flex-basis: 100%; }
+}

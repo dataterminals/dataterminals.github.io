@@ -1,0 +1,191 @@
+{
+  "profile": {
+    "handle": "dataterminals",
+    "tagline": "Mods, tools & datamining for the games we play.",
+    "github": "https://github.com/dataterminals"
+  },
+  "categories": [
+    { "id": "forever-winter", "label": "The Forever Winter" },
+    { "id": "zomboid", "label": "Project Zomboid" },
+    { "id": "vintage-story", "label": "Vintage Story" },
+    { "id": "ghost-recon", "label": "Ghost Recon: Breakpoint" },
+    { "id": "tools", "label": "Tools & Misc" }
+  ],
+  "links": [
+    {
+      "title": "Forever Winter Almanac",
+      "url": "https://dataterminals.github.io/forever-winter-almanac/",
+      "repo": "dataterminals/forever-winter-almanac",
+      "category": "forever-winter",
+      "blurb": "Offline, installable PWA — interactive maps, weapon & attachment gunsmith, datamined game systems and the raiding-loot economy.",
+      "featured": true
+    },
+    {
+      "title": "FWACT — Config Tool",
+      "url": "https://github.com/dataterminals/fwact",
+      "repo": "dataterminals/fwact",
+      "category": "forever-winter",
+      "blurb": "Total graphical control over the game's config (INI, GVAS .sav, advanced cvars) with in-game labels, tooltips, auto-backups and presets. Portable Tauri app.",
+      "featured": true
+    },
+    {
+      "title": "GR: Breakpoint Modding KB",
+      "url": "https://github.com/dataterminals/grb-modding-knowledgebase",
+      "repo": "dataterminals/grb-modding-knowledgebase",
+      "category": "ghost-recon",
+      "blurb": "Human- and AI-readable knowledgebase for modding Ghost Recon: Breakpoint — Anvil .forge format, ATK, and the asset-replacement pipeline.",
+      "featured": true
+    },
+
+    {
+      "title": "Forever Winter Skin Mods",
+      "url": "https://github.com/dataterminals/forever-winter-skin-mods",
+      "repo": "dataterminals/forever-winter-skin-mods",
+      "category": "forever-winter",
+      "blurb": "Retarget scav skin mods onto DLC skin slots (UE5 IoStore repath + export rename). Tooling + docs."
+    },
+    {
+      "title": "Unkillables Rebalance Fix",
+      "url": "https://github.com/dataterminals/UnkillablesRebalanceFix",
+      "repo": "dataterminals/UnkillablesRebalanceFix",
+      "category": "forever-winter",
+      "blurb": "Compatibility fix for the Unkillables Rebalance mod (Nexus #68) — de-invincibles the bosses on the current build."
+    },
+    {
+      "title": "Heavy Rifle Rebalance Fix",
+      "url": "https://github.com/dataterminals/HeavyRifleRebalanceFix",
+      "repo": "dataterminals/HeavyRifleRebalanceFix",
+      "category": "forever-winter",
+      "blurb": "Compatibility fix for the Heavy Rifle Rebalance mod (Nexus #76) — rebuilds the pak for build 0.9.3.9.2."
+    },
+
+    {
+      "title": "Bandits: Homestead",
+      "url": "https://github.com/dataterminals/BanditsWeekOneHomestead",
+      "repo": "dataterminals/BanditsWeekOneHomestead",
+      "category": "zomboid",
+      "blurb": "Bandits Week One add-on (B42): claim a house as home to stop NPCs moving in, plus forge door/vehicle keys."
+    },
+    {
+      "title": "Bandits: Extended Scenario",
+      "url": "https://github.com/dataterminals/BWOExtendedScenario",
+      "repo": "dataterminals/BWOExtendedScenario",
+      "category": "zomboid",
+      "blurb": "Extended sandbox options for Bandits Week One (B42): exact start day, collapse pacing, emergency-service duration, sickness cap."
+    },
+    {
+      "title": "Bandits: Extra Chat",
+      "url": "https://github.com/dataterminals/BanditsWeekOneExtraChat",
+      "repo": "dataterminals/BanditsWeekOneExtraChat",
+      "category": "zomboid",
+      "blurb": "Standalone add-on for Bandits Week One (B42): extra NPC chat, smarter responses, new give/grab/go actions."
+    },
+    {
+      "title": "Bandits: Performance Override",
+      "url": "https://github.com/dataterminals/BanditsPerformanceOverride",
+      "repo": "dataterminals/BanditsPerformanceOverride",
+      "category": "zomboid",
+      "blurb": "Research + un-junking plan for Bandits: Week One FPS on B42."
+    },
+    {
+      "title": "Map Teleport",
+      "url": "https://github.com/dataterminals/MapTeleport",
+      "repo": "dataterminals/MapTeleport",
+      "category": "zomboid",
+      "blurb": "B42 mod: right-click the in-game world map for a “Teleport Here” option during normal play."
+    },
+    {
+      "title": "Hotbar Icon Guard",
+      "url": "https://github.com/dataterminals/HotbarIconGuard",
+      "repo": "dataterminals/HotbarIconGuard",
+      "category": "zomboid",
+      "blurb": "Tiny B42 patch: null-checks hotbar icon textures so one broken icon no longer floods the console or tanks FPS."
+    },
+    {
+      "title": "Player Model Reload Util",
+      "url": "https://github.com/dataterminals/PlayerModelReloadUtil",
+      "repo": "dataterminals/PlayerModelReloadUtil",
+      "category": "zomboid",
+      "blurb": "B42 utility: rebuild your character's 3D model on demand to recover from the invisible-character bug without reloading."
+    },
+    {
+      "title": "Common Sense Fixing Fix",
+      "url": "https://github.com/dataterminals/CommonSenseFixingB42Fix",
+      "repo": "dataterminals/CommonSenseFixingB42Fix",
+      "category": "zomboid",
+      "blurb": "Compatibility patch for Common Sense (B42): rewrites Fix Plunger / Fix Nightstick fixings to stop a vehicle-menu crash."
+    },
+    {
+      "title": "Slayetta Faces Fix",
+      "url": "https://github.com/dataterminals/SlayettaFacesB42Fix",
+      "repo": "dataterminals/SlayettaFacesB42Fix",
+      "category": "zomboid",
+      "blurb": "Compatibility shim fixing Slayetta Faces (and legacy FM_Data face packs) on Build 42."
+    },
+
+    {
+      "title": "Boards for Charcoal",
+      "url": "https://github.com/dataterminals/lionfox_BoardsForCharcoal",
+      "repo": "dataterminals/lionfox_BoardsForCharcoal",
+      "category": "vintage-story",
+      "blurb": "Build charcoal pits from stacked planks (boards) instead of firewood."
+    },
+    {
+      "title": "/fixtl",
+      "url": "https://github.com/dataterminals/lionfox_fixtl",
+      "repo": "dataterminals/lionfox_fixtl",
+      "category": "vintage-story",
+      "blurb": "Server mod: /fixtl clears a stuck teleporting flag that breaks translocators after repeated game-mode swaps."
+    },
+    {
+      "title": "Purposeful Storage Patches",
+      "url": "https://github.com/dataterminals/lionfox_purposefulstorage_patches",
+      "repo": "dataterminals/lionfox_purposefulstorage_patches",
+      "category": "vintage-story",
+      "blurb": "Content mod: adds weapons from several mods to Purposeful Storage's racks, spear racks and pedestals."
+    },
+    {
+      "title": "/resyncmodels",
+      "url": "https://github.com/dataterminals/lionfox_resyncmodels",
+      "repo": "dataterminals/lionfox_resyncmodels",
+      "category": "vintage-story",
+      "blurb": "Server mod: force-rebroadcasts players' entity data — workaround for remote-player invisibility."
+    },
+    {
+      "title": "HIT Console Patch",
+      "url": "https://github.com/dataterminals/lionfox_hit_consolepatch",
+      "repo": "dataterminals/lionfox_hit_consolepatch",
+      "category": "vintage-story",
+      "blurb": "Harmony patch silencing leftover debug console spam in Harper's Immersive Tools v2.4.3."
+    },
+    {
+      "title": "Torches Contribute Heat",
+      "url": "https://github.com/dataterminals/TorchesContributeHeat",
+      "repo": "dataterminals/TorchesContributeHeat",
+      "category": "vintage-story",
+      "blurb": "Lit torches act as minor heat sources, warming nearby players and rooms."
+    },
+
+    {
+      "title": "Revenge QuickFormat",
+      "url": "https://github.com/dataterminals/RevengeQuickFormat",
+      "repo": "dataterminals/RevengeQuickFormat",
+      "category": "tools",
+      "blurb": "A Revenge (Discord) plugin mimicking QuickCSS-style style overrides from other clients."
+    },
+    {
+      "title": "Chime Data Grabber",
+      "url": "https://github.com/dataterminals/ChimeDataGrabber",
+      "repo": "dataterminals/ChimeDataGrabber",
+      "category": "tools",
+      "blurb": "One-click Tampermonkey userscript exporting Chime transactions to clean CSV/JSON. Read-only, no credentials."
+    },
+    {
+      "title": "Sylvibot (staging)",
+      "url": "https://github.com/dataterminals/sylvibot-staging",
+      "repo": "dataterminals/sylvibot-staging",
+      "category": "tools",
+      "blurb": "Staging area for a bot-tagged editing account on the Forever Winter Wiki — drafts, versions and editor tooling."
+    }
+  ]
+}
