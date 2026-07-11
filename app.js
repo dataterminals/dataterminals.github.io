@@ -179,9 +179,70 @@
     if (p && typeof p.catch === 'function') p.catch(() => {});
   }
 
+  /* ---------- animated spindle wordmark ---------- */
+
+  function initWordmark() {
+    const spindle = document.querySelector('.spindle');
+    const track = document.querySelector('.spindle__track');
+    if (!spindle || !track) return;
+    const words = Array.from(track.querySelectorAll('.spindle__word'));
+    const N = words.length; // [data(clone,top) … sylvi … deni … data(bottom)]
+    if (N < 2) return;
+
+    const PAD = 1;       // guard against clipping the final glyph
+    const DWELL = 2600;  // ms each word rests before the next rolls in
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let h = 0;
+    let widths = [];
+    function measure() {
+      h = words[0].getBoundingClientRect().height;
+      widths = words.map((w) => Math.ceil(w.getBoundingClientRect().width) + PAD);
+    }
+
+    // Bottom word (index N-1) shows first; each step reveals the word above it
+    // (track rolls downward), so the sequence reads data → deni → sylvi → data.
+    let idx = N - 1;
+    function place(i, animate) {
+      const t = animate ? '' : 'none';
+      track.style.transition = t;
+      spindle.style.transition = t;
+      track.style.transform = `translateY(${(-i * h).toFixed(2)}px)`;
+      spindle.style.width = widths[i] + 'px';
+      if (!animate) void spindle.offsetHeight; // flush the jump
+    }
+
+    measure();
+    place(idx, false);
+    if (reduce) return; // static "dataterminals"
+
+    function step() {
+      track.classList.add('is-rolling');
+      idx -= 1;
+      place(idx, true);
+    }
+    track.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'transform') return;
+      track.classList.remove('is-rolling');
+      if (idx <= 0) { idx = N - 1; place(idx, false); } // seamless jump on the clone
+    });
+
+    let timer = setTimeout(function loop() {
+      step();
+      timer = setTimeout(loop, DWELL);
+    }, DWELL);
+
+    let rt = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => { measure(); place(idx, false); }, 150);
+    });
+  }
+
   /* ---------- boot ---------- */
 
   async function boot() {
+    initWordmark();
     initVideo();
 
     let links = FALLBACK;

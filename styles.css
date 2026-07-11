@@ -128,6 +128,40 @@ main {
   line-height: 1.0;
   letter-spacing: -0.02em;
   color: var(--ink);
+  perspective: 900px;      /* subtle depth for the spindle roll */
+  white-space: nowrap;
+}
+
+/* Rotating-spindle prefix: data → deni → sylvi → data, with "terminals" fixed.
+   The window clips one word; the track rolls vertically; the window width
+   tweens between prefixes so the suffix re-tucks smoothly. */
+.spindle {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  height: 1.3em;
+  width: 4ch;                              /* JS overrides with measured px */
+  vertical-align: -0.34em;                 /* tuned so the word baseline meets "terminals" */
+  transition: width 0.55s cubic-bezier(0.5, 0.12, 0.2, 1);
+}
+.spindle__track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transform: translateY(0);
+  transition: transform 0.62s cubic-bezier(0.42, 0.15, 0.16, 1.02);
+  will-change: transform;
+}
+.spindle__track.is-rolling { filter: blur(0.4px); }   /* faint motion blur */
+.spindle__word {
+  flex: 0 0 auto;
+  height: 1.3em;
+  line-height: 1.3em;
+  white-space: nowrap;
+  text-align: left;
 }
 
 .hero__tagline {
