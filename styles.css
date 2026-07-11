@@ -103,7 +103,7 @@ main {
   /* Legibility insurance over busy footage — imperceptible over dark footage. */
   text-shadow: 0 1px 2px rgba(8, 4, 2, 0.5);
 }
-.screen, .foot, .chart { width: 100%; max-width: var(--maxw); }
+.screen, .foot, .chart, .tarot { width: 100%; max-width: var(--maxw); }
 
 /* First screenful: the identity hero + curated links, vertically centered. */
 .screen {
@@ -477,6 +477,68 @@ main {
 @media (max-width: 640px) {
   .chart__wrap { flex-direction: column-reverse; align-items: center; }
   .chart__aside { width: 100%; max-width: 400px; }
+}
+
+/* ================= Tarot ================= */
+.tarot__deck { display: flex; flex-wrap: wrap; align-items: flex-start; gap: clamp(1rem, 3vw, 1.8rem); }
+.tarot__spread { display: flex; flex-wrap: wrap; gap: clamp(0.7rem, 2vw, 1.1rem); flex: 1 1 300px; align-content: flex-start; }
+
+.tcard {
+  --w: 104px;
+  width: var(--w); height: calc(var(--w) * 1.62);
+  padding: 0; border: 0; background: none; font: inherit;
+  perspective: 900px; cursor: pointer; text-shadow: none; flex: 0 0 auto;
+}
+.tcard--featured { --w: 150px; }
+.tcard__inner {
+  position: relative; display: block; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s var(--ease);
+}
+.tcard:hover .tcard__inner,
+.tcard:focus-visible .tcard__inner { transform: translateY(-4px); }
+.tcard.is-flipped .tcard__inner { transform: rotateY(180deg); }
+.tcard:focus-visible { outline: none; }
+
+.tcard__face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0.75rem 0.6rem; text-align: center; overflow: hidden;
+  border-radius: 11px;
+  border: 1px solid rgba(216, 121, 76, 0.3);
+  background: linear-gradient(165deg, rgba(42, 20, 13, 0.6), rgba(20, 11, 7, 0.74));
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.4), inset 0 0 22px rgba(216, 121, 76, 0.06);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+}
+.tcard--featured .tcard__face {
+  border-color: rgba(230, 178, 120, 0.5);
+  box-shadow: 0 0 22px rgba(216, 121, 76, 0.18), 0 8px 26px rgba(0, 0, 0, 0.45), inset 0 0 26px rgba(216, 121, 76, 0.09);
+}
+
+.tcard__kicker { position: absolute; top: 0.5rem; left: 0; right: 0; font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+.tcard__num { font-family: var(--serif); font-size: 0.72rem; letter-spacing: 0.16em; color: var(--accent-soft); }
+.tcard--featured .tcard__num { margin-top: 0.5rem; }
+.tcard__emblem { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; }
+.tcard__glyph { font-family: var(--glyph); font-size: 2.15rem; color: var(--ink); filter: drop-shadow(0 0 6px rgba(216, 121, 76, 0.5)); }
+.tcard__name { font-family: var(--serif); font-size: 0.82rem; line-height: 1.15; color: var(--ink); }
+.tcard--featured .tcard__name { font-size: 0.98rem; }
+.tcard__tag { margin-top: 0.3rem; font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
+
+.wands { width: 60%; height: auto; overflow: visible; }
+.wand { stroke: var(--accent-soft); stroke-width: 2.4; stroke-linecap: round; opacity: 0.6; filter: drop-shadow(0 0 3px rgba(216, 121, 76, 0.5)); }
+.wand--lead { stroke: var(--ink); opacity: 1; stroke-width: 3; }
+
+.tcard__back { transform: rotateY(180deg); justify-content: center; gap: 0.42rem; }
+.tcard__kw { font-size: 0.62rem; letter-spacing: 0.03em; color: var(--accent-soft); }
+.tcard__meaning { margin: 0; font-size: 0.68rem; line-height: 1.42; color: var(--ink-dim); }
+.tcard--featured .tcard__meaning { font-size: 0.75rem; }
+
+@media (prefers-reduced-motion: reduce) { .tcard__inner { transition: none; } }
+@media (max-width: 480px) {
+  .tarot__deck { justify-content: center; }
+  .tcard { --w: 98px; }
+  .tcard--featured { --w: 132px; }
 }
 
 /* ---- Entrance motion ---- */
