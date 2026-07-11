@@ -481,9 +481,9 @@ main {
 
 /* ================= Tarot ================= */
 .tarot__deck { display: flex; flex-direction: column; gap: clamp(1.4rem, 4vw, 2.2rem); }
-.tarot__featured { display: flex; }
-.tarot__group-label { font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 0.85rem; }
-.tarot__grid { display: flex; flex-wrap: wrap; gap: clamp(0.55rem, 1.6vw, 0.85rem); }
+.tarot__featured { display: flex; justify-content: center; }
+.tarot__group-label { font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 0.85rem; text-align: center; }
+.tarot__grid { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(0.55rem, 1.6vw, 0.85rem); }
 
 .tcard {
   --w: 104px; --suit: var(--accent-soft);
