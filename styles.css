@@ -480,23 +480,26 @@ main {
 }
 
 /* ================= Tarot ================= */
-.tarot__deck { display: flex; flex-wrap: wrap; align-items: flex-start; gap: clamp(1rem, 3vw, 1.8rem); }
-.tarot__spread { display: flex; flex-wrap: wrap; gap: clamp(0.7rem, 2vw, 1.1rem); flex: 1 1 300px; align-content: flex-start; }
+.tarot__deck { display: flex; flex-direction: column; gap: clamp(1.4rem, 4vw, 2.2rem); }
+.tarot__featured { display: flex; }
+.tarot__group-label { font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 0.85rem; }
+.tarot__grid { display: flex; flex-wrap: wrap; gap: clamp(0.55rem, 1.6vw, 0.85rem); }
 
 .tcard {
-  --w: 104px;
-  width: var(--w); height: calc(var(--w) * 1.62);
+  --w: 104px; --suit: var(--accent-soft);
+  width: var(--w); height: calc(var(--w) * 1.6);
   padding: 0; border: 0; background: none; font: inherit;
   perspective: 900px; cursor: pointer; text-shadow: none; flex: 0 0 auto;
 }
-.tcard--featured { --w: 150px; }
-.tcard__inner {
-  position: relative; display: block; width: 100%; height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.7s var(--ease);
-}
-.tcard:hover .tcard__inner,
-.tcard:focus-visible .tcard__inner { transform: translateY(-4px); }
+.tcard--featured { --w: 156px; }
+.tarot__grid .tcard { --w: 89px; }
+.tcard[data-suit="wands"] { --suit: var(--hard); }
+.tcard[data-suit="cups"] { --suit: var(--soft); }
+.tcard[data-suit="swords"] { --suit: #b9c6cf; }
+.tcard[data-suit="pentacles"] { --suit: var(--conj); }
+
+.tcard__inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.7s var(--ease); }
+.tcard:hover .tcard__inner, .tcard:focus-visible .tcard__inner { transform: translateY(-4px); }
 .tcard.is-flipped .tcard__inner { transform: rotateY(180deg); }
 .tcard:focus-visible { outline: none; }
 
@@ -504,41 +507,52 @@ main {
   position: absolute; inset: 0;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   display: flex; flex-direction: column; align-items: center;
-  padding: 0.75rem 0.6rem; text-align: center; overflow: hidden;
-  border-radius: 11px;
-  border: 1px solid rgba(216, 121, 76, 0.3);
-  background: linear-gradient(165deg, rgba(42, 20, 13, 0.6), rgba(20, 11, 7, 0.74));
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.4), inset 0 0 22px rgba(216, 121, 76, 0.06);
-  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  padding: 0.6rem 0.5rem; text-align: center; overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid rgba(216, 121, 76, 0.28);
+  background: linear-gradient(165deg, rgba(44, 21, 14, 0.9), rgba(18, 10, 6, 0.94));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38), inset 0 0 20px rgba(216, 121, 76, 0.05);
 }
 .tcard--featured .tcard__face {
+  padding: 0.75rem 0.6rem;
   border-color: rgba(230, 178, 120, 0.5);
   box-shadow: 0 0 22px rgba(216, 121, 76, 0.18), 0 8px 26px rgba(0, 0, 0, 0.45), inset 0 0 26px rgba(216, 121, 76, 0.09);
 }
 
 .tcard__kicker { position: absolute; top: 0.5rem; left: 0; right: 0; font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
-.tcard__num { font-family: var(--serif); font-size: 0.72rem; letter-spacing: 0.16em; color: var(--accent-soft); }
-.tcard--featured .tcard__num { margin-top: 0.5rem; }
-.tcard__emblem { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; }
-.tcard__glyph { font-family: var(--glyph); font-size: 2.15rem; color: var(--ink); filter: drop-shadow(0 0 6px rgba(216, 121, 76, 0.5)); }
-.tcard__name { font-family: var(--serif); font-size: 0.82rem; line-height: 1.15; color: var(--ink); }
+.tcard__num { font-family: var(--serif); font-size: 0.72rem; letter-spacing: 0.14em; color: var(--suit); }
+.tcard--featured .tcard__num { margin-top: 0.5rem; font-size: 0.82rem; }
+.tcard__emblem { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; min-height: 0; }
+.tcard__glyph { font-family: var(--glyph); font-size: 1.8rem; color: var(--ink); text-shadow: 0 0 7px rgba(216, 121, 76, 0.4); }
+.tcard__abbr { font-family: var(--sans); font-size: 1.15rem; letter-spacing: 0.04em; color: var(--ink); }
+.tcard--featured .tcard__glyph { font-size: 2.4rem; }
+.tcard__name { font-family: var(--serif); font-size: 0.72rem; line-height: 1.12; color: var(--ink); }
 .tcard--featured .tcard__name { font-size: 0.98rem; }
-.tcard__tag { margin-top: 0.3rem; font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
+.tcard__tag { margin-top: 0.24rem; font-size: 0.52rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+.tcard--featured .tcard__tag { font-size: 0.56rem; }
 
-.wands { width: 60%; height: auto; overflow: visible; }
-.wand { stroke: var(--accent-soft); stroke-width: 2.4; stroke-linecap: round; opacity: 0.6; filter: drop-shadow(0 0 3px rgba(216, 121, 76, 0.5)); }
+/* suit emblems (colour-coded by element) */
+.suit { width: 46%; height: auto; overflow: visible; color: var(--suit); }
+.suit .sk { stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.suit .sf { fill: currentColor; }
+
+/* featured wands */
+.wands { width: 58%; height: auto; overflow: visible; }
+.wand { stroke: var(--accent-soft); stroke-width: 2.4; stroke-linecap: round; opacity: 0.6; }
 .wand--lead { stroke: var(--ink); opacity: 1; stroke-width: 3; }
 
-.tcard__back { transform: rotateY(180deg); justify-content: center; gap: 0.42rem; }
-.tcard__kw { font-size: 0.62rem; letter-spacing: 0.03em; color: var(--accent-soft); }
-.tcard__meaning { margin: 0; font-size: 0.68rem; line-height: 1.42; color: var(--ink-dim); }
-.tcard--featured .tcard__meaning { font-size: 0.75rem; }
+.tcard__back { transform: rotateY(180deg); justify-content: center; gap: 0.35rem; padding: 0.55rem 0.45rem; }
+.tcard__kw { font-size: 0.55rem; letter-spacing: 0.02em; color: var(--suit); line-height: 1.3; }
+.tcard__meaning { margin: 0; font-size: 0.6rem; line-height: 1.36; color: var(--ink-dim); }
+.tcard--featured .tcard__back { padding: 0.7rem 0.6rem; }
+.tcard--featured .tcard__kw { font-size: 0.64rem; }
+.tcard--featured .tcard__meaning { font-size: 0.73rem; line-height: 1.42; }
 
 @media (prefers-reduced-motion: reduce) { .tcard__inner { transition: none; } }
 @media (max-width: 480px) {
-  .tarot__deck { justify-content: center; }
-  .tcard { --w: 98px; }
-  .tcard--featured { --w: 132px; }
+  .tarot__grid { justify-content: center; }
+  .tcard--featured { --w: 138px; }
+  .tarot__grid .tcard { --w: 84px; }
 }
 
 /* ---- Entrance motion ---- */
