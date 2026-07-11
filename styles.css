@@ -139,18 +139,17 @@ main {
   display: inline-block;
   position: relative;
   overflow: hidden;
-  height: 1.3em;
-  width: 4ch;                              /* JS overrides with measured px */
-  vertical-align: -0.34em;                 /* tuned so the word baseline meets "terminals" */
-  transition: width 0.55s cubic-bezier(0.5, 0.12, 0.2, 1);
+  height: 1.5em;                           /* tall enough to fully contain the "y" descender */
+  width: 4ch;                              /* JS sets a constant slot width = widest prefix */
+  vertical-align: -0.42em;                 /* tuned so the word baseline meets "terminals" */
 }
 .spindle__track {
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;                   /* right-align: the suffix junction never moves */
   transform: translateY(0);
   transition: transform 0.62s cubic-bezier(0.42, 0.15, 0.16, 1.02);
   will-change: transform;
@@ -158,10 +157,10 @@ main {
 .spindle__track.is-rolling { filter: blur(0.4px); }   /* faint motion blur */
 .spindle__word {
   flex: 0 0 auto;
-  height: 1.3em;
-  line-height: 1.3em;
+  height: 1.5em;
+  line-height: 1.5em;
   white-space: nowrap;
-  text-align: left;
+  text-align: right;
 }
 
 .hero__tagline {

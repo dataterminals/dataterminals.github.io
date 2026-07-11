@@ -194,22 +194,20 @@
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let h = 0;
-    let widths = [];
     function measure() {
       h = words[0].getBoundingClientRect().height;
-      widths = words.map((w) => Math.ceil(w.getBoundingClientRect().width) + PAD);
+      const widths = words.map((w) => Math.ceil(w.getBoundingClientRect().width));
+      // Constant slot = widest prefix, so "terminals" never shifts horizontally.
+      spindle.style.width = (Math.max.apply(null, widths) + PAD) + 'px';
     }
 
     // Bottom word (index N-1) shows first; each step reveals the word above it
     // (track rolls downward), so the sequence reads data → deni → sylvi → data.
     let idx = N - 1;
     function place(i, animate) {
-      const t = animate ? '' : 'none';
-      track.style.transition = t;
-      spindle.style.transition = t;
+      track.style.transition = animate ? '' : 'none';
       track.style.transform = `translateY(${(-i * h).toFixed(2)}px)`;
-      spindle.style.width = widths[i] + 'px';
-      if (!animate) void spindle.offsetHeight; // flush the jump
+      if (!animate) void track.offsetHeight; // flush the jump
     }
 
     measure();
