@@ -29,19 +29,33 @@
   <div class="grain" aria-hidden="true"></div>
 
   <main>
-    <header class="hero">
-      <div class="hero__mark reveal">
-        <span class="hero__dot" aria-hidden="true"></span>
-        <span>data terminals</span>
-      </div>
-      <h1 class="hero__name reveal" aria-label="dataterminals"><span class="spindle" aria-hidden="true"><span class="spindle__track"><span class="spindle__word">data</span><span class="spindle__word">sylvi</span><span class="spindle__word">deni</span><span class="spindle__word">data</span></span></span><span class="spindle__suffix" aria-hidden="true">terminals</span></h1>
-      <p class="hero__tagline reveal">Mods, tools &amp; datamining for the games we play.</p>
-    </header>
+    <div class="screen">
+      <header class="hero">
+        <div class="hero__mark reveal">
+          <span class="hero__dot" aria-hidden="true"></span>
+          <span>data terminals</span>
+        </div>
+        <h1 class="hero__name reveal" aria-label="dataterminals"><span class="spindle" aria-hidden="true"><span class="spindle__track"><span class="spindle__word">data</span><span class="spindle__word">sylvi</span><span class="spindle__word">deni</span><span class="spindle__word">data</span></span></span><span class="spindle__suffix" aria-hidden="true">terminals</span></h1>
+        <p class="hero__tagline reveal">Mods, tools &amp; datamining for the games we play.</p>
+      </header>
 
-    <section class="links" aria-label="Selected projects">
-      <p class="links__eyebrow">Selected work</p>
-      <div class="links__list" id="links">
-        <!-- rendered from links.json (featured), enriched from the GitHub API -->
+      <section class="links" aria-label="Selected projects">
+        <p class="links__eyebrow">Selected work</p>
+        <div class="links__list" id="links">
+          <!-- rendered from links.json (featured), enriched from the GitHub API -->
+        </div>
+      </section>
+
+      <a class="scroll-cue" href="#chart" aria-label="Natal chart below">
+        <span>natal chart</span>
+        <span class="scroll-cue__arrow" aria-hidden="true">↓</span>
+      </a>
+    </div>
+
+    <section class="chart" id="chart" aria-label="Natal chart">
+      <p class="chart__eyebrow">Natal chart<span class="chart__sub"> · Leo rising, 12th-house stellium</span></p>
+      <div class="chart__wrap" id="natal">
+        <!-- wheel + placements rendered by natal.js -->
       </div>
     </section>
 
@@ -53,5 +67,6 @@
   </main>
 
   <script src="app.js"></script>
+  <script src="natal.js"></script>
 </body>
 </html>

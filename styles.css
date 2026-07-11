@@ -13,6 +13,12 @@
   --hair: rgba(241, 231, 218, 0.13);
   --hair-strong: rgba(241, 231, 218, 0.26);
 
+  /* astro glyph coverage + aspect palette */
+  --glyph: "Segoe UI Symbol", "Noto Sans Symbols2", "Apple Symbols", "Segoe UI Emoji", var(--serif);
+  --hard: #e07a4e;   /* square / opposition — warm ember */
+  --soft: #79c2cf;   /* trine / sextile — cool teal */
+  --conj: #e6b877;   /* conjunction — warm gold */
+
   --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
@@ -90,15 +96,50 @@ main {
   position: relative;
   max-width: var(--maxw);
   margin: 0 auto;
-  min-height: 100dvh;
-  padding: max(var(--pad), env(safe-area-inset-top)) var(--pad) var(--pad);
+  padding: 0 var(--pad);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: clamp(2.2rem, 6vh, 3.6rem);
+  gap: clamp(3rem, 12vh, 6.5rem);
   /* Legibility insurance over busy footage — imperceptible over dark footage. */
   text-shadow: 0 1px 2px rgba(8, 4, 2, 0.5);
 }
+
+/* First screenful: the identity hero + curated links, vertically centered. */
+.screen {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.2rem, 6vh, 3.6rem);
+  padding: max(var(--pad), env(safe-area-inset-top)) 0 4vh;
+}
+/* Center the block when there's room; fall back to top-aligned (never clip the
+   hero) when the content is taller than the viewport. */
+.screen > .hero { margin-top: auto; }
+.screen > .scroll-cue { margin-bottom: auto; }
+
+/* Scroll cue to the chart */
+.scroll-cue {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-decoration: none;
+  transition: color 0.25s var(--ease);
+}
+.scroll-cue:hover,
+.scroll-cue:focus-visible { color: var(--accent-soft); outline: none; }
+.scroll-cue__arrow {
+  font-size: 1rem;
+  letter-spacing: 0;
+  animation: cue 2.4s var(--ease) infinite;
+}
+@keyframes cue { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(4px); opacity: 1; } }
 
 /* ---- Identity hero ---- */
 .hero__mark {
@@ -281,6 +322,135 @@ main {
   outline: none;
 }
 .foot__sep { opacity: 0.4; }
+
+/* ================= Natal chart ================= */
+.chart { padding-bottom: 2vh; }
+.chart__eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 clamp(1.2rem, 4vh, 2.2rem);
+}
+.chart__sub { color: rgba(148, 121, 106, 0.7); }
+
+.chart__wrap {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 2.4rem);
+}
+.chart__wheelbox { position: relative; flex: 0 1 420px; width: min(100%, 420px); }
+.wheel { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* rings + ticks */
+.ring-c { fill: none; stroke: var(--hair-strong); stroke-width: 1; }
+.ring-hub { stroke: rgba(241, 231, 218, 0.09); }
+.ring-spoke { stroke: var(--hair); stroke-width: 1; }
+.ring-mini { stroke: var(--hair); stroke-width: 1; }
+
+/* zodiac signs, tinted by element */
+.sign { font-family: var(--glyph); font-size: 15px; }
+.sign-fire { fill: #e08a5a; }
+.sign-earth { fill: #b7a07f; }
+.sign-air { fill: #cdb98f; }
+.sign-water { fill: #7fb4c0; }
+
+/* houses */
+.cusp { stroke: var(--hair); stroke-width: 1; }
+.cusp-axis { stroke: rgba(230, 178, 120, 0.55); stroke-width: 1.4; }
+.house-num { font-family: var(--sans); font-size: 8px; fill: var(--ink-faint); }
+.axis-label { font-family: var(--sans); font-size: 9.5px; letter-spacing: 0.06em; fill: var(--ink-dim); }
+
+/* planets */
+.deg-tick { stroke: var(--ink-dim); stroke-width: 1.2; }
+.p-conn { stroke: var(--hair); stroke-width: 1; }
+.p-halo { fill: var(--accent-soft); opacity: 0; transition: opacity 0.2s var(--ease); }
+.p-glyph { font-family: var(--glyph); font-size: 16px; fill: var(--ink); filter: url(#glow); transition: fill 0.2s var(--ease); }
+.p-retro { font-family: var(--glyph); font-size: 8px; fill: var(--ink-faint); }
+.planet { cursor: pointer; }
+.planet:focus-visible { outline: none; }
+
+/* aspects — hidden by default, majors faintly drawn */
+.asp { fill: none; stroke-width: 1; opacity: 0; transition: opacity 0.25s var(--ease), stroke-width 0.2s var(--ease); }
+.asp-major { opacity: 0.26; }
+.asp-hard { stroke: var(--hard); }
+.asp-soft { stroke: var(--soft); }
+.asp-conj { stroke: var(--conj); }
+
+/* focus states */
+.wheel.is-focused .asp:not(.is-on) { opacity: 0.05; }
+.wheel.is-focused .planet:not(.is-on) { opacity: 0.38; }
+.asp.is-on { opacity: 0.95; stroke-width: 1.7; filter: url(#glowSoft); }
+.planet.is-on .p-halo { opacity: 0.16; }
+.planet.is-on .p-glyph,
+.planet:focus-visible .p-glyph { filter: url(#glowSoft); }
+.planet:focus-visible .p-halo { opacity: 0.12; }
+
+/* center tooltip */
+.chart__tip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.96);
+  width: min(58%, 220px);
+  padding: 0.7rem 0.85rem;
+  background: rgba(26, 14, 9, 0.82);
+  border: 1px solid var(--hair-strong);
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-align: left;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  text-shadow: none;
+}
+.chart__tip.is-shown { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.chart__tip strong { font-family: var(--serif); font-weight: 500; font-size: 1.05rem; color: var(--ink); }
+.chart__tip .pl-r { color: var(--accent-soft); }
+.tip-pos { display: block; margin-top: 0.1rem; font-size: 0.72rem; letter-spacing: 0.02em; color: var(--ink-dim); }
+.tip-asps { list-style: none; margin: 0.55rem 0 0; padding: 0.5rem 0 0; border-top: 1px solid var(--hair); display: grid; gap: 0.22rem; }
+.tip-asps li { font-size: 0.74rem; color: var(--ink-dim); display: flex; align-items: baseline; gap: 0.4em; }
+.tip-asp { font-family: var(--glyph); width: 1em; text-align: center; }
+.tip-hard { color: var(--hard); }
+.tip-soft { color: var(--soft); }
+.tip-conj { color: var(--conj); }
+.tip-orb { margin-left: auto; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+/* placements list */
+.chart__list { flex: 1 1 210px; min-width: 190px; max-width: 300px; }
+.chart__list ul { list-style: none; margin: 0; padding: 0; }
+.chart__list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55em;
+  padding: 0.26rem 0.45rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  cursor: default;
+  transition: background 0.2s var(--ease);
+}
+.chart__list li:hover,
+.chart__list li.is-on { background: rgba(241, 231, 218, 0.06); }
+.chart__list li:focus-visible { outline: none; background: rgba(241, 231, 218, 0.06); }
+.pl-glyph { font-family: var(--glyph); width: 1.3em; text-align: center; color: var(--ink-dim); flex: 0 0 auto; }
+.pl-name { color: var(--ink); flex: 1 1 auto; }
+.pl-r { color: var(--accent-soft); font-family: var(--glyph); }
+.pl-pos { color: var(--ink-dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl-sg { font-family: var(--glyph); color: var(--ink-faint); }
+
+/* keep every astro glyph monochrome (no emoji tiles) where the browser supports it */
+.sign, .p-glyph, .p-retro, .pl-glyph, .pl-sg, .tip-asp, .chart__tip strong { font-variant-emoji: text; }
+.pl-house { color: var(--ink-faint); font-size: 0.78em; min-width: 2.7em; text-align: right; flex: 0 0 auto; }
+
+@media (max-width: 560px) {
+  .chart__wrap { flex-direction: column; }
+  .chart__list { max-width: 360px; width: 100%; }
+  .chart__tip { width: min(70%, 240px); }
+}
 
 /* ---- Entrance motion ---- */
 .reveal {
