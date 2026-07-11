@@ -237,17 +237,18 @@
     const wheelbox = document.createElement('div');
     wheelbox.className = 'chart__wheelbox';
     wheelbox.append(svg);
-    host.append(wheelbox);
 
-    buildList(host);
-    wire(host, svg, wheelbox);
+    buildList(host);        // left column: placements + aspect detail
+    host.append(wheelbox);  // right column: the wheel
+    wire(host, svg);
   }
 
-  // placements list beside the wheel
+  // placements list + aspect detail (left column)
   function buildList(host) {
     const aside = document.createElement('div');
-    aside.className = 'chart__list';
+    aside.className = 'chart__aside';
     const ul = document.createElement('ul');
+    ul.className = 'chart__list';
     BODIES.forEach(([k, name, glyph, s, d, m, h, retro]) => {
       const li = document.createElement('li');
       li.dataset.body = k;
@@ -260,6 +261,12 @@
       ul.append(li);
     });
     aside.append(ul);
+
+    const detail = document.createElement('div');
+    detail.className = 'chart__detail';
+    detail.innerHTML = legendHtml();
+    aside.append(detail);
+
     host.append(aside);
   }
 
@@ -268,50 +275,54 @@
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   }
 
-  // ---- interactivity ----
-  function wire(host, svg, wheelbox) {
-    const tip = document.createElement('div');
-    tip.className = 'chart__tip';
-    tip.setAttribute('aria-hidden', 'true');
-    wheelbox.append(tip);
+  // ---- aspect detail (shown in the left column, never over the wheel) ----
+  const aspOf = (key) => ASPECTS.filter(([a, b]) => a === key || b === key);
 
+  function legendHtml() {
+    return '<p class="cd-hint">Hover a placement to trace its aspects.</p>' +
+      '<ul class="cd-legend">' +
+      `<li><span class="cd-sw" style="color:var(--hard)"></span>Square · Opposition</li>` +
+      `<li><span class="cd-sw" style="color:var(--soft)"></span>Trine · Sextile</li>` +
+      `<li><span class="cd-sw" style="color:var(--conj)"></span>Conjunction</li>` +
+      '</ul>';
+  }
+
+  function detailHtml(key) {
+    const b = META[key];
+    const head = `<strong>${b.glyph !== 'Vx' ? b.glyph + '︎ ' : ''}${b.name}</strong>` +
+      (b.retro ? ' <span class="pl-r">℞</span>' : '') +
+      `<span class="tip-pos">${b.sign} ${fmtDeg(b.deg, b.min)}${b.house ? ' · ' + ordinal(b.house) + ' house' : ''}</span>`;
+    const asps = aspOf(key).map(([a, bb, type, orb, phase]) => {
+      const other = a === key ? bb : a;
+      return `<li><span class="tip-asp tip-${CATEGORY[type]}">${ASPECT_GLYPH[type]}︎</span>` +
+        `<span class="tip-name">${META[other].name}</span>` +
+        `<span class="tip-orb">${orb} ${phase === 'Applying' ? '↗' : '↘'}</span></li>`;
+    }).join('');
+    return head + (asps ? `<ul class="tip-asps">${asps}</ul>` : '<p class="cd-hint" style="margin-top:.5rem">No major aspects.</p>');
+  }
+
+  // ---- interactivity ----
+  function wire(host, svg) {
+    const detail = host.querySelector('.chart__detail');
     const planets = Array.from(svg.querySelectorAll('.planet'));
     const listItems = Array.from(host.querySelectorAll('.chart__list li'));
     const aspLines = Array.from(svg.querySelectorAll('.asp'));
-
-    const aspOf = (key) => ASPECTS.filter(([a, b]) => a === key || b === key);
-
-    function tipHtml(key) {
-      const b = META[key];
-      const pos = `${b.sign} ${fmtDeg(b.deg, b.min)}`;
-      const head = `<strong>${b.glyph !== 'Vx' ? b.glyph + ' ' : ''}${b.name}</strong>` +
-        (b.retro ? ' <span class="pl-r">℞</span>' : '') +
-        `<span class="tip-pos">${pos}${b.house ? ' · ' + ordinal(b.house) + ' house' : ''}</span>`;
-      const asps = aspOf(key).map(([a, bb, type, orb, phase]) => {
-        const other = a === key ? bb : a;
-        return `<li><span class="tip-asp tip-${CATEGORY[type]}">${ASPECT_GLYPH[type]}︎</span> ${META[other].name}` +
-          `<span class="tip-orb">${orb} ${phase === 'Applying' ? '↗' : '↘'}</span></li>`;
-      }).join('');
-      return head + (asps ? `<ul class="tip-asps">${asps}</ul>` : '');
-    }
 
     function activate(key) {
       svg.classList.add('is-focused');
       planets.forEach((p) => p.classList.toggle('is-on', p.dataset.body === key));
       listItems.forEach((li) => li.classList.toggle('is-on', li.dataset.body === key));
-      aspLines.forEach((ln) => {
-        const on = ln.dataset.a === key || ln.dataset.b === key;
-        ln.classList.toggle('is-on', on);
-      });
-      tip.innerHTML = tipHtml(key);
-      tip.classList.add('is-shown');
+      aspLines.forEach((ln) => ln.classList.toggle('is-on', ln.dataset.a === key || ln.dataset.b === key));
+      detail.innerHTML = detailHtml(key);
+      detail.classList.add('is-active');
     }
     function clear() {
       svg.classList.remove('is-focused');
       planets.forEach((p) => p.classList.remove('is-on'));
       listItems.forEach((li) => li.classList.remove('is-on'));
       aspLines.forEach((ln) => ln.classList.remove('is-on'));
-      tip.classList.remove('is-shown');
+      detail.innerHTML = legendHtml();
+      detail.classList.remove('is-active');
     }
 
     function bind(el) {

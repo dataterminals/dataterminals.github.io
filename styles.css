@@ -94,15 +94,16 @@ body {
 /* ---- Layout ---- */
 main {
   position: relative;
-  max-width: var(--maxw);
-  margin: 0 auto;
+  width: 100%;
   padding: 0 var(--pad);
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: clamp(3rem, 12vh, 6.5rem);
   /* Legibility insurance over busy footage — imperceptible over dark footage. */
   text-shadow: 0 1px 2px rgba(8, 4, 2, 0.5);
 }
+.screen, .foot, .chart { width: 100%; max-width: var(--maxw); }
 
 /* First screenful: the identity hero + curated links, vertically centered. */
 .screen {
@@ -204,11 +205,36 @@ main {
   text-align: right;
 }
 
+/* Tagline: a one-time, scattered multilingual "In my time…" fade-in
+   (an homage to blackdenim.carrd.co), laid out horizontally in the tagline band. */
 .hero__tagline {
+  position: relative;
   margin: 1.05rem 0 0;
-  max-width: 42ch;
-  font-size: clamp(1rem, 2.3vw, 1.16rem);
-  color: var(--ink-dim);
+  height: clamp(6.4rem, 15vh, 7.4rem);
+  max-width: min(100%, 30rem);
+  font-weight: 400;
+}
+.tl {
+  position: absolute;
+  white-space: nowrap;
+  color: var(--ink-faint);
+  opacity: 0;
+  animation: tl-in 1.5s var(--ease) both;
+  animation-delay: var(--d, 0s);
+  text-shadow: 0 1px 3px rgba(8, 4, 2, 0.6);
+}
+.tl-en { color: var(--ink-dim); }
+@keyframes tl-in {
+  from { opacity: 0; transform: translateY(9px) scale(0.98); filter: blur(5px); }
+  to   { opacity: var(--o, 1); transform: none; filter: blur(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl { animation: none; opacity: var(--o, 1); transform: none; filter: none; }
+}
+@media (max-width: 480px) {
+  .hero__tagline { height: 6.2rem; max-width: 22rem; }
+  .tl { font-size: 0.92rem !important; }
+  .tl-en { font-size: 1.05rem !important; }
 }
 
 /* ---- Links (editorial index) ---- */
@@ -337,12 +363,12 @@ main {
 .chart__wrap {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: clamp(1rem, 4vw, 2.4rem);
+  gap: clamp(1.25rem, 4vw, 2.8rem);
 }
-.chart__wheelbox { position: relative; flex: 0 1 420px; width: min(100%, 420px); }
+.chart__aside { flex: 0 0 auto; width: clamp(198px, 34%, 244px); }
+.chart__wheelbox { position: relative; flex: 1 1 auto; min-width: 0; max-width: 420px; }
 .wheel { display: block; width: 100%; height: auto; overflow: visible; }
 
 /* rings + ticks */
@@ -389,40 +415,32 @@ main {
 .planet:focus-visible .p-glyph { filter: url(#glowSoft); }
 .planet:focus-visible .p-halo { opacity: 0.12; }
 
-/* center tooltip */
-.chart__tip {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0.96);
-  width: min(58%, 220px);
-  padding: 0.7rem 0.85rem;
-  background: rgba(26, 14, 9, 0.82);
-  border: 1px solid var(--hair-strong);
-  border-radius: 10px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  text-align: left;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+/* aspect detail — sits in the left column below the placements, so the wheel is never covered */
+.chart__detail {
+  margin-top: 1.05rem;
+  padding-top: 0.95rem;
+  border-top: 1px solid var(--hair);
+  min-height: 9.5rem;
   text-shadow: none;
 }
-.chart__tip.is-shown { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-.chart__tip strong { font-family: var(--serif); font-weight: 500; font-size: 1.05rem; color: var(--ink); }
-.chart__tip .pl-r { color: var(--accent-soft); }
-.tip-pos { display: block; margin-top: 0.1rem; font-size: 0.72rem; letter-spacing: 0.02em; color: var(--ink-dim); }
-.tip-asps { list-style: none; margin: 0.55rem 0 0; padding: 0.5rem 0 0; border-top: 1px solid var(--hair); display: grid; gap: 0.22rem; }
-.tip-asps li { font-size: 0.74rem; color: var(--ink-dim); display: flex; align-items: baseline; gap: 0.4em; }
-.tip-asp { font-family: var(--glyph); width: 1em; text-align: center; }
+.chart__detail strong { font-family: var(--serif); font-weight: 500; font-size: 1.06rem; color: var(--ink); }
+.chart__detail .pl-r { color: var(--accent-soft); }
+.cd-hint { margin: 0 0 0.6rem; font-size: 0.78rem; color: var(--ink-faint); }
+.cd-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.34rem; }
+.cd-legend li { display: flex; align-items: center; gap: 0.55em; font-size: 0.76rem; color: var(--ink-dim); }
+.cd-sw { width: 15px; height: 3px; border-radius: 2px; flex: 0 0 auto; background: currentColor; box-shadow: 0 0 5px currentColor; }
+.tip-pos { display: block; margin-top: 0.12rem; font-size: 0.74rem; letter-spacing: 0.02em; color: var(--ink-dim); }
+.tip-asps { list-style: none; margin: 0.6rem 0 0; padding: 0.55rem 0 0; border-top: 1px solid var(--hair); display: grid; gap: 0.26rem; }
+.tip-asps li { font-size: 0.78rem; color: var(--ink-dim); display: flex; align-items: baseline; gap: 0.45em; }
+.tip-asp { font-family: var(--glyph); width: 1em; text-align: center; flex: 0 0 auto; }
+.tip-name { flex: 1 1 auto; }
 .tip-hard { color: var(--hard); }
 .tip-soft { color: var(--soft); }
 .tip-conj { color: var(--conj); }
-.tip-orb { margin-left: auto; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.tip-orb { margin-left: auto; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-/* placements list */
-.chart__list { flex: 1 1 210px; min-width: 190px; max-width: 300px; }
-.chart__list ul { list-style: none; margin: 0; padding: 0; }
+/* placements list (the <ul> itself) */
+.chart__list { list-style: none; margin: 0; padding: 0; }
 .chart__list li {
   display: flex;
   align-items: baseline;
@@ -446,10 +464,9 @@ main {
 .sign, .p-glyph, .p-retro, .pl-glyph, .pl-sg, .tip-asp, .chart__tip strong { font-variant-emoji: text; }
 .pl-house { color: var(--ink-faint); font-size: 0.78em; min-width: 2.7em; text-align: right; flex: 0 0 auto; }
 
-@media (max-width: 560px) {
-  .chart__wrap { flex-direction: column; }
-  .chart__list { max-width: 360px; width: 100%; }
-  .chart__tip { width: min(70%, 240px); }
+@media (max-width: 640px) {
+  .chart__wrap { flex-direction: column-reverse; align-items: center; }
+  .chart__aside { width: 100%; max-width: 400px; }
 }
 
 /* ---- Entrance motion ---- */
