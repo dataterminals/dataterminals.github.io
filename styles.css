@@ -463,6 +463,16 @@ main {
 /* keep every astro glyph monochrome (no emoji tiles) where the browser supports it */
 .sign, .p-glyph, .p-retro, .pl-glyph, .pl-sg, .tip-asp, .chart__tip strong { font-variant-emoji: text; }
 .pl-house { color: var(--ink-faint); font-size: 0.78em; min-width: 2.7em; text-align: right; flex: 0 0 auto; }
+/* angle rows (Ascendant / Midheaven) */
+.pl-abbr { font-family: var(--sans); font-size: 0.64rem; letter-spacing: 0.07em; color: var(--ink-faint); }
+.pl-angle .pl-name { color: var(--ink-dim); }
+.pl-groupsep { margin-top: 0.35rem; padding-top: 0.55rem; border-top: 1px solid var(--hair); }
+/* interactive AC/MC labels on the wheel */
+.axis-label[data-body="asc"], .axis-label[data-body="mc"] { cursor: pointer; }
+.axis-label { transition: fill 0.2s var(--ease); }
+.axis-label.is-on { fill: var(--accent-soft); }
+.axis-label:focus-visible { outline: none; }
+.wheel.is-focused .axis-label:not(.is-on) { opacity: 0.4; }
 
 @media (max-width: 640px) {
   .chart__wrap { flex-direction: column-reverse; align-items: center; }

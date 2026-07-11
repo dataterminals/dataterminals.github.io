@@ -260,6 +260,22 @@
         `<span class="pl-house">${h ? ordinal(h) : ''}</span>`;
       ul.append(li);
     });
+
+    // Angles (Ascendant / Rising + Midheaven) — no house, shown as a small group
+    [['asc', 'Ascendant'], ['mc', 'Midheaven']].forEach(([k, name], i) => {
+      const b = META[k];
+      const li = document.createElement('li');
+      li.dataset.body = k;
+      li.tabIndex = 0;
+      li.className = 'pl-angle' + (i === 0 ? ' pl-groupsep' : '');
+      li.innerHTML =
+        `<span class="pl-glyph pl-abbr">${META[k].glyph}</span>` +
+        `<span class="pl-name">${name}</span>` +
+        `<span class="pl-pos"><span class="pl-sg">${SIGN_GLYPH[SIGNS.indexOf(b.sign)]}︎</span> ${fmtDeg(b.deg, b.min)}</span>` +
+        `<span class="pl-house"></span>`;
+      ul.append(li);
+    });
+
     aside.append(ul);
 
     const detail = document.createElement('div');
@@ -289,7 +305,8 @@
 
   function detailHtml(key) {
     const b = META[key];
-    const head = `<strong>${b.glyph !== 'Vx' ? b.glyph + '︎ ' : ''}${b.name}</strong>` +
+    const gl = b.kind === 'angle' || b.glyph === 'Vx' ? '' : b.glyph + '︎ ';
+    const head = `<strong>${gl}${b.name}</strong>` +
       (b.retro ? ' <span class="pl-r">℞</span>' : '') +
       `<span class="tip-pos">${b.sign} ${fmtDeg(b.deg, b.min)}${b.house ? ' · ' + ordinal(b.house) + ' house' : ''}</span>`;
     const asps = aspOf(key).map(([a, bb, type, orb, phase]) => {
@@ -307,10 +324,13 @@
     const planets = Array.from(svg.querySelectorAll('.planet'));
     const listItems = Array.from(host.querySelectorAll('.chart__list li'));
     const aspLines = Array.from(svg.querySelectorAll('.asp'));
+    // Only the aspected angles (Ascendant / Midheaven) are interactive.
+    const axes = Array.from(svg.querySelectorAll('.axis-label')).filter((a) => a.dataset.body === 'asc' || a.dataset.body === 'mc');
 
     function activate(key) {
       svg.classList.add('is-focused');
       planets.forEach((p) => p.classList.toggle('is-on', p.dataset.body === key));
+      axes.forEach((a) => a.classList.toggle('is-on', a.dataset.body === key));
       listItems.forEach((li) => li.classList.toggle('is-on', li.dataset.body === key));
       aspLines.forEach((ln) => ln.classList.toggle('is-on', ln.dataset.a === key || ln.dataset.b === key));
       detail.innerHTML = detailHtml(key);
@@ -319,6 +339,7 @@
     function clear() {
       svg.classList.remove('is-focused');
       planets.forEach((p) => p.classList.remove('is-on'));
+      axes.forEach((a) => a.classList.remove('is-on'));
       listItems.forEach((li) => li.classList.remove('is-on'));
       aspLines.forEach((ln) => ln.classList.remove('is-on'));
       detail.innerHTML = legendHtml();
@@ -334,6 +355,7 @@
     }
     planets.forEach(bind);
     listItems.forEach(bind);
+    axes.forEach((a) => { a.setAttribute('tabindex', '0'); a.setAttribute('role', 'button'); bind(a); });
   }
 
   function glowDefs() {
