@@ -40,7 +40,7 @@
     "Scarecrow's only scaring herself.",
     "You're behind the walls of New Rome - you wanna buy the farm, but the land's not yours to own.",
     "Screaming at the top of our airbags 'This is our timing, we are not dying - not for you.'",
-    "To the ground-function I'm Munsoned, the dread 7-10 split again.",
+    "To the ground-function I'm Munsoned, the dreaded 7-10 split again.",
     "A lone spot, almost kinda like the zone was forgot... As if the grid had been reset and couldn't catch to the clock.",
     "Metropoloid void so damn smothering.",
     "...Or whatever you imagine poetry and justice sound like when you combine them.",
@@ -50,6 +50,15 @@
     "Keep me in the sky, that's all that I'll say, I'll become your soldier at least for today.",
     "Scripted on city park benches, under the fritzy tungsten.",
     "Two were the haunted vessels that miraculously aimed, three were the holy carcasses that started up in flames.",
+    "Never let a clock tell you what you've got time for, it only goes around, goes around, goes around.",
+    "Go out of your way for others.",
+    "Sit beneath a light that suits you, and look forward to a brighter future.",
+    "Take your family name for your own great sins, because each day is where it all begins.",
+    "If we give ourselves, to every breath, then we're all in the running for a hero's death.",
+    "Why die for DeFi?",
+    "You can be my little Snake River Canyon today.",
+    "They speak of disgrace, and glory debased - to those who make barely a dollar a day.",
+    "They'll grift and grate, grab and take, then tell you that it's the other way around.",
   ];
 
   const GH_USER = 'dataterminals';
