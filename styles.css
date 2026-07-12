@@ -220,15 +220,34 @@ main {
   white-space: nowrap;
   color: var(--ink-faint);
   opacity: 0;
-  animation: tl-in 1.5s var(--ease) both;
-  animation-delay: var(--d, 0s);
+  /* entrance once, then a lazy perpetual drift that starts after it lands */
+  animation: tl-in 1.5s var(--ease) both, tl-float var(--fd, 9s) ease-in-out infinite;
+  animation-delay: var(--d, 0s), calc(var(--d, 0s) + 1.5s);
   text-shadow: 0 1px 3px rgba(8, 4, 2, 0.6);
+  will-change: transform;
+}
+/* varied drift speeds so the phrases desync into an organic float */
+.tl:nth-child(1) { --fd: 9.5s; }
+.tl:nth-child(2) { --fd: 11s; }
+.tl:nth-child(3) { --fd: 8.5s; }
+.tl:nth-child(4) { --fd: 10.5s; }
+.tl:nth-child(5) { --fd: 9s; }
+.tl:nth-child(6) { --fd: 12s; }
+.tl:nth-child(7) { --fd: 8s; }
+.tl:nth-child(8) { --fd: 11.5s; }
+.tl:nth-child(9) { --fd: 10s; }
+@keyframes tl-float {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(1.5px, -2.5px, 0) rotate(0.3deg); }
+  50%  { transform: translate3d(-1px, 1.5px, 0) rotate(-0.25deg); }
+  75%  { transform: translate3d(-2px, -1px, 0) rotate(0.2deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
 }
 .tl-en {
   color: var(--ink-dim);
   text-shadow: 0 1px 3px rgba(8, 4, 2, 0.6), 0 0 8px rgba(233, 210, 181, 0.38), 0 0 18px rgba(216, 121, 76, 0.2);
-  animation: tl-in 1.5s var(--ease) 0.2s both, en-flicker 7s ease-in-out 2s infinite;
-  animation-delay: 0.2s, 2s;
+  animation: tl-in 1.5s var(--ease) both, en-flicker 7s ease-in-out infinite, tl-float var(--fd, 9.5s) ease-in-out infinite;
+  animation-delay: 0.2s, 2s, 1.7s;
 }
 /* ever-so-slight glow flicker on the English anchor */
 @keyframes en-flicker {
