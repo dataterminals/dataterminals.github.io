@@ -144,7 +144,7 @@
     const anchor = L ? 'end' : 'start';
     const rows = L
       ? [['Sun', 'Leo 23°33′', 94, 112], ['Decan', 'III · 20–30°', 158, 140]]
-      : [['Sub-ruler', 'Mars in Leo', 94, 112], ['Attribution', 'Seven of Wands', 158, 140]];
+      : [['Sub-ruler', 'Mars in Leo', 94, 112], ['Title', 'Lord of Valour', 158, 140]];
     const parts = rows.map(([label, val, ly, cy]) =>
       `<text class="sig-label" x="${tx}" y="${ly - 12}" text-anchor="${anchor}">${label}</text>` +
       `<text class="sig-val" x="${tx}" y="${ly}" text-anchor="${anchor}">${val}</text>` +
