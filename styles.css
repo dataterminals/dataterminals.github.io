@@ -211,8 +211,8 @@ main {
 .hero__tagline {
   position: relative;
   margin: 1.05rem 0 0;
-  height: clamp(6.4rem, 15vh, 7.4rem);
-  max-width: min(100%, 30rem);
+  height: clamp(7rem, 16vh, 8.2rem);
+  max-width: min(100%, 40rem);
   font-weight: 400;
 }
 .tl {
@@ -233,8 +233,8 @@ main {
   .tl { animation: none; opacity: var(--o, 1); transform: none; filter: none; }
 }
 @media (max-width: 480px) {
-  .hero__tagline { height: 6.2rem; max-width: 22rem; }
-  .tl { font-size: 0.92rem !important; }
+  .hero__tagline { height: 7rem; max-width: 23rem; }
+  .tl { font-size: 0.9rem !important; }
   .tl-en { font-size: 1.05rem !important; }
 }
 
