@@ -127,6 +127,34 @@
     return g;
   }
 
+  function svgEl(str) {
+    const d = document.createElement('div');
+    d.innerHTML = str.trim();
+    return d.firstElementChild;
+  }
+
+  // Technical "derivation" callout flanking the signature card: light diagonal
+  // leader lines pointing at the card with a monospace readout of how the
+  // Seven of Wands is calculated (Sun → its Leo III decan → Mars-ruled).
+  function sigDiagram(side) {
+    const L = side === 'l';
+    const cardX = L ? 196 : 4;   // node on the card-facing edge
+    const tx = L ? 150 : 50;     // text anchor x
+    const lx = L ? 153 : 47;     // leader-line start (just past the text)
+    const anchor = L ? 'end' : 'start';
+    const rows = L
+      ? [['Sun', 'Leo 23°33′', 94, 112], ['Decan', 'III · 20–30°', 158, 140]]
+      : [['Sub-ruler', 'Mars in Leo', 94, 112], ['Result', 'Seven of Wands', 158, 140]];
+    const parts = rows.map(([label, val, ly, cy]) =>
+      `<text class="sig-label" x="${tx}" y="${ly - 12}" text-anchor="${anchor}">${label}</text>` +
+      `<text class="sig-val" x="${tx}" y="${ly}" text-anchor="${anchor}">${val}</text>` +
+      `<circle class="sig-tick" cx="${lx}" cy="${ly - 4}" r="1.2"/>` +
+      `<line class="sig-line" x1="${lx}" y1="${ly - 4}" x2="${cardX}" y2="${cy}"/>` +
+      `<circle class="sig-node" cx="${cardX}" cy="${cy}" r="1.9"/>`
+    ).join('');
+    return svgEl(`<svg class="sig-diagram sig-d-${side}" viewBox="0 0 200 250" aria-hidden="true" focusable="false">${parts}</svg>`);
+  }
+
   function build() {
     const host = document.getElementById('tarot-deck');
     if (!host) return;
@@ -138,9 +166,17 @@
       emblem: wandsEmblem(), tag: 'Sun · Leo III decan', kw: sig[3],
       meaning: 'Your birth-decan card — defiance from the high ground, holding your position with Leo’s heart and Mars’s fight.',
     });
+    const row = document.createElement('div');
+    row.className = 'sig-row';
+    row.append(sigDiagram('l'), featured, sigDiagram('r'));
+
+    const cap = document.createElement('p');
+    cap.className = 'sig-caption';
+    cap.textContent = '// golden dawn decanate — a planet’s decan maps to its minor arcana';
+
     const feat = document.createElement('div');
     feat.className = 'tarot__featured';
-    feat.append(featured);
+    feat.append(row, cap);
     host.append(feat);
 
     // Major Arcana — archetype per placement
