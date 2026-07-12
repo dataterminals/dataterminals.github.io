@@ -118,30 +118,7 @@ main {
 /* Center the block when there's room; fall back to top-aligned (never clip the
    hero) when the content is taller than the viewport. */
 .screen > .hero { margin-top: auto; }
-.screen > .scroll-cue { margin-bottom: auto; }
-
-/* Scroll cue to the chart */
-.scroll-cue {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 0.5rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  text-decoration: none;
-  transition: color 0.25s var(--ease);
-}
-.scroll-cue:hover,
-.scroll-cue:focus-visible { color: var(--accent-soft); outline: none; }
-.scroll-cue__arrow {
-  font-size: 1rem;
-  letter-spacing: 0;
-  animation: cue 2.4s var(--ease) infinite;
-}
-@keyframes cue { 0%,100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(4px); opacity: 1; } }
+.screen > .links { margin-bottom: auto; }
 
 /* ---- Identity hero ---- */
 .hero__mark {
@@ -272,6 +249,62 @@ main {
   .hero__tagline { height: 7rem; max-width: 23rem; }
   .tl { font-size: 0.9rem !important; }
   .tl-en { font-size: 1.05rem !important; }
+}
+
+/* Centered italic sub-tagline in the gap below the multilingual band: one
+   random phrase from subtaglines.json, flickering + drifting like .tl-en. */
+.hero__subtag {
+  margin: 0.15rem 0 0;
+  min-height: 1.5em;              /* reserve a line so JS injection doesn't shift layout */
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 2.6vw, 1.1rem);
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  color: var(--ink-dim);
+}
+.subtag__phrase {
+  display: inline-block;
+  color: var(--ink-dim);
+  text-shadow: 0 1px 3px rgba(8, 4, 2, 0.6), 0 0 8px rgba(233, 210, 181, 0.34), 0 0 18px rgba(216, 121, 76, 0.18);
+  /* Prefer a single line; when a phrase can't fit, break into balanced lines of
+     near-equal length (centered by .hero__subtag) rather than a long+short pair. */
+  text-wrap: balance;
+  /* entrance once, then perpetual flicker + drift (mirrors the English anchor) */
+  animation: tl-in 1.5s var(--ease) both, en-flicker 7s ease-in-out infinite, tl-float 10s ease-in-out infinite;
+  animation-delay: 0.4s, 2.2s, 1.9s;
+  will-change: transform;
+}
+/* Word wrapper: keeps a word unbreakable so the line only wraps at real spaces. */
+.subtag__word { display: inline-block; white-space: nowrap; }
+/* Per-character host for the occasional glitch. inline-block keeps a stable
+   box width so a glitched glyph can overlay without nudging its neighbours. */
+.subtag__char { display: inline-block; position: relative; }
+/* While glitching, hide the real glyph (and its shadow) but keep its width. */
+.subtag__char.is-glitch { color: transparent; text-shadow: none; }
+/* The glitch glyph itself: absolutely positioned so the line never reflows. */
+.subtag__glitch {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  font-family: var(--glyph);   /* astro-symbol coverage */
+  font-style: normal;          /* symbols shouldn't inherit the italic slant */
+  color: var(--accent-soft);
+  text-shadow: 0 0 5px rgba(230, 162, 113, 0.55), 0 0 11px rgba(216, 121, 76, 0.3);
+  pointer-events: none;
+  animation: subtag-glitch 0.16s steps(2, end) both;
+}
+@keyframes subtag-glitch {
+  0%   { opacity: 0.2;  transform: translateX(-50%) skewX(-8deg); }
+  30%  { opacity: 1;    transform: translateX(-53%) translateY(-0.5px) skewX(6deg); }
+  60%  { opacity: 0.85; transform: translateX(-47%) translateY(0.5px) skewX(-3deg); }
+  100% { opacity: 1;    transform: translateX(-50%) skewX(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .subtag__phrase { animation: none; }
+  .subtag__glitch { display: none; }
 }
 
 /* ---- Links (editorial index) ---- */

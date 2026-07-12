@@ -29,6 +29,29 @@
     },
   ];
 
+  // Inline fallback for the sub-tagline bank, mirroring subtaglines.json, so the
+  // phrase still appears on file:// or when the fetch fails.
+  const SUBTAG_FALLBACK = [
+    "I'm not a mechanism born from disdain, I had to be trained - now I cat-call with dead walkers.",
+    "Who owns police? Who holds fold green, sold sand to beach?",
+    "Where's god? Buy car - kick tires.",
+    "Until we torch our own entrapments, and exact our own scripts.",
+    "I heard her serving as a soldier, in the annex of the earth. Threw herself before the bullet, and threw the medal to the dirt.",
+    "Scarecrow's only scaring herself.",
+    "You're behind the walls of New Rome - you wanna buy the farm, but the land's not yours to own.",
+    "Screaming at the top of our airbags 'This is our timing, we are not dying - not for you.'",
+    "To the ground-function I'm Munsoned, the dread 7-10 split again.",
+    "A lone spot, almost kinda like the zone was forgot... As if the grid had been reset and couldn't catch to the clock.",
+    "Metropoloid void so damn smothering.",
+    "...Or whatever you imagine poetry and justice sound like when you combine them.",
+    "There's no dignity for criminals, no ministry for the wicked.",
+    "What are you feeling that makes your struggle so wonderous? Enough to arrogantly pull the rug out from under us?",
+    "You're in the same barrel all us other crabs are caught - and if I have to live, you have to live, whether you like this shit or not.",
+    "Keep me in the sky, that's all that I'll say, I'll become your soldier at least for today.",
+    "Scripted on city park benches, under the fritzy tungsten.",
+    "Two were the haunted vessels that miraculously aimed, three were the holy carcasses that started up in flames.",
+  ];
+
   const GH_USER = 'dataterminals';
   const CACHE_KEY = 'dt:gh:repos';
   const CACHE_TTL = 6 * 60 * 60 * 1000; // 6h
@@ -163,6 +186,103 @@
     }
   }
 
+  /* ---------- random italic sub-tagline ---------- */
+
+  // Glitch-out glyph pools. Astrological symbols take precedence; the plain
+  // "corrupted ascii" set is the lower-weight fallback.
+  const GLITCH_ASTRO = [
+    '☉', '☽', '☿', '♀', '♂', '♃', '♄', '♅', '♆', '♇',          // planets
+    '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓', // zodiac
+    '☊', '☋', '☌', '☍', '☄', '⚹',                               // nodes / aspects / comet
+  ];
+  const GLITCH_ASCII = ['#', '%', '&', '/', '\\', '<', '>', '*', '=', '+', '~', '^', '|', '!', '?', '$', '@', '¦', '§'];
+
+  function pickGlitchGlyph() {
+    const pool = Math.random() < 0.8 ? GLITCH_ASTRO : GLITCH_ASCII; // astro wins ~4:1
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // Calmly overlay a glitch glyph on a random character, then restore it. The
+  // overlay is absolutely positioned so the centered line never reflows.
+  function startSubtagGlitch(chars) {
+    if (!chars.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    function glitchOne() {
+      const c = chars[Math.floor(Math.random() * chars.length)];
+      if (c.classList.contains('is-glitch')) return; // don't double up on one char
+
+      const overlay = el('span', 'subtag__glitch');
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.textContent = pickGlitchGlyph();
+      c.classList.add('is-glitch');
+      c.append(overlay);
+
+      const flips = Math.random() < 0.45 ? 2 : 1; // occasional quick second flip
+      let n = 1;
+      const step = () => {
+        if (n < flips) {
+          n += 1;
+          overlay.textContent = pickGlitchGlyph();
+          setTimeout(step, 55 + Math.random() * 80);
+        } else {
+          overlay.remove();
+          c.classList.remove('is-glitch');
+        }
+      };
+      setTimeout(step, 60 + Math.random() * 90); // 60–150ms on screen
+    }
+
+    function loop() {
+      glitchOne();
+      if (chars.length > 3 && Math.random() < 0.12) {
+        setTimeout(glitchOne, 40 + Math.random() * 90); // rare overlap on longer phrases
+      }
+      setTimeout(loop, 1800 + Math.random() * 2600); // calm 1.8–4.4s between beats
+    }
+    setTimeout(loop, 1400 + Math.random() * 1200); // let the entrance land first
+  }
+
+  async function initSubtag() {
+    const host = document.getElementById('subtag');
+    if (!host) return;
+
+    let phrases = SUBTAG_FALLBACK;
+    try {
+      const res = await fetch('subtaglines.json', { cache: 'no-cache' });
+      if (res.ok) {
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : (data.phrases || []);
+        const clean = list.filter((p) => typeof p === 'string' && p.trim());
+        if (clean.length) phrases = clean;
+      }
+    } catch { /* keep fallback */ }
+
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+
+    // Build per-character spans grouped into per-word wrappers. Words are
+    // inline-block + nowrap so the line only breaks at the spaces between words
+    // (never mid-word), while each character stays individually glitchable.
+    const line = el('span', 'subtag__phrase');
+    const chars = [];
+    phrase.split(' ').forEach((word, wi) => {
+      if (wi > 0) line.append(document.createTextNode(' '));
+      if (!word) return;
+      const w = el('span', 'subtag__word');
+      for (const ch of word) {
+        const c = el('span', 'subtag__char');
+        c.textContent = ch;
+        w.append(c);
+        chars.push(c);
+      }
+      line.append(w);
+    });
+    host.textContent = '';
+    host.append(line);
+
+    startSubtagGlitch(chars);
+  }
+
   /* ---------- background video readiness ---------- */
 
   function initVideo() {
@@ -242,6 +362,7 @@
   async function boot() {
     initWordmark();
     initVideo();
+    initSubtag(); // fire-and-forget; falls back to the inline bank
 
     let links = FALLBACK;
     try {

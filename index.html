@@ -33,6 +33,7 @@
       <header class="hero">
         <h1 class="hero__name reveal" aria-label="dataterminals"><span class="spindle" aria-hidden="true"><span class="spindle__track"><span class="spindle__word">data</span><span class="spindle__word">sylvi</span><span class="spindle__word">deni</span><span class="spindle__word">data</span></span></span><span class="spindle__suffix" aria-hidden="true">terminals</span></h1>
         <p class="hero__tagline" aria-label="In my time…"><span class="tl tl-en" style="left:1%; top:48px; font-size:1.2rem; letter-spacing:.06em; --o:.95; --d:.2s">In my time…</span><span class="tl" aria-hidden="true" style="left:7%; top:6px; font-size:1.05rem; --o:.5; --d:.55s">私の時代に…</span><span class="tl" aria-hidden="true" style="left:68%; top:42px; font-size:1rem; letter-spacing:.03em; --o:.42; --d:.75s">В мое время …</span><span class="tl" aria-hidden="true" style="left:11%; top:86px; font-size:1rem; --o:.5; --d:.95s">在我的时代…</span><span class="tl" aria-hidden="true" style="left:74%; top:4px; font-size:.98rem; letter-spacing:.02em; --o:.4; --d:1.15s">내 시간에…</span><span class="tl" aria-hidden="true" dir="rtl" style="left:73%; top:88px; font-size:.95rem; --o:.4; --d:1.35s">في وقتي…</span><span class="tl" aria-hidden="true" style="left:42%; top:20px; font-size:1rem; letter-spacing:.03em; --o:.47; --d:1.55s">De mon temps…</span><span class="tl" aria-hidden="true" style="left:35%; top:54px; font-size:.98rem; --o:.44; --d:1.75s">मेरे समय में…</span><span class="tl" aria-hidden="true" style="left:39%; top:80px; font-size:.95rem; --o:.42; --d:1.95s">Στον καιρό μου…</span></p>
+        <p class="hero__subtag" id="subtag"><!-- one random phrase from subtaglines.json, injected by app.js --></p>
       </header>
 
       <section class="links" aria-label="Selected projects">
@@ -41,11 +42,6 @@
           <!-- rendered from links.json (featured), enriched from the GitHub API -->
         </div>
       </section>
-
-      <a class="scroll-cue" href="#chart" aria-label="Natal chart below">
-        <span>natal chart</span>
-        <span class="scroll-cue__arrow" aria-hidden="true">↓</span>
-      </a>
     </div>
 
     <section class="chart" id="chart" aria-label="Natal chart">
@@ -56,7 +52,6 @@
     </section>
 
     <section class="tarot" id="tarot" aria-label="Tarot">
-      <p class="chart__eyebrow">Tarot<span class="chart__sub"> · the chart, in the cards</span></p>
       <div class="tarot__deck" id="tarot-deck">
         <!-- cards rendered by tarot.js -->
       </div>
