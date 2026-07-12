@@ -27,6 +27,12 @@
       repo: 'dataterminals/grb-modding-knowledgebase',
       blurb: 'Human- and AI-readable knowledgebase for modding Ghost Recon: Breakpoint — Anvil .forge, ATK, asset-replacement pipeline.',
     },
+    {
+      title: 'Bandits: Performance Override',
+      url: 'https://github.com/dataterminals/BanditsPerformanceOverride',
+      repo: 'dataterminals/BanditsPerformanceOverride',
+      blurb: 'Research + un-junking plan for Bandits: Week One FPS on B42.',
+    },
   ];
 
   // Inline fallback for the sub-tagline bank, mirroring subtaglines.json, so the

@@ -318,6 +318,19 @@ main {
 
 .links__list {
   border-top: 1px solid var(--hair);
+  display: grid;
+  grid-template-columns: 1fr;              /* single column on narrow screens */
+  column-gap: clamp(1.5rem, 4.5vw, 2.8rem);
+}
+/* Two columns once there's room; grid equalises each row's height so the
+   per-item rules line up across both columns. */
+@media (min-width: 34rem) {
+  .links__list { grid-template-columns: 1fr 1fr; }
+  /* Stack each card and pin the "updated" stamp to the bottom-right, so the
+     stamps align across a row regardless of blurb length. */
+  .link { flex-direction: column; align-items: stretch; }
+  .link__main { flex: 0 0 auto; }
+  .link__meta { align-self: flex-end; margin-top: auto; padding-top: 0.7rem; }
 }
 
 .link {
@@ -384,6 +397,7 @@ main {
 .link__meta {
   flex: 0 0 auto;
   align-self: baseline;
+  margin-left: auto;               /* keep it right-aligned, inline or wrapped below */
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   color: var(--ink-faint);

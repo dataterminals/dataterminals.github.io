@@ -85,7 +85,8 @@
       "url": "https://github.com/dataterminals/BanditsPerformanceOverride",
       "repo": "dataterminals/BanditsPerformanceOverride",
       "category": "zomboid",
-      "blurb": "Research + un-junking plan for Bandits: Week One FPS on B42."
+      "blurb": "Research + un-junking plan for Bandits: Week One FPS on B42.",
+      "featured": true
     },
     {
       "title": "Map Teleport",
