@@ -71,6 +71,7 @@
     "The real narcissists are the culture that treats inconvenience as if it's emotional abuse.",
     "We've been taught that anyone who makes us feel bad is fundamentally broken - when sometimes, they just live in a world that doesn't revolve around you.",
     "Navigating a challenging personality is the bedrock of how a society functions.",
+    "A picture can't tell the difference between a prayer and a round of applause.",
   ];
 
   const GH_USER = 'dataterminals';
