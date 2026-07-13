@@ -65,6 +65,12 @@
     "You can be my little Snake River Canyon today.",
     "They speak of disgrace, and glory debased - to those who make barely a dollar a day.",
     "They'll grift and grate, grab and take, then tell you that it's the other way around.",
+    "Come on baby, scrape my data.",
+    "My reflection's slightly off All I can see is a content farm.",
+    "EYECANTLOOKAWAY",
+    "The real narcissists are the culture that treats inconvenience as if it's emotional abuse.",
+    "We've been taught that anyone who makes us feel bad is fundamentally broken - when sometimes, they just live in a world that doesn't revolve around you.",
+    "Navigating a challenging personality is the bedrock of how a society functions.",
   ];
 
   const GH_USER = 'dataterminals';
@@ -217,21 +223,27 @@
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
-  // Calmly overlay a glitch glyph on a random character, then restore it. The
-  // overlay is absolutely positioned so the centered line never reflows.
-  function startSubtagGlitch(chars) {
-    if (!chars.length) return;
+  // Shared glitch engine. Each "beat" briefly overlays a corrupt glyph on one
+  // slot, then restores it — same calm cadence, glyph pool and double-flip odds
+  // everywhere, so the sub-tagline and the whole tagline band glitch identically.
+  // How a slot is mounted/torn down is pluggable (per-character vs. a measured
+  // overlay for cursive scripts) via the activate/deactivate strategy.
+  function startGlitchLoop(slots, opts) {
+    if (!slots.length) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    function glitchOne() {
-      const c = chars[Math.floor(Math.random() * chars.length)];
-      if (c.classList.contains('is-glitch')) return; // don't double up on one char
+    const o = opts || {};
+    const gapMin = o.gapMin ?? 1800;   // calm 1.8–4.4s between beats (subtag default)
+    const gapJit = o.gapJit ?? 2600;
+    const startMin = o.startMin ?? 1400; // let the entrance land before the first beat
+    const startJit = o.startJit ?? 1200;
+    const activate = o.activate || charActivate;       // mount overlay, mark busy -> overlay|null
+    const deactivate = o.deactivate || charDeactivate; // remove overlay, clear busy
 
-      const overlay = el('span', 'subtag__glitch');
-      overlay.setAttribute('aria-hidden', 'true');
-      overlay.textContent = pickGlitchGlyph();
-      c.classList.add('is-glitch');
-      c.append(overlay);
+    function glitchOne() {
+      const slot = slots[Math.floor(Math.random() * slots.length)];
+      const overlay = activate(slot);
+      if (!overlay) return; // slot already glitching (or not measurable yet)
 
       const flips = Math.random() < 0.45 ? 2 : 1; // occasional quick second flip
       let n = 1;
@@ -241,8 +253,7 @@
           overlay.textContent = pickGlitchGlyph();
           setTimeout(step, 55 + Math.random() * 80);
         } else {
-          overlay.remove();
-          c.classList.remove('is-glitch');
+          deactivate(slot, overlay);
         }
       };
       setTimeout(step, 60 + Math.random() * 90); // 60–150ms on screen
@@ -250,12 +261,118 @@
 
     function loop() {
       glitchOne();
-      if (chars.length > 3 && Math.random() < 0.12) {
+      if (slots.length > 3 && Math.random() < 0.12) {
         setTimeout(glitchOne, 40 + Math.random() * 90); // rare overlap on longer phrases
       }
-      setTimeout(loop, 1800 + Math.random() * 2600); // calm 1.8–4.4s between beats
+      setTimeout(loop, gapMin + Math.random() * gapJit);
     }
-    setTimeout(loop, 1400 + Math.random() * 1200); // let the entrance land first
+    setTimeout(loop, startMin + Math.random() * startJit);
+  }
+
+  // Default slot strategy: a per-character span whose real glyph is hidden (via
+  // .is-glitch) while the overlay stands in. Used by the sub-tagline and every
+  // non-cursive tagline phrase.
+  function charActivate(c) {
+    if (c.classList.contains('is-glitch')) return null; // don't double up on one char
+    const overlay = el('span', 'subtag__glitch');
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.textContent = pickGlitchGlyph();
+    c.classList.add('is-glitch');
+    c.append(overlay);
+    return overlay;
+  }
+  function charDeactivate(c, overlay) {
+    overlay.remove();
+    c.classList.remove('is-glitch');
+  }
+
+  // Cursive scripts (Arabic here) reshape into disconnected isolated forms when
+  // their letters are split into separate boxes, so those phrases keep their
+  // text node intact and glitch via an overlay measured over one grapheme —
+  // joining stays correct. The overlay is a child of .tl, so it drifts with the
+  // phrase's float. (No hide step, unlike per-character: can't blank one glyph
+  // of a live text run without re-shaping its neighbours.)
+  function cursiveStrategy(tl, textNode, ranges) {
+    const busy = new Set();
+    return {
+      slots: ranges.map((_, i) => i),
+      activate(i) {
+        if (busy.has(i)) return null;
+        const rng = document.createRange();
+        rng.setStart(textNode, ranges[i][0]);
+        rng.setEnd(textNode, ranges[i][1]);
+        const r = rng.getBoundingClientRect();
+        if (!r.width) return null;
+        const host = tl.getBoundingClientRect();
+        const overlay = el('span', 'subtag__glitch');
+        overlay.setAttribute('aria-hidden', 'true');
+        overlay.textContent = pickGlitchGlyph();
+        overlay.style.left = (r.left - host.left + r.width / 2) + 'px';
+        overlay.style.top = (r.top - host.top) + 'px';
+        tl.append(overlay);
+        busy.add(i);
+        return overlay;
+      },
+      deactivate(i, overlay) { overlay.remove(); busy.delete(i); },
+    };
+  }
+
+  // Give the multilingual tagline band ("In my time…" + its translations) the
+  // same per-character glitch as the sub-tagline. Each phrase is segmented into
+  // grapheme clusters (so Devanagari matras / combining marks stay attached to
+  // their base) and gets its own loop, so the phrases fritz on independent
+  // rhythms. Cursive phrases use the measured-overlay strategy above.
+  function initTaglineGlitch() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const tls = document.querySelectorAll('.hero__tagline .tl');
+    if (!tls.length) return;
+    const seg = (window.Intl && Intl.Segmenter)
+      ? new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+      : null;
+    const CURSIVE = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/; // Arabic (cursive)
+
+    // Each phrase glitches on its own loop, so with ~9 phrases the band would
+    // fritz ~9× faster than a single line. Scale the per-phrase gap by the
+    // phrase count so the band as a whole ticks calmly (~1.5–3.5s between beats),
+    // regardless of how many translations are present.
+    const n = tls.length;
+    const bandGap = { gapMin: 1500 * n, gapJit: 2000 * n };
+
+    tls.forEach((tl, i) => {
+      const text = tl.textContent;
+      // Grapheme clusters paired with their string offset.
+      const clusters = [];
+      if (seg) {
+        for (const s of seg.segment(text)) clusters.push([s.segment, s.index]);
+      } else {
+        let off = 0;
+        for (const ch of text) { clusters.push([ch, off]); off += ch.length; }
+      }
+
+      // Wait for the scattered entrance to land (~3.5s), staggered per phrase so
+      // the whole band never pulses in unison.
+      const timing = { startMin: 3200 + i * 200, startJit: 1600, ...bandGap };
+
+      if (CURSIVE.test(text)) {
+        const textNode = tl.firstChild; // single intact text node — joining preserved
+        const ranges = clusters
+          .filter(([g]) => g.trim())
+          .map(([g, off]) => [off, off + g.length]);
+        const strat = cursiveStrategy(tl, textNode, ranges);
+        startGlitchLoop(strat.slots, { ...timing, activate: strat.activate, deactivate: strat.deactivate });
+      } else {
+        const chars = [];
+        tl.textContent = '';
+        for (const [g] of clusters) {
+          if (!g.trim()) { tl.append(document.createTextNode(g)); continue; } // keep spaces
+          const c = el('span', 'tl-char');
+          c.textContent = g;
+          tl.append(c);
+          chars.push(c);
+        }
+        startGlitchLoop(chars, timing);
+      }
+    });
   }
 
   async function initSubtag() {
@@ -295,7 +412,7 @@
     host.textContent = '';
     host.append(line);
 
-    startSubtagGlitch(chars);
+    startGlitchLoop(chars);
   }
 
   /* ---------- background video readiness ---------- */
@@ -378,6 +495,7 @@
     initWordmark();
     initVideo();
     initSubtag(); // fire-and-forget; falls back to the inline bank
+    initTaglineGlitch();
 
     let links = FALLBACK;
     try {

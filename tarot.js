@@ -170,13 +170,9 @@
     row.className = 'sig-row';
     row.append(sigDiagram('l'), featured, sigDiagram('r'));
 
-    const cap = document.createElement('p');
-    cap.className = 'sig-caption';
-    cap.textContent = '// golden dawn decanate — a planet’s decan maps to its minor arcana';
-
     const feat = document.createElement('div');
     feat.className = 'tarot__featured';
-    feat.append(row, cap);
+    feat.append(row);
     host.append(feat);
 
     // Major Arcana — archetype per placement

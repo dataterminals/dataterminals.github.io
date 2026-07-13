@@ -279,10 +279,11 @@ main {
 /* Word wrapper: keeps a word unbreakable so the line only wraps at real spaces. */
 .subtag__word { display: inline-block; white-space: nowrap; }
 /* Per-character host for the occasional glitch. inline-block keeps a stable
-   box width so a glitched glyph can overlay without nudging its neighbours. */
-.subtag__char { display: inline-block; position: relative; }
+   box width so a glitched glyph can overlay without nudging its neighbours.
+   Shared by the sub-tagline and the multilingual tagline band (.tl-char). */
+.subtag__char, .tl-char { display: inline-block; position: relative; }
 /* While glitching, hide the real glyph (and its shadow) but keep its width. */
-.subtag__char.is-glitch { color: transparent; text-shadow: none; }
+.subtag__char.is-glitch, .tl-char.is-glitch { color: transparent; text-shadow: none; }
 /* The glitch glyph itself: absolutely positioned so the line never reflows. */
 .subtag__glitch {
   position: absolute;
