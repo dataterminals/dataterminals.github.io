@@ -56,10 +56,19 @@
       </div>
     </section>
 
+    <!-- Live Discord presence (Lanyard). Stays hidden until the account is
+         monitored by Lanyard; see the header of discord.js for the one-time setup. -->
+    <section class="presence" id="presence" aria-label="Discord presence">
+      <div class="presence__card" id="presence-card">
+        <!-- rendered from Lanyard by discord.js -->
+      </div>
+    </section>
+
   </main>
 
   <script src="app.js"></script>
   <script src="natal.js"></script>
   <script src="tarot.js"></script>
+  <script src="discord.js"></script>
 </body>
 </html>

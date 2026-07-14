@@ -649,6 +649,160 @@ main {
   .tarot__grid .tcard { --w: 84px; }
 }
 
+/* ================= Discord presence (Lanyard) ================= */
+/* Hidden until live data arrives, mirroring the page's silent degradation. */
+.presence { display: none; padding-bottom: 4vh; }
+.presence.is-live { display: block; }
+
+.presence__card {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.9rem, 3vw, 1.3rem);
+  max-width: 30rem;
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  border: 1px solid rgba(216, 121, 76, 0.28);
+  background: linear-gradient(165deg, rgba(44, 21, 14, 0.9), rgba(18, 10, 6, 0.94));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38), inset 0 0 20px rgba(216, 121, 76, 0.05);
+  text-shadow: none;
+}
+
+/* avatar + status dot + decoration ring */
+.presence__avatar { position: relative; flex: 0 0 auto; width: 56px; height: 56px; }
+.presence__pfp {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--hair-strong);
+  background: var(--bg-1);
+}
+.presence__deco {
+  position: absolute;
+  top: -12%; left: -12%;
+  width: 124%; height: 124%;
+  pointer-events: none;
+}
+.presence__dot {
+  position: absolute;
+  right: -1px; bottom: -1px;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  border: 2.5px solid #17100c;   /* punch-out ring against the card */
+  background: var(--ink-faint);
+}
+.presence__dot[data-status="online"]  { background: #5fae6e; }
+.presence__dot[data-status="idle"]    { background: var(--conj); }
+.presence__dot[data-status="dnd"]     { background: #e0574b; }
+.presence__dot[data-status="offline"] { background: var(--ink-faint); }
+/* a slow ripple while the account is actively online/idle/dnd */
+.presence__dot.is-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: presence-pulse 2.4s var(--ease) infinite;
+}
+@keyframes presence-pulse {
+  0%   { transform: scale(1);   opacity: 0.5; }
+  70%  { transform: scale(2.1); opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+/* identity row */
+.presence__body { min-width: 0; flex: 1 1 auto; }
+.presence__idrow { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.35rem 0.55rem; }
+.presence__name {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.05rem, 2.6vw, 1.22rem);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.presence__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.06rem 0.42rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  border-radius: 5px;
+  border: 1px solid var(--hair-strong);
+  background: rgba(241, 231, 218, 0.05);
+  color: var(--ink-dim);
+}
+.presence__tag-badge { width: 0.9em; height: 0.9em; }
+.presence__user { font-size: 0.78rem; color: var(--ink-faint); }
+
+/* custom status line */
+.presence__custom {
+  margin: 0.32rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.presence__emoji { width: 1.15em; height: 1.15em; vertical-align: -0.15em; flex: 0 0 auto; }
+
+/* bare status word (shown when there's no activity) */
+.presence__status { margin: 0.32rem 0 0; font-size: 0.82rem; color: var(--ink-dim); }
+
+/* activity / Spotify block */
+.presence__act {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.55rem;
+}
+.presence__act-img {
+  width: 42px; height: 42px;
+  border-radius: 7px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  border: 1px solid var(--hair);
+  background: var(--bg-1);
+}
+.presence__act-txt { min-width: 0; display: flex; flex-direction: column; gap: 0.04rem; }
+.presence__act-name {
+  font-size: 0.82rem;
+  color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.presence__verb { color: var(--accent-soft); }
+.presence__act-detail,
+.presence__act-state {
+  font-size: 0.76rem;
+  color: var(--ink-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.presence__act-state { color: var(--ink-faint); }
+
+/* Spotify progress bar */
+.presence__bar {
+  margin-top: 0.4rem;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(241, 231, 218, 0.12);
+  overflow: hidden;
+}
+.presence__bar-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+  transition: width 1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presence__bar-fill { transition: none; }
+}
+@media (max-width: 480px) {
+  .presence__card { padding: 0.85rem 0.9rem; }
+  .presence__avatar, .presence__pfp { width: 48px; height: 48px; }
+}
+
 /* ---- Entrance motion ---- */
 .reveal {
   opacity: 0;
