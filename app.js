@@ -73,6 +73,12 @@
     "Navigating a challenging personality is the bedrock of how a society functions.",
     "A picture can't tell the difference between a prayer and a round of applause.",
     "One and Two had a patsy, that was factually plain, seven out of envy, must've wanted just the same.",
+    "...But who would leave the cesspit for the sake of their dreams?",
+    "You can't strangle this song, you can't kill it.",
+    "The house is on fire - the goat can't see. The house is on fire - the goat doesn't know.",
+    "The head is a top and the body is a root.",
+    "For them I am just a maple leaf, just a stray rain, just an autumn cat.",
+    "Anyone looking for meaning should look to the heavens in their own eyes.",
     "Thank you.",
   ];
 
