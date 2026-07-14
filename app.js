@@ -73,6 +73,7 @@
     "Navigating a challenging personality is the bedrock of how a society functions.",
     "A picture can't tell the difference between a prayer and a round of applause.",
     "One and Two had a patsy, that was factually plain, seven out of envy, must've wanted just the same.",
+    "Thank you.",
   ];
 
   const GH_USER = 'dataterminals';

@@ -308,56 +308,50 @@ main {
   .subtag__glitch { display: none; }
 }
 
-/* ---- Links (editorial index) ---- */
+/* ---- Links (card grid) ---- */
 .links__eyebrow {
   font-size: 0.7rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-faint);
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.9rem;
 }
 
 .links__list {
-  border-top: 1px solid var(--hair);
   display: grid;
-  grid-template-columns: 1fr;              /* single column on narrow screens */
-  column-gap: clamp(1.5rem, 4.5vw, 2.8rem);
+  grid-template-columns: 1fr;              /* one card per row on narrow screens */
+  gap: clamp(0.7rem, 2vw, 0.95rem);
 }
-/* Two columns once there's room; grid equalises each row's height so the
-   per-item rules line up across both columns. */
+/* Two columns once there's room; the grid stretches paired cells to equal
+   height, so their bottom "updated" stamps line up across the row. */
 @media (min-width: 34rem) {
   .links__list { grid-template-columns: 1fr 1fr; }
-  /* Stack each card and pin the "updated" stamp to the bottom-right, so the
-     stamps align across a row regardless of blurb length. */
-  .link { flex-direction: column; align-items: stretch; }
-  .link__main { flex: 0 0 auto; }
-  .link__meta { align-self: flex-end; margin-top: auto; padding-top: 0.7rem; }
 }
 
 .link {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.2rem;
-  padding: 1.05rem 0.2rem 1.0rem;
-  border-bottom: 1px solid var(--hair);
+  flex-direction: column;
+  align-items: stretch;
+  padding: 1rem 1.1rem 0.9rem;
+  border: 1px solid rgba(216, 121, 76, 0.18);
+  border-radius: 11px;
+  background: linear-gradient(165deg, rgba(44, 21, 14, 0.5), rgba(18, 10, 6, 0.58));
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.3s var(--ease), padding-left 0.3s var(--ease), background 0.3s var(--ease);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease),
+              transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 .link:hover,
 .link:focus-visible {
-  border-bottom-color: var(--hair-strong);
-  padding-left: 0.55rem;
+  border-color: rgba(216, 121, 76, 0.42);
+  background: linear-gradient(165deg, rgba(54, 26, 17, 0.66), rgba(22, 12, 7, 0.72));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32);
   outline: none;
 }
-.link:focus-visible {
-  background: rgba(241, 231, 218, 0.05);
-  border-radius: 6px;
-}
+.link:focus-visible { border-color: var(--accent); }
 
-.link__main { min-width: 0; flex: 1 1 15rem; }
+.link__main { min-width: 0; }
 
 .link__title {
   display: inline-flex;
@@ -365,7 +359,7 @@ main {
   gap: 0.5rem;
   font-family: var(--serif);
   font-weight: 500;
-  font-size: clamp(1.16rem, 2.7vw, 1.42rem);
+  font-size: clamp(1.12rem, 2.5vw, 1.32rem);
   letter-spacing: -0.01em;
   color: var(--ink);
   transition: color 0.25s var(--ease);
@@ -389,16 +383,16 @@ main {
 }
 
 .link__blurb {
-  margin: 0.28rem 0 0;
-  font-size: 0.9rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
   color: var(--ink-dim);
-  max-width: 46ch;
 }
 
 .link__meta {
-  flex: 0 0 auto;
-  align-self: baseline;
-  margin-left: auto;               /* keep it right-aligned, inline or wrapped below */
+  align-self: flex-end;             /* bottom-right stamp… */
+  margin-top: auto;                 /* …pinned to the card's base */
+  padding-top: 0.9rem;
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   color: var(--ink-faint);
@@ -803,6 +797,104 @@ main {
   .presence__avatar, .presence__pfp { width: 48px; height: 48px; }
 }
 
+/* ================= External-link shelf ================= */
+.shelf {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(1.5rem, 6vw, 3rem);
+  padding: clamp(1.2rem, 5vh, 2.4rem) 0 7vh;
+}
+
+.shelf__link {
+  /* Per-icon float + flicker timing is set by :nth-child below, so no two
+     glow-flicker in unison (nor with the tagline band). */
+  --gd: 9s;    /* float duration  */
+  --ff: 7s;    /* flicker duration */
+  display: inline-flex;
+  width: clamp(26px, 7vw, 30px);
+  height: clamp(26px, 7vw, 30px);
+  color: var(--ink-dim);
+  will-change: transform, opacity;
+  animation: shelf-float var(--gd) ease-in-out infinite, shelf-flicker var(--ff) ease-in-out infinite;
+  animation-delay: var(--fd1, 0s), var(--fd2, 0s);
+  transition: color 0.3s var(--ease);
+}
+.shelf__link:hover,
+.shelf__link:focus-visible { color: var(--accent-soft); outline: none; }
+
+/* The icon carries the faint glow (and the hover lift) so it never fights the
+   float animation, which owns the link's transform. */
+.shelf__icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 0 5px rgba(216, 121, 76, 0.28)) drop-shadow(0 1px 2px rgba(8, 4, 2, 0.5));
+  transition: transform 0.3s var(--ease), filter 0.3s var(--ease);
+}
+.shelf__icon--fill { fill: currentColor; }
+.shelf__icon--stroke { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.shelf__link:hover .shelf__icon,
+.shelf__link:focus-visible .shelf__icon {
+  transform: translateY(-3px) scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(230, 162, 113, 0.6)) drop-shadow(0 0 16px rgba(216, 121, 76, 0.35));
+}
+
+/* desynced timings — non-harmonic durations + offset phases */
+.shelf__link:nth-child(1) { --gd: 9.5s;  --ff: 6.3s; --fd1: -1.2s; --fd2: -0.4s; }
+.shelf__link:nth-child(2) { --gd: 11s;   --ff: 7.7s; --fd1: -4.6s; --fd2: -3.1s; }
+.shelf__link:nth-child(3) { --gd: 8.5s;  --ff: 9.1s; --fd1: -2.3s; --fd2: -6.2s; }
+.shelf__link:nth-child(4) { --gd: 12s;   --ff: 6.9s; --fd1: -7.1s; --fd2: -1.9s; }
+.shelf__link:nth-child(5) { --gd: 10s;   --ff: 8.3s; --fd1: -5.4s; --fd2: -4.7s; }
+
+@keyframes shelf-float {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(1.5px, -3px, 0) rotate(0.4deg); }
+  50%  { transform: translate3d(-1px, 2px, 0) rotate(-0.3deg); }
+  75%  { transform: translate3d(-2px, -1.5px, 0) rotate(0.25deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+@keyframes shelf-flicker {
+  0%, 100% { opacity: 0.9; }
+  8%   { opacity: 0.6; }
+  9%   { opacity: 0.9; }
+  42%  { opacity: 0.96; }
+  44%  { opacity: 0.68; }
+  46%  { opacity: 0.9; }
+  72%  { opacity: 0.85; }
+  73.5%{ opacity: 0.66; }
+  75%  { opacity: 0.9; }
+}
+
+/* Cursor-anchored leader-line readout (replaces the native tooltip), styled to
+   the tarot signature diagram: thin line → node → monospace name + URL. */
+.shelf-tip {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 60;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.18s var(--ease);
+}
+.shelf-tip.is-on { opacity: 1; }
+.shelf-tip__line { stroke: var(--hair-strong); stroke-width: 1; }
+.shelf-tip__line, .shelf-tip__node { filter: drop-shadow(0 0 4px rgba(216, 121, 76, 0.35)); }
+.shelf-tip__node { fill: var(--accent-soft); }
+.shelf-tip__tick { fill: var(--ink-faint); }
+.shelf-tip__name, .shelf-tip__url {
+  font-family: var(--mono);
+  paint-order: stroke;               /* dark halo so the text reads over footage */
+  stroke: rgba(8, 4, 2, 0.66);
+  stroke-width: 2.6px;
+  stroke-linejoin: round;
+}
+.shelf-tip__name { font-size: 11px; fill: var(--ink-dim); }
+.shelf-tip__url  { font-size: 8.5px; fill: var(--ink-faint); letter-spacing: 0.02em; }
+
 /* ---- Entrance motion ---- */
 .reveal {
   opacity: 0;
@@ -836,5 +928,4 @@ main {
 /* ---- Small screens ---- */
 @media (max-width: 480px) {
   main { justify-content: flex-end; padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom)); gap: 2rem; }
-  .link__meta { flex-basis: 100%; }
 }
