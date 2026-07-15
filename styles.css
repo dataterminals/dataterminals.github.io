@@ -645,7 +645,9 @@ main {
 
 /* ================= Discord presence (Lanyard) ================= */
 /* Hidden until live data arrives, mirroring the page's silent degradation. */
-.presence { display: none; padding-bottom: 4vh; }
+/* Ends the page when live, so it carries the same 7vh tail as .shelf (which
+   ends it when this is hidden). */
+.presence { display: none; padding-bottom: 7vh; }
 .presence.is-live { display: block; }
 
 .presence__card {
