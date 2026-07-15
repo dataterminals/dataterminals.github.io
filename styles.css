@@ -25,6 +25,7 @@
 
   --maxw: 660px;
   --pad: clamp(1.5rem, 5vw, 3rem);
+  --main-gap: clamp(3rem, 12vh, 6.5rem);   /* between the page's major sections */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
@@ -100,7 +101,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(3rem, 12vh, 6.5rem);
+  gap: var(--main-gap);
   /* Legibility insurance over busy footage — imperceptible over dark footage. */
   text-shadow: 0 1px 2px rgba(8, 4, 2, 0.5);
 }
@@ -807,6 +808,10 @@ main {
   flex-direction: column;
   align-items: center;
   gap: clamp(0.5rem, 1.6vh, 0.9rem);
+  /* --main-gap is sized for major sections and reads as a chasm above this
+     small pair. Cancel it and set a tighter one, so the group hangs off the
+     Selected Work grid instead of floating between it and the chart. */
+  margin-top: calc(var(--main-gap) * -1 + clamp(0.75rem, 2vh, 1.25rem));
 }
 .shelf {
   display: flex;
@@ -936,5 +941,7 @@ main {
 
 /* ---- Small screens ---- */
 @media (max-width: 480px) {
-  main { justify-content: flex-end; padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom)); gap: 2rem; }
+  /* Override the token, not `gap` itself — .elsewhere's negative margin is
+     derived from --main-gap and would over-pull into the grid otherwise. */
+  main { justify-content: flex-end; padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom)); --main-gap: 2rem; }
 }
