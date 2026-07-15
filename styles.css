@@ -105,7 +105,10 @@ main {
   /* Legibility insurance over busy footage — imperceptible over dark footage. */
   text-shadow: 0 1px 2px rgba(8, 4, 2, 0.5);
 }
-.screen, .foot, .chart, .tarot { width: 100%; max-width: var(--maxw); }
+/* A definite width, not shrink-to-fit. .elsewhere is here so the Discord card
+   has a width to fill: left to size itself, it resolves to its own min-content
+   and a long activity name or display name pushes it past the viewport. */
+.screen, .foot, .chart, .tarot, .elsewhere { width: 100%; max-width: var(--maxw); }
 
 /* First screenful: the identity hero + curated links, vertically centered. */
 .screen {
@@ -648,7 +651,9 @@ main {
 
 /* ================= Discord presence (Lanyard) ================= */
 /* Hidden until live data arrives, mirroring the page's silent degradation. */
-.presence { display: none; }
+/* width:100% keeps this from shrink-to-fitting around the card's min-content —
+   see the note on the .screen/.elsewhere width rule. */
+.presence { display: none; width: 100%; }
 .presence.is-live { display: block; }
 
 .presence__card {
@@ -656,6 +661,7 @@ main {
   align-items: center;
   gap: clamp(0.9rem, 3vw, 1.3rem);
   max-width: 30rem;
+  margin-inline: auto;      /* .presence is full-width now; keep the card centred */
   padding: 1rem 1.15rem;
   border-radius: 12px;
   border: 1px solid rgba(216, 121, 76, 0.28);
@@ -709,6 +715,12 @@ main {
 
 /* identity row */
 .presence__body { min-width: 0; flex: 1 1 auto; }
+/* Names and custom statuses are arbitrary user text, and a single long token
+   would otherwise reach out past the card. `anywhere` rather than `break-word`
+   is deliberate: only `anywhere` shrinks min-content, which is what actually
+   drives the overflow here. (The activity lines instead clip via nowrap +
+   text-overflow, so they need no wrapping.) */
+.presence__name, .presence__user, .presence__custom, .presence__status { overflow-wrap: anywhere; }
 .presence__idrow { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.35rem 0.55rem; }
 .presence__name {
   font-family: var(--serif);
