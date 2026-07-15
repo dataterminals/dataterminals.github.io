@@ -26,6 +26,11 @@
   --maxw: 660px;
   --pad: clamp(1.5rem, 5vw, 3rem);
   --main-gap: clamp(3rem, 12vh, 6.5rem);   /* between the page's major sections */
+  --screen-gap: clamp(2.2rem, 6vh, 3.6rem); /* between blocks inside .screen */
+  /* Breathing room on BOTH sides of the link shelf — above it to the Selected
+     Work grid, below it to the Discord card — so it sits centred between them.
+     Used by .elsewhere's gap and its margin-top; keep them derived from this. */
+  --shelf-gap: clamp(1.5rem, 3.8vh, 2.25rem);
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
@@ -110,19 +115,22 @@ main {
    and a long activity name or display name pushes it past the viewport. */
 .screen, .foot, .chart, .tarot, .elsewhere { width: 100%; max-width: var(--maxw); }
 
-/* First screenful: the identity hero + curated links, vertically centered. */
+/* First screenful: the identity hero, curated links and the shelf/Discord
+   pair, vertically centered. */
 .screen {
   position: relative;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  gap: clamp(2.2rem, 6vh, 3.6rem);
+  gap: var(--screen-gap);
   padding: max(var(--pad), env(safe-area-inset-top)) 0 4vh;
 }
 /* Center the block when there's room; fall back to top-aligned (never clip the
-   hero) when the content is taller than the viewport. */
+   hero) when the content is taller than the viewport. The bottom `auto` sits on
+   the LAST child: on it, the slack falls below the group; on .links it would
+   open up between the grid and the shelf and throw the shelf off centre. */
 .screen > .hero { margin-top: auto; }
-.screen > .links { margin-bottom: auto; }
+.screen > .elsewhere { margin-bottom: auto; }
 
 /* ---- Identity hero ---- */
 .hero__mark {
@@ -819,11 +827,10 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(0.5rem, 1.6vh, 0.9rem);
-  /* --main-gap is sized for major sections and reads as a chasm above this
-     small pair. Cancel it and set a tighter one, so the group hangs off the
-     Selected Work grid instead of floating between it and the chart. */
-  margin-top: calc(var(--main-gap) * -1 + clamp(0.75rem, 2vh, 1.25rem));
+  gap: var(--shelf-gap);                 /* shelf -> card */
+  /* shelf <- grid: cancel .screen's gap and re-add --shelf-gap. Same value
+     either side => the shelf sits centred between the grid and the card. */
+  margin-top: calc(var(--shelf-gap) - var(--screen-gap));
 }
 .shelf {
   display: flex;
