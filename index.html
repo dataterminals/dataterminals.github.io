@@ -81,7 +81,13 @@
         </section>
       </div>
     </div>
-    <section class="chart" id="chart" aria-label="Natal chart">
+    <!-- id doubles as the shareable anchor: dataterminals.github.io/#natalchart -->
+    <section class="chart" id="natalchart" aria-label="Natal chart">
+      <!-- Permalink handle. Drifts + glow-flickers like the shelf icons, on its
+           own timing so the two never pulse in unison. -->
+      <a class="chart__anchor" href="#natalchart" aria-label="Link to the natal chart">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </a>
       <div class="chart__wrap" id="natal">
         <!-- wheel + placements rendered by natal.js -->
       </div>
