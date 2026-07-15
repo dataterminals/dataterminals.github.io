@@ -79,6 +79,14 @@
     "The head is a top and the body is a root.",
     "For them I am just a maple leaf, just a stray rain, just an autumn cat.",
     "Anyone looking for meaning should look to the heavens in their own eyes.",
+    "Do you want me to die out here on the steps? Bitch, come on let me in...\n...Come on, let me in.",
+    "Educated writers are amused by another class\nbut could never suffer results of the poison they helped hatch.",
+    "I don't even sleep right, there's too much to be said.",
+    "Seven steps to this cyclic solar lottery.",
+    "They've so designed these concrete lobbies so that you don't even wanna walk with me.",
+    "Groveling - look what it's accomplishing\nthe systematic gods of all-demolishing.",
+    "Nothing man-made remains made long\n...that's a debt we can't back out of.",
+    "Nothing left here but you and me.",
     "Thank you.",
   ];
 
@@ -404,19 +412,24 @@
     // Build per-character spans grouped into per-word wrappers. Words are
     // inline-block + nowrap so the line only breaks at the spaces between words
     // (never mid-word), while each character stays individually glitchable.
+    // A phrase may carry its own line breaks; those become hard <br>s, and the
+    // text between them still wraps on its own if it doesn't fit.
     const line = el('span', 'subtag__phrase');
     const chars = [];
-    phrase.split(' ').forEach((word, wi) => {
-      if (wi > 0) line.append(document.createTextNode(' '));
-      if (!word) return;
-      const w = el('span', 'subtag__word');
-      for (const ch of word) {
-        const c = el('span', 'subtag__char');
-        c.textContent = ch;
-        w.append(c);
-        chars.push(c);
-      }
-      line.append(w);
+    phrase.split('\n').forEach((row, ri) => {
+      if (ri > 0) line.append(el('br'));
+      row.split(' ').forEach((word, wi) => {
+        if (wi > 0) line.append(document.createTextNode(' '));
+        if (!word) return;
+        const w = el('span', 'subtag__word');
+        for (const ch of word) {
+          const c = el('span', 'subtag__char');
+          c.textContent = ch;
+          w.append(c);
+          chars.push(c);
+        }
+        line.append(w);
+      });
     });
     host.textContent = '';
     host.append(line);
