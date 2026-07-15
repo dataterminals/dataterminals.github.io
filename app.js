@@ -77,7 +77,7 @@
     "You can't strangle this song, you can't kill it.",
     "The house is on fire - the goat can't see.\nThe house is on fire - the goat doesn't know.",
     "The head is a top and the body is a root.",
-    "For them I am just a maple leaf, just a stray rain, just an autumn cat.",
+    "For them I am just a maple leaf,\njust a stray rain,\njust an autumn cat.",
     "Anyone looking for meaning should look to the heavens in their own eyes.",
     "Do you want me to die out here on the steps?\nBitch, come on let me in...\n...Come on, let me in.",
     "Educated writers are amused by another class\nbut could never suffer results of the poison they helped hatch.",
