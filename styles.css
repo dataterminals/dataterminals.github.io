@@ -559,6 +559,8 @@ main {
 }
 
 /* ================= Tarot ================= */
+/* Ends the page, so it carries the tail the shelf used to. */
+.tarot { padding-bottom: 7vh; }
 .tarot__deck { display: flex; flex-direction: column; gap: clamp(1.4rem, 4vw, 2.2rem); }
 .tarot__featured { display: flex; flex-direction: column; align-items: center; gap: 0.95rem; }
 .sig-row { display: flex; align-items: center; justify-content: center; gap: clamp(0.25rem, 1.5vw, 1rem); }
@@ -645,9 +647,7 @@ main {
 
 /* ================= Discord presence (Lanyard) ================= */
 /* Hidden until live data arrives, mirroring the page's silent degradation. */
-/* Ends the page when live, so it carries the same 7vh tail as .shelf (which
-   ends it when this is hidden). */
-.presence { display: none; padding-bottom: 7vh; }
+.presence { display: none; }
 .presence.is-live { display: block; }
 
 .presence__card {
@@ -800,13 +800,20 @@ main {
 }
 
 /* ================= External-link shelf ================= */
+/* Sits directly above the Discord card inside .elsewhere, which owns the
+   spacing on every side; the shelf itself adds none. */
+.elsewhere {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.5rem, 1.6vh, 0.9rem);
+}
 .shelf {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: clamp(1.5rem, 6vw, 3rem);
-  padding: clamp(1.2rem, 5vh, 2.4rem) 0 7vh;
 }
 
 .shelf__link {
