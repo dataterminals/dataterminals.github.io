@@ -87,6 +87,8 @@
     "Groveling - look what it's accomplishing\nthe systematic gods of all-demolishing.",
     "Nothing man-made remains made long\n...That's a debt we can't back out of.",
     "Nothing left here but you and me.",
+    "Can I borrow the keys?\nmy generation is car-pooling with doom and disease.",
+    "This is for the kids worried about the apocalypse - do something.\nPrepare yourselves, and stop talking shit.",
     "Thank you.",
   ];
 
