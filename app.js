@@ -45,7 +45,7 @@
     "I heard her serving as a soldier, in the annex of the earth. Threw herself before the bullet, and threw the medal to the dirt.",
     "Scarecrow's only scaring herself.",
     "You're behind the walls of New Rome - you wanna buy the farm, but the land's not yours to own.",
-    "Screaming at the top of our airbags 'This is our timing, we are not dying - not for you.'",
+    "Screaming at the top of our air-bags 'This is our timing, we are not dying...\n...not for you.'",
     "To the ground-function I'm Munsoned, the dreaded 7-10 split again.",
     "A lone spot, almost kinda like the zone was forgot... As if the grid had been reset and couldn't catch to the clock.",
     "Metropoloid void so damn smothering.",
@@ -66,7 +66,7 @@
     "They speak of disgrace, and glory debased - to those who make barely a dollar a day.",
     "They'll grift and grate, grab and take, then tell you that it's the other way around.",
     "Come on baby, scrape my data.",
-    "My reflection's slightly off All I can see is a content farm.",
+    "My reflection's slightly off...\n...All I can see is a content farm.",
     "EYECANTLOOKAWAY",
     "The real narcissists are the culture that treats inconvenience as if it's emotional abuse.",
     "We've been taught that anyone who makes us feel bad is fundamentally broken - when sometimes, they just live in a world that doesn't revolve around you.",
@@ -95,6 +95,7 @@
     "In this life, we fight to make peace mean more.",
     "I'm everywhere.\nPenthouse, pavement or a curb.",
     "Cradle to the grave,\ntall cathedral or a cell.",
+    "There has to be something more to life than sitting around in material excess.",
     "Thank you.",
   ];
 
