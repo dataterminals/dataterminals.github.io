@@ -97,6 +97,11 @@
     "Cradle to the grave,\ntall cathedral or a cell.",
     "There has to be something more to life than sitting around in material excess.",
     "You sit and learn, children, live and let live...\n...because dying means dead, in the end - and in the end...\n...there is no more revenge, in the end.",
+    "Walk into the store -\nsame pocket,\nsame nickels.",
+    "Walk into the store,\nwith a pocket full of nickels.",
+    "If you've got a lock and a gasmask outside of your own apartment,\nthen you could pretty safely say 'Life's ill, sometimes life might kill.'",
+    "See the rubble glisten...\n...that's what I trust.",
+    "I knew a kid who navigated the slippery,\nand fuel-injected a speedball on her way down to Rose City -\nout the race before even making her mark,\nand now she'll never pick her shit up out of long-term parking.",
     "Thank you.",
   ];
 
