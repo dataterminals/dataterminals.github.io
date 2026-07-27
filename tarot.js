@@ -72,7 +72,7 @@
 
   function suitEmblem(suit) {
     const svg = {
-      wands: '<line x1="9" y1="30" x2="19" y2="5" class="sk"/><line x1="19" y1="5" x2="15.5" y2="8.5" class="sk"/><line x1="19" y1="5" x2="22.5" y2="8.5" class="sk"/>',
+      wands: '<line x1="14" y1="4.5" x2="14" y2="30" class="sk"/><path d="M14 9.5 Q16.5 8.8 18.2 5.8" class="sk"/><path d="M14 15.5 Q11.5 14.8 9.8 11.8" class="sk"/>',
       cups: '<path d="M8 7 Q14 19 20 7" class="sk"/><line x1="14" y1="15" x2="14" y2="26" class="sk"/><line x1="9" y1="28.5" x2="19" y2="28.5" class="sk"/>',
       swords: '<line x1="14" y1="4" x2="14" y2="25" class="sk"/><line x1="8.5" y1="23" x2="19.5" y2="23" class="sk"/><circle cx="14" cy="29" r="1.7" class="sf"/>',
       pentacles: '<circle cx="14" cy="17" r="10" class="sk"/><polygon points="14,9.2 16.1,14.8 22,15 17.3,18.7 19.1,24.4 14,21 8.9,24.4 10.7,18.7 6,15 11.9,14.8" class="sk"/>',
