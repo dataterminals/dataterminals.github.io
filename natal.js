@@ -110,7 +110,9 @@
   const META = {};
   BODIES.forEach(([k, name, g, s, d, m, h, retro]) => {
     LON[k] = lonOf(s, d, m);
-    META[k] = { key: k, name, glyph: g, sign: s, deg: d, min: m, house: h, retro, kind: 'body' };
+    // No `house` here on purpose: it depends on the selected house system, so
+    // it's always computed via houseOf() rather than cached per body.
+    META[k] = { key: k, name, glyph: g, sign: s, deg: d, min: m, retro, kind: 'body' };
   });
   ANGLES.forEach(([k, name, g, s, d, m]) => {
     LON[k] = lonOf(s, d, m);
@@ -120,6 +122,63 @@
   LON.ic = (LON.mc + 180) % 360;
   META.dsc = { key: 'dsc', name: 'Descendant', glyph: 'DC', kind: 'angle' };
   META.ic = { key: 'ic', name: 'Imum Coeli', glyph: 'IC', kind: 'angle' };
+
+  // ---- house systems ----
+  // Only systems that are *exactly* derivable from what this file already knows
+  // — the transcribed quadrant cusps plus the ASC/MC axis — are offered. Koch,
+  // Campanus and Regiomontanus need the birth latitude and sidereal time, which
+  // aren't transcribed here, so they're deliberately absent rather than faked.
+  const norm = (l) => ((l % 360) + 360) % 360;
+  const PLACIDUS = CUSPS.map(([, s, d, m]) => lonOf(s, d, m));
+
+  // [value, full name, description, short label for the switch]
+  const SYSTEMS = [
+    ['placidus', 'Placidus', 'Time-based quadrants — the transcribed default.'],
+    ['whole', 'Whole Sign', 'One sign, one house; the 1st is all of the rising sign.', 'Whole'],
+    ['equal', 'Equal', 'Twelve exact 30° houses measured from the Ascendant.'],
+    ['porphyry', 'Porphyry', 'Each ASC/MC quadrant cut into three equal parts.'],
+  ];
+
+  function cuspsFor(system) {
+    if (system === 'equal') return Array.from({ length: 12 }, (_, i) => norm(LON.asc + i * 30));
+    if (system === 'whole') {
+      const start = Math.floor(LON.asc / 30) * 30;   // 0° of the rising sign
+      return Array.from({ length: 12 }, (_, i) => norm(start + i * 30));
+    }
+    if (system === 'porphyry') {
+      // Trisect each of the four quadrants bounded by ASC → IC → DSC → MC.
+      const out = [];
+      [LON.asc, LON.ic, LON.dsc, LON.mc].forEach((from, q) => {
+        const to = [LON.ic, LON.dsc, LON.mc, LON.asc][q];
+        const third = norm(to - from) / 3;
+        out.push(from, norm(from + third), norm(from + 2 * third));
+      });
+      return out;
+    }
+    return PLACIDUS.slice();
+  }
+
+  // Which house a longitude falls in, for an arbitrary cusp set.
+  function houseOf(lon, cusps) {
+    for (let i = 0; i < 12; i++) {
+      if (norm(lon - cusps[i]) < norm(cusps[(i + 1) % 12] - cusps[i])) return i + 1;
+    }
+    return 1;
+  }
+
+  // ---- orb filter ----
+  const TIGHT = 90;   // arcminutes — 1°30′
+  const orbMin = (s) => {
+    const m = /(\d+)°(\d+)/.exec(s);
+    return m ? +m[1] * 60 + +m[2] : Infinity;
+  };
+  const isTight = (asp) => orbMin(asp[3]) <= TIGHT;
+  const TIGHT_COUNT = ASPECTS.filter(isTight).length;
+
+  // ---- view state ----
+  const state = { system: 'placidus', tightOnly: false };
+  let cusps = cuspsFor(state.system);
+  let activeKey = null;
 
   // ---- svg helpers ----
   const svgEl = (tag, attrs) => {
@@ -164,24 +223,7 @@
       }
     }
 
-    // houses: cusp lines + numbers
-    CUSPS.forEach(([h, s, d, m]) => {
-      const l = lonOf(s, d, m);
-      const isAxis = (h === 1 || h === 4 || h === 7 || h === 10);
-      const [ox, oy] = pt(l, R.zIn);
-      const [ix, iy] = pt(l, isAxis ? R.axis - 6 : R.cusp);
-      gCusp.append(line(ox, oy, ix, iy, isAxis ? 'cusp cusp-axis' : 'cusp'));
-    });
-    // house numbers at the midpoint of each house arc
-    for (let h = 0; h < 12; h++) {
-      const a = lonOf(CUSPS[h][1], CUSPS[h][2], CUSPS[h][3]);
-      let b = lonOf(CUSPS[(h + 1) % 12][1], CUSPS[(h + 1) % 12][2], CUSPS[(h + 1) % 12][3]);
-      if (b < a) b += 360;
-      const [x, y] = pt((a + b) / 2, R.houseNum);
-      const t = svgEl('text', { x, y, class: 'house-num', 'text-anchor': 'middle', 'dominant-baseline': 'central' });
-      t.textContent = String(CUSPS[h][0]);
-      gCusp.append(t);
-    }
+    drawCusps(gCusp);
 
     // angle axis labels (AC / DC / MC / IC) just outside the ring
     ['asc', 'dsc', 'mc', 'ic'].forEach((k) => {
@@ -192,9 +234,11 @@
     });
 
     // aspects (drawn first so glyphs sit on top)
-    ASPECTS.forEach(([a, b, type, orb, phase, major], i) => {
+    ASPECTS.forEach((asp, i) => {
+      const [a, b, type, , , major] = asp;
       const [ax, ay] = pt(LON[a], R.hub), [bx, by] = pt(LON[b], R.hub);
-      const ln = line(ax, ay, bx, by, `asp asp-${CATEGORY[type]}${major ? ' asp-major' : ''}`);
+      const ln = line(ax, ay, bx, by,
+        `asp asp-${CATEGORY[type]}${major ? ' asp-major' : ''}${isTight(asp) ? ' asp-tight' : ''}`);
       ln.dataset.a = a; ln.dataset.b = b; ln.dataset.i = i;
       gAsp.append(ln);
     });
@@ -215,8 +259,7 @@
       const [cx1, cy1] = pt(trueL, R.conn), [cx2, cy2] = pt(dL, R.planet + 11);
       const [gx, gy] = pt(dL, R.planet);
 
-      const g = svgEl('g', { class: 'planet', 'data-body': k, tabindex: '0', role: 'button',
-        'aria-label': `${name} in ${s} ${fmtDeg(d, m)}${h ? ', house ' + h : ''}` });
+      const g = svgEl('g', { class: 'planet', 'data-body': k, tabindex: '0', role: 'button' });
       g.append(line(tx, ty, tix, tiy, 'deg-tick'));          // exact-degree tick on the zodiac
       g.append(line(cx1, cy1, cx2, cy2, 'p-conn'));          // connector to the glyph
       const halo = svgEl('circle', { cx: gx, cy: gy, r: 11, class: 'p-halo' });
@@ -240,7 +283,140 @@
 
     buildList(host);        // left column: placements + aspect detail
     host.append(wheelbox);  // right column: the wheel
+    // Controls sit above the two-column wrap so neither column has to shrink.
+    host.parentNode.insertBefore(buildControls(host, svg, gCusp), host);
     wire(host, svg);
+    syncHouses(host, gCusp);
+    syncAspects(svg);
+  }
+
+  // ---- controls ----
+  function segmented(labelText, name, opts, current, onPick) {
+    const wrap = document.createElement('div');
+    wrap.className = 'ctl';
+    const lab = document.createElement('span');
+    lab.className = 'ctl__label';
+    lab.textContent = labelText;
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.style.setProperty('--n', opts.length);
+    seg.setAttribute('role', 'radiogroup');
+    seg.setAttribute('aria-label', name);
+
+    // Roving tabindex + arrow keys, as role="radiogroup" implies: the group is
+    // one tab stop and the arrows move between options.
+    function select(i, moveFocus) {
+      seg.style.setProperty('--i', i);
+      btns.forEach((o, j) => {
+        o.setAttribute('aria-checked', String(j === i));
+        o.tabIndex = j === i ? 0 : -1;
+      });
+      if (moveFocus) btns[i].focus();
+      onPick(opts[i][0]);
+    }
+
+    const btns = opts.map(([val, text, hint], i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'seg__opt';
+      b.textContent = text;
+      b.dataset.val = val;
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(val === current));
+      b.tabIndex = val === current ? 0 : -1;
+      if (hint) b.title = hint;
+      b.addEventListener('click', () => select(i, false));
+      b.addEventListener('keydown', (e) => {
+        const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        if (step) select((i + step + opts.length) % opts.length, true);
+        else if (e.key === 'Home') select(0, true);
+        else if (e.key === 'End') select(opts.length - 1, true);
+        else return;
+        e.preventDefault();
+      });
+      seg.append(b);
+      return b;
+    });
+    seg.style.setProperty('--i', Math.max(0, opts.findIndex(([v]) => v === current)));
+    seg.append(Object.assign(document.createElement('span'), { className: 'seg__glide' }));
+    wrap.append(lab, seg);
+    return wrap;
+  }
+
+  function buildControls(host, svg, gCusp) {
+    const bar = document.createElement('div');
+    bar.className = 'chart__controls';
+
+    const sysOpts = SYSTEMS.map(([v, name, hint, short]) => [v, short || name, `${name} — ${hint}`]);
+    bar.append(segmented('Houses', 'House system', sysOpts, state.system, (v) => {
+      state.system = v;
+      cusps = cuspsFor(v);
+      syncHouses(host, gCusp);
+    }));
+
+    bar.append(segmented('Aspects', 'Aspect orb filter', [
+      ['all', 'All', `Every aspect in the chart (${ASPECTS.length}).`],
+      ['tight', '≤ 1°30′', `Only the ${TIGHT_COUNT} aspects inside a 1°30′ orb.`],
+    ], 'all', (v) => {
+      state.tightOnly = v === 'tight';
+      syncAspects(svg);
+    }));
+
+    return bar;
+  }
+
+  // Redraw cusp lines + house numbers, and re-file every placement's house.
+  function syncHouses(host, gCusp) {
+    gCusp.textContent = '';
+    drawCusps(gCusp);
+    gCusp.classList.remove('is-swapping');
+    void gCusp.getBoundingClientRect();     // restart the fade
+    gCusp.classList.add('is-swapping');
+
+    const cells = Array.from(host.querySelectorAll('.chart__list li[data-body] .pl-house'));
+    cells.forEach((c) => c.classList.remove('pl-house--moved'));
+    void host.getBoundingClientRect();       // one reflow, so the flash replays
+    cells.forEach((cell) => {
+      const k = cell.closest('li').dataset.body;
+      const prev = cell.textContent;
+      cell.textContent = META[k].kind === 'body' ? ordinal(houseOf(LON[k], cusps)) : '';
+      if (prev && prev !== cell.textContent) cell.classList.add('pl-house--moved');
+    });
+
+    host.querySelectorAll('.planet[data-body]').forEach((g) => {
+      const b = META[g.dataset.body];
+      g.setAttribute('aria-label',
+        `${b.name} in ${b.sign} ${fmtDeg(b.deg, b.min)}, house ${houseOf(LON[b.key], cusps)}`);
+    });
+
+    refreshDetail();
+  }
+
+  function syncAspects(svg) {
+    svg.classList.toggle('is-tight', state.tightOnly);
+    refreshDetail();
+  }
+
+  function refreshDetail() {
+    const detail = document.querySelector('.chart__detail');
+    if (detail) detail.innerHTML = activeKey ? detailHtml(activeKey) : legendHtml();
+  }
+
+  function drawCusps(gCusp) {
+    cusps.forEach((l, i) => {
+      const h = i + 1;
+      const isAxis = (h === 1 || h === 4 || h === 7 || h === 10);
+      const [ox, oy] = pt(l, R.zIn);
+      const [ix, iy] = pt(l, isAxis ? R.axis - 6 : R.cusp);
+      gCusp.append(line(ox, oy, ix, iy, isAxis ? 'cusp cusp-axis' : 'cusp'));
+    });
+    // house numbers at the midpoint of each house arc
+    cusps.forEach((a, i) => {
+      const [x, y] = pt(a + norm(cusps[(i + 1) % 12] - a) / 2, R.houseNum);
+      const t = svgEl('text', { x, y, class: 'house-num', 'text-anchor': 'middle', 'dominant-baseline': 'central' });
+      t.textContent = String(i + 1);
+      gCusp.append(t);
+    });
   }
 
   // placements list + aspect detail (left column)
@@ -257,6 +433,8 @@
         `<span class="pl-glyph">${glyph}︎</span>` +
         `<span class="pl-name">${name}${retro ? ' <span class="pl-r">℞</span>' : ''}</span>` +
         `<span class="pl-pos"><span class="pl-sg">${SIGN_GLYPH[SIGNS.indexOf(s)]}︎</span> ${fmtDeg(d, m)}</span>` +
+        // Seeded with the transcribed house; syncHouses() then recomputes it.
+        // They must agree on Placidus, so a stray flash here means houseOf() drifted.
         `<span class="pl-house">${h ? ordinal(h) : ''}</span>`;
       ul.append(li);
     });
@@ -292,30 +470,52 @@
   }
 
   // ---- aspect detail (shown in the left column, never over the wheel) ----
-  const aspOf = (key) => ASPECTS.filter(([a, b]) => a === key || b === key);
+  const aspOf = (key) => ASPECTS
+    .filter(([a, b]) => a === key || b === key)
+    .filter((asp) => !state.tightOnly || isTight(asp));
+
+  // How many placements this system re-files relative to the transcribed
+  // Placidus houses — the quadrant systems often agree, and saying so is more
+  // useful than leaving the switch looking inert.
+  function shiftNote() {
+    if (state.system === 'placidus') return '';
+    const n = BODIES.filter(([k]) => houseOf(LON[k], cusps) !== houseOf(LON[k], PLACIDUS)).length;
+    return n === 0
+      ? ' No placement changes house here.'
+      : ` ${n} of ${BODIES.length} placements change house.`;
+  }
 
   function legendHtml() {
-    return '<p class="cd-hint">Hover a placement to trace its aspects.</p>' +
+    const sys = SYSTEMS.find(([v]) => v === state.system);
+    return `<p class="cd-hint">Hover a placement to trace its aspects.</p>` +
       '<ul class="cd-legend">' +
       `<li><span class="cd-sw" style="color:var(--hard)"></span>Square · Opposition</li>` +
       `<li><span class="cd-sw" style="color:var(--soft)"></span>Trine · Sextile</li>` +
       `<li><span class="cd-sw" style="color:var(--conj)"></span>Conjunction</li>` +
-      '</ul>';
+      '</ul>' +
+      `<p class="cd-note"><strong>${sys[1]}</strong> — ${sys[2]}${shiftNote()}</p>` +
+      (state.tightOnly
+        ? `<p class="cd-note cd-note--on">Showing the ${TIGHT_COUNT} aspects inside 1°30′, of ${ASPECTS.length}.</p>`
+        : '');
   }
 
   function detailHtml(key) {
     const b = META[key];
     const gl = b.kind === 'angle' || b.glyph === 'Vx' ? '' : b.glyph + '︎ ';
+    const house = b.kind === 'body' ? houseOf(LON[key], cusps) : 0;
     const head = `<strong>${gl}${b.name}</strong>` +
       (b.retro ? ' <span class="pl-r">℞</span>' : '') +
-      `<span class="tip-pos">${b.sign} ${fmtDeg(b.deg, b.min)}${b.house ? ' · ' + ordinal(b.house) + ' house' : ''}</span>`;
-    const asps = aspOf(key).map(([a, bb, type, orb, phase]) => {
+      `<span class="tip-pos">${b.sign} ${fmtDeg(b.deg, b.min)}${house ? ' · ' + ordinal(house) + ' house' : ''}</span>`;
+    const asps = aspOf(key).map((asp) => {
+      const [a, bb, type, orb, phase] = asp;
       const other = a === key ? bb : a;
-      return `<li><span class="tip-asp tip-${CATEGORY[type]}">${ASPECT_GLYPH[type]}︎</span>` +
+      return `<li${isTight(asp) ? ' class="tip-is-tight"' : ''}>` +
+        `<span class="tip-asp tip-${CATEGORY[type]}">${ASPECT_GLYPH[type]}︎</span>` +
         `<span class="tip-name">${META[other].name}</span>` +
         `<span class="tip-orb">${orb} ${phase === 'Applying' ? '↗' : '↘'}</span></li>`;
     }).join('');
-    return head + (asps ? `<ul class="tip-asps">${asps}</ul>` : '<p class="cd-hint" style="margin-top:.5rem">No major aspects.</p>');
+    const empty = state.tightOnly ? 'Nothing inside 1°30′.' : 'No major aspects.';
+    return head + (asps ? `<ul class="tip-asps">${asps}</ul>` : `<p class="cd-hint" style="margin-top:.5rem">${empty}</p>`);
   }
 
   // ---- interactivity ----
@@ -328,6 +528,7 @@
     const axes = Array.from(svg.querySelectorAll('.axis-label')).filter((a) => a.dataset.body === 'asc' || a.dataset.body === 'mc');
 
     function activate(key) {
+      activeKey = key;
       svg.classList.add('is-focused');
       planets.forEach((p) => p.classList.toggle('is-on', p.dataset.body === key));
       axes.forEach((a) => a.classList.toggle('is-on', a.dataset.body === key));
@@ -337,6 +538,7 @@
       detail.classList.add('is-active');
     }
     function clear() {
+      activeKey = null;
       svg.classList.remove('is-focused');
       planets.forEach((p) => p.classList.remove('is-on'));
       axes.forEach((a) => a.classList.remove('is-on'));
