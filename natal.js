@@ -124,19 +124,42 @@
   META.ic = { key: 'ic', name: 'Imum Coeli', glyph: 'IC', kind: 'angle' };
 
   // ---- house systems ----
-  // Only systems that are *exactly* derivable from what this file already knows
-  // — the transcribed quadrant cusps plus the ASC/MC axis — are offered. Koch,
-  // Campanus and Regiomontanus need the birth latitude and sidereal time, which
-  // aren't transcribed here, so they're deliberately absent rather than faked.
+  // Whole Sign, Equal and Porphyry fall straight out of the ASC/MC axis, so
+  // they're derived below. Koch, Campanus and Regiomontanus depend on the birth
+  // latitude and sidereal time; their cusps were computed from the birth data
+  // once and transcribed here in the same shape as CUSPS above. Deriving them
+  // in-page would mean publishing the birth time and coordinates, and shipping
+  // a chunk of spherical trigonometry, for values that never change.
   const norm = (l) => ((l % 360) + 360) % 360;
   const PLACIDUS = CUSPS.map(([, s, d, m]) => lonOf(s, d, m));
+
+  const CUSP_TABLES = {
+    koch: [
+      ['Leo', 29, 22], ['Virgo', 27, 24], ['Libra', 25, 29], ['Scorpio', 23, 17],
+      ['Capricorn', 1, 47], ['Aquarius', 1, 32], ['Aquarius', 29, 22], ['Pisces', 27, 24],
+      ['Aries', 25, 29], ['Taurus', 23, 17], ['Cancer', 1, 47], ['Leo', 1, 32],
+    ],
+    campanus: [
+      ['Leo', 29, 22], ['Virgo', 28, 49], ['Libra', 25, 53], ['Scorpio', 23, 17],
+      ['Sagittarius', 23, 31], ['Capricorn', 26, 41], ['Aquarius', 29, 22], ['Pisces', 28, 49],
+      ['Aries', 25, 53], ['Taurus', 23, 17], ['Gemini', 23, 31], ['Cancer', 26, 41],
+    ],
+    regiomontanus: [
+      ['Leo', 29, 22], ['Virgo', 22, 34], ['Libra', 19, 2], ['Scorpio', 23, 17],
+      ['Capricorn', 1, 50], ['Aquarius', 4, 8], ['Aquarius', 29, 22], ['Pisces', 22, 34],
+      ['Aries', 19, 2], ['Taurus', 23, 17], ['Cancer', 1, 50], ['Leo', 4, 8],
+    ],
+  };
 
   // [value, full name, description, short label for the switch]
   const SYSTEMS = [
     ['placidus', 'Placidus', 'Time-based quadrants — the transcribed default.'],
-    ['whole', 'Whole Sign', 'One sign, one house; the 1st is all of the rising sign.', 'Whole'],
-    ['equal', 'Equal', 'Twelve exact 30° houses measured from the Ascendant.'],
+    ['koch', 'Koch', 'Trisects the arc the MC degree took to rise; birthplace houses.'],
+    ['regiomontanus', 'Regiomontanus', 'Equal 30° divisions of the celestial equator.', 'Regio.'],
+    ['campanus', 'Campanus', 'Equal 30° divisions of the prime vertical.'],
     ['porphyry', 'Porphyry', 'Each ASC/MC quadrant cut into three equal parts.'],
+    ['equal', 'Equal', 'Twelve exact 30° houses measured from the Ascendant.'],
+    ['whole', 'Whole Sign', 'One sign, one house; the 1st is all of the rising sign.', 'Whole'],
   ];
 
   function cuspsFor(system) {
@@ -155,6 +178,8 @@
       });
       return out;
     }
+    const table = CUSP_TABLES[system];
+    if (table) return table.map(([s, d, m]) => lonOf(s, d, m));
     return PLACIDUS.slice();
   }
 
@@ -299,14 +324,35 @@
     lab.textContent = labelText;
     const seg = document.createElement('div');
     seg.className = 'seg';
-    seg.style.setProperty('--n', opts.length);
+    // Few options: one row, width set here. Many: CSS owns the column count so
+    // the narrow-screen rule can drop it (an inline value would outrank it).
+    if (opts.length > 4) seg.dataset.many = '';
+    else seg.style.setProperty('--cols', opts.length);
     seg.setAttribute('role', 'radiogroup');
     seg.setAttribute('aria-label', name);
+    const glide = Object.assign(document.createElement('span'), { className: 'seg__glide' });
+
+    // The options wrap onto more than one row once there are enough of them, so
+    // the indicator is measured off the live button box rather than assuming a
+    // single row of equal cells.
+    let at = 0;
+    function place() {
+      const b = btns[at];
+      if (!b || !b.offsetWidth) return;
+      const s = seg.getBoundingClientRect(), r = b.getBoundingClientRect();
+      // clientLeft/Top back out the border, which the rect includes but the
+      // glide's own origin (the padding box) does not.
+      glide.style.width = r.width + 'px';
+      glide.style.height = r.height + 'px';
+      glide.style.transform =
+        `translate(${r.left - s.left - seg.clientLeft}px, ${r.top - s.top - seg.clientTop}px)`;
+    }
 
     // Roving tabindex + arrow keys, as role="radiogroup" implies: the group is
     // one tab stop and the arrows move between options.
     function select(i, moveFocus) {
-      seg.style.setProperty('--i', i);
+      at = i;
+      place();
       btns.forEach((o, j) => {
         o.setAttribute('aria-checked', String(j === i));
         o.tabIndex = j === i ? 0 : -1;
@@ -337,9 +383,12 @@
       seg.append(b);
       return b;
     });
-    seg.style.setProperty('--i', Math.max(0, opts.findIndex(([v]) => v === current)));
-    seg.append(Object.assign(document.createElement('span'), { className: 'seg__glide' }));
+    at = Math.max(0, opts.findIndex(([v]) => v === current));
+    seg.append(glide);
     wrap.append(lab, seg);
+    // Re-measure once laid out, and again whenever the row count changes.
+    requestAnimationFrame(place);
+    if (window.ResizeObserver) new ResizeObserver(place).observe(seg);
     return wrap;
   }
 
@@ -481,7 +530,7 @@
     if (state.system === 'placidus') return '';
     const n = BODIES.filter(([k]) => houseOf(LON[k], cusps) !== houseOf(LON[k], PLACIDUS)).length;
     return n === 0
-      ? ' No placement changes house here.'
+      ? ' Cusps shift, but no placement changes house.'
       : ` ${n} of ${BODIES.length} placements change house.`;
   }
 

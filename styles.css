@@ -512,29 +512,28 @@ main {
   flex: 0 0 auto;
 }
 .seg {
-  --i: 0;
-  --n: 2;
+  --cols: 2;
   position: relative;
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);   /* strictly equal, so .seg__glide lines up */
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   padding: 2px;
   border: 1px solid var(--hair);
   border-radius: 999px;
   background: rgba(241, 231, 218, 0.03);
 }
+/* Once the options wrap to more than one row a pill outline reads wrong. */
+.seg[data-many] { --cols: 4; border-radius: 14px; }
 .seg__glide {
   position: absolute;
   z-index: 0;
-  top: 2px;
-  bottom: 2px;
-  left: 2px;
-  width: calc((100% - 4px) / var(--n));
-  transform: translateX(calc(100% * var(--i)));
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;                            /* both set from the live button box */
   border-radius: 999px;
   background: rgba(216, 121, 76, 0.16);
   box-shadow: inset 0 0 0 1px rgba(230, 162, 113, 0.34), 0 0 10px rgba(216, 121, 76, 0.18);
-  transition: transform 0.34s var(--ease);
+  transition: transform 0.34s var(--ease), width 0.34s var(--ease), height 0.2s var(--ease);
 }
 .seg__opt {
   position: relative;
@@ -563,6 +562,7 @@ main {
   .ctl { flex-direction: column; align-items: stretch; gap: 0.45em; }
   .ctl__label { text-align: center; }
   .seg__opt { font-size: 0.64rem; padding: 0.42em 0.72em; }
+  .seg[data-many] { --cols: 3; }
 }
 
 .chart__wrap {
