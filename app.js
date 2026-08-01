@@ -111,6 +111,7 @@
     "A cookie for the straightest faces, spilled milk's funeral.",
     "In the space of the heart, is a place of no fear...\n...a feeling without limit that you cannot engineer.",
     "Whoever said that we're not supposed to get ecstatic?\nYou're off that media-induced comatose anesthetic.",
+    "Looks like God and them forgot to take their happy pills again,\nbecause every shit-eater from your nightmares is getting top cream.",
     "Thank you.",
   ];
 
