@@ -10,6 +10,12 @@
   // fetch fails. Mirrors the `featured` entries in links.json.
   const FALLBACK = [
     {
+      title: 'Politiko Time Wire',
+      url: 'https://dataterminals.github.io/PolitikoTimeWire/',
+      repo: 'dataterminals/PolitikoTimeWire',
+      blurb: 'Offline, installable PWA — Politiko runs one game year per real week; this maps the in-game calendar onto your real one, month by month and timezone by timezone.',
+    },
+    {
       title: 'Forever Winter Almanac',
       url: 'https://dataterminals.github.io/forever-winter-almanac/',
       repo: 'dataterminals/forever-winter-almanac',

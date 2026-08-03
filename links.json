@@ -9,9 +9,18 @@
     { "id": "zomboid", "label": "Project Zomboid" },
     { "id": "vintage-story", "label": "Vintage Story" },
     { "id": "ghost-recon", "label": "Ghost Recon: Breakpoint" },
+    { "id": "politiko", "label": "Politiko" },
     { "id": "tools", "label": "Tools & Misc" }
   ],
   "links": [
+    {
+      "title": "Politiko Time Wire",
+      "url": "https://dataterminals.github.io/PolitikoTimeWire/",
+      "repo": "dataterminals/PolitikoTimeWire",
+      "category": "politiko",
+      "blurb": "Offline, installable PWA — Politiko runs one game year per real week, so this maps the in-game calendar onto your real one, month by month and timezone by timezone.",
+      "featured": true
+    },
     {
       "title": "Forever Winter Almanac",
       "url": "https://dataterminals.github.io/forever-winter-almanac/",
