@@ -112,6 +112,12 @@
     "In the space of the heart, is a place of no fear...\n...a feeling without limit that you cannot engineer.",
     "Whoever said that we're not supposed to get ecstatic?\nYou're off that media-induced comatose anesthetic.",
     "Looks like God and them forgot to take their happy pills again,\nbecause every shit-eater from your nightmares is getting top cream.",
+    "Outta the ground,\ninto the sky,\noutta the sky,\ninto the dirt.",
+    "Sequence scenerey: nuzzle of the beak buried deeply.",
+    "I used to give a hangnail's fuck about patience.",
+    "Biodegradable and highly relatable.",
+    "When everything you've ever learned or admired is disconnected - then bring some wire.",
+    "My shell - mechanical found ghost.\nBut my daily? Animal found toast.",
     "Thank you.",
   ];
 
