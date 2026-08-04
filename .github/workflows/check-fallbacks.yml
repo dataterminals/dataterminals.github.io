@@ -1,0 +1,22 @@
+# Guards the inline fallback copies in app.js against their JSON sources.
+# Deployment is unaffected: the site is served by GitHub's legacy Pages build
+# straight from main, which runs independently of this workflow.
+name: check fallbacks
+
+on:
+  push:
+    branches: [main]
+    paths: ['app.js', 'links.json', 'subtaglines.json', 'scripts/check-fallbacks.mjs', '.github/workflows/check-fallbacks.yml']
+  pull_request:
+    paths: ['app.js', 'links.json', 'subtaglines.json', 'scripts/check-fallbacks.mjs', '.github/workflows/check-fallbacks.yml']
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/check-fallbacks.mjs

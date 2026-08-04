@@ -13,19 +13,19 @@
       title: 'Forever Winter Almanac',
       url: 'https://dataterminals.github.io/forever-winter-almanac/',
       repo: 'dataterminals/forever-winter-almanac',
-      blurb: 'Offline, installable PWA — interactive maps, weapon & attachment gunsmith, datamined systems and the raiding-loot economy.',
+      blurb: 'Offline, installable PWA — interactive maps, weapon & attachment gunsmith, datamined game systems and the raiding-loot economy.',
     },
     {
       title: 'FWACT — Config Tool',
       url: 'https://github.com/dataterminals/fwact',
       repo: 'dataterminals/fwact',
-      blurb: "Total graphical control over The Forever Winter's config with in-game labels, tooltips, auto-backups and presets. Portable Tauri app.",
+      blurb: "Total graphical control over the game's config (INI, GVAS .sav, advanced cvars) with in-game labels, tooltips, auto-backups and presets. Portable Tauri app.",
     },
     {
       title: 'GR: Breakpoint Modding KB',
       url: 'https://github.com/dataterminals/grb-modding-knowledgebase',
       repo: 'dataterminals/grb-modding-knowledgebase',
-      blurb: 'Human- and AI-readable knowledgebase for modding Ghost Recon: Breakpoint — Anvil .forge, ATK, asset-replacement pipeline.',
+      blurb: 'Human- and AI-readable knowledgebase for modding Ghost Recon: Breakpoint — Anvil .forge format, ATK, and the asset-replacement pipeline.',
     },
     {
       title: 'Bandits: Performance Override',

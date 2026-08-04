@@ -41,6 +41,23 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
 Categories render in the order they appear in `categories[]`; links render in the order they appear
 in `links[]` within each category.
 
+Note that only entries with `"featured": true` are rendered — dropping the flag keeps a link
+catalogued in `links.json` without showing it on the page.
+
+### Keeping the inline fallbacks in sync
+
+`app.js` holds hand-written copies of two data sets so the page still renders populated on `file://`
+or when a fetch fails: `FALLBACK` mirrors the featured entries in `links.json`, and `SUBTAG_FALLBACK`
+mirrors `subtaglines.json`. **Edit both sides.** Nothing in the page enforces it, and a desync only
+shows up on the degraded path — the one nobody looks at.
+
+[`scripts/check-fallbacks.mjs`](scripts/check-fallbacks.mjs) checks it, and CI runs it on every push
+that touches those files:
+
+```bash
+node scripts/check-fallbacks.mjs
+```
+
 ## Background video
 
 Drop a short, seamless, muted clip into [`assets/`](assets/) — see [`assets/README.md`](assets/README.md)
