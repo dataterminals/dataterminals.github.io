@@ -40,12 +40,6 @@
       blurb: 'Research + un-junking plan for Bandits: Week One FPS on B42.',
     },
     {
-      title: 'Politiko Time Wire',
-      url: 'https://dataterminals.github.io/PolitikoTimeWire/',
-      repo: 'dataterminals/PolitikoTimeWire',
-      blurb: 'Offline, installable PWA — Politiko runs one game year per real week, so this maps the in-game calendar onto your real one, month by month and timezone by timezone.',
-    },
-    {
       title: 'TFW Modding Assistant',
       url: 'https://github.com/dataterminals/TFWModdingAssistant',
       repo: 'dataterminals/TFWModdingAssistant',
@@ -168,6 +162,19 @@
   const CACHE_TTL = 6 * 60 * 60 * 1000; // 6h
   const listEl = document.getElementById('links');
 
+  // This repo is held out of the "currently working on" pick. Editing the page
+  // pushes it, so leaving it in means the beacon reports itself every time the
+  // site is touched — the one answer that says nothing about what's being built.
+  const SELF_REPO = `${GH_USER}/${GH_USER}.github.io`.toLowerCase();
+
+  // Entrance stagger, in seconds: the featured grid climbs a rung per card, and
+  // the current-project card lands just ahead of it. Set per card as an inline
+  // custom property rather than by :nth-child, so inserting the current-project
+  // card later doesn't renumber (and so restart) the cards already on screen.
+  const RISE_FIRST = 0.3;
+  const RISE_STEP = 0.08;
+  const RISE_CURRENT = 0.22;
+
   /* ---------- helpers ---------- */
 
   const el = (tag, cls) => {
@@ -191,34 +198,78 @@
 
   /* ---------- render ---------- */
 
+  // One card. The empty .link__meta is the hook the GitHub pass fills in later;
+  // it stays empty (and invisible) if that never lands.
+  function buildCard(link) {
+    const a = el('a', 'link');
+    a.href = link.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+
+    const main = el('span', 'link__main');
+
+    const title = el('span', 'link__title');
+    title.append(document.createTextNode(link.title));
+    const arrow = el('span', 'link__arrow');
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '→';
+    title.append(arrow);
+    main.append(title);
+
+    const blurb = el('p', 'link__blurb');
+    blurb.textContent = link.blurb || '';
+    main.append(blurb);
+
+    const meta = el('span', 'link__meta');
+    if (link.repo) meta.dataset.repo = link.repo;
+
+    a.append(main, meta);
+    return a;
+  }
+
   function render(links) {
     listEl.textContent = '';
-    for (const link of links) {
-      const a = el('a', 'link');
-      a.href = link.url;
-      a.target = '_blank';
-      a.rel = 'noopener';
-
-      const main = el('span', 'link__main');
-
-      const title = el('span', 'link__title');
-      title.append(document.createTextNode(link.title));
-      const arrow = el('span', 'link__arrow');
-      arrow.setAttribute('aria-hidden', 'true');
-      arrow.textContent = '→';
-      title.append(arrow);
-      main.append(title);
-
-      const blurb = el('p', 'link__blurb');
-      blurb.textContent = link.blurb || '';
-      main.append(blurb);
-
-      const meta = el('span', 'link__meta');
-      if (link.repo) meta.dataset.repo = link.repo;
-
-      a.append(main, meta);
+    links.forEach((link, i) => {
+      const a = buildCard(link);
+      a.style.setProperty('--rise-delay', `${(RISE_FIRST + i * RISE_STEP).toFixed(2)}s`);
       listEl.append(a);
+    });
+  }
+
+  /* ---------- current project (most recently pushed repo) ---------- */
+
+  // The live beacon above the grid. Whichever repo was pushed last wins; if it
+  // happens to be catalogued in links.json we borrow that entry's title, blurb
+  // and url (a PWA link reads better than the bare GitHub one), and otherwise
+  // fall back to the repo's own name and GitHub description.
+  //
+  // Nothing reserves space for this card: it can't be known without the API, so
+  // it is prepended when the data lands and simply never appears if it doesn't.
+  function renderCurrent(repos, catalogue) {
+    let top = null;
+    for (const r of repos) {
+      if (!r.pushed_at || String(r.full_name).toLowerCase() === SELF_REPO) continue;
+      if (!top || Date.parse(r.pushed_at) > Date.parse(top.pushed_at)) top = r;
     }
+    if (!top) return;
+
+    const name = String(top.full_name);
+    const entry = catalogue.find((l) => l.repo && l.repo.toLowerCase() === name.toLowerCase());
+
+    const card = buildCard({
+      title: entry ? entry.title : name.split('/').pop(),
+      url: entry ? entry.url : `https://github.com/${name}`,
+      blurb: (entry && entry.blurb) || top.description || '',
+      repo: name,
+    });
+    card.classList.add('link--current');
+    card.style.setProperty('--rise-delay', `${RISE_CURRENT}s`);
+
+    const kicker = el('span', 'link__kicker');
+    kicker.textContent = 'Currently working on';
+    card.querySelector('.link__main').prepend(kicker);
+
+    listEl.prepend(card);
   }
 
   /* ---------- GitHub enrichment (progressive, silent) ---------- */
@@ -259,9 +310,14 @@
     }
   }
 
-  async function enrich() {
+  async function enrich(catalogue) {
     const repos = await getRepos();
     if (!repos) return;
+
+    // Prepend the current-project card first, so the stamping pass below picks
+    // its meta up in the same sweep as the grid's.
+    renderCurrent(repos, catalogue);
+
     const byName = new Map(repos.map((r) => [String(r.full_name).toLowerCase(), r]));
 
     for (const meta of listEl.querySelectorAll('.link__meta[data-repo]')) {
@@ -592,18 +648,24 @@
     initSubtag(); // fire-and-forget; falls back to the inline bank
     initTaglineGlitch();
 
-    let links = FALLBACK;
+    // `catalogue` is every link; `featured` is the subset the grid renders. The
+    // current-project card looks itself up in the full catalogue, since the repo
+    // pushed last is often one that isn't featured.
+    let catalogue = FALLBACK;
+    let featured = FALLBACK;
     try {
       const res = await fetch('links.json', { cache: 'no-cache' });
       if (res.ok) {
         const data = await res.json();
-        const featured = (data.links || []).filter((l) => l.featured);
-        if (featured.length) links = featured;
+        const all = data.links || [];
+        if (all.length) catalogue = all;
+        const f = all.filter((l) => l.featured);
+        if (f.length) featured = f;
       }
     } catch { /* keep fallback */ }
 
-    render(links);
-    enrich(); // fire-and-forget; silent on failure
+    render(featured);
+    enrich(catalogue); // fire-and-forget; silent on failure
   }
 
   if (document.readyState === 'loading') {

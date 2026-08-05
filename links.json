@@ -54,14 +54,6 @@
       "featured": true
     },
     {
-      "title": "Politiko Time Wire",
-      "url": "https://dataterminals.github.io/PolitikoTimeWire/",
-      "repo": "dataterminals/PolitikoTimeWire",
-      "category": "politiko",
-      "blurb": "Offline, installable PWA — Politiko runs one game year per real week, so this maps the in-game calendar onto your real one, month by month and timezone by timezone.",
-      "featured": true
-    },
-    {
       "title": "TFW Modding Assistant",
       "url": "https://github.com/dataterminals/TFWModdingAssistant",
       "repo": "dataterminals/TFWModdingAssistant",
@@ -222,6 +214,14 @@
       "repo": "dataterminals/TorchesContributeHeat",
       "category": "vintage-story",
       "blurb": "Lit torches act as minor heat sources, warming nearby players and rooms."
+    },
+
+    {
+      "title": "Politiko Time Wire",
+      "url": "https://dataterminals.github.io/PolitikoTimeWire/",
+      "repo": "dataterminals/PolitikoTimeWire",
+      "category": "politiko",
+      "blurb": "Offline, installable PWA — Politiko runs one game year per real week, so this maps the in-game calendar onto your real one, month by month and timezone by timezone."
     },
 
     {
