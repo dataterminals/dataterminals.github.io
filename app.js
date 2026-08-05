@@ -156,6 +156,9 @@
     "My shell - mechanical found ghost.\nBut my daily? Animal found toast.",
     "Hit me for the day...\n...for the light, that you suffered...\n...to come by, take to my sky -\nnever wanting, only wonder.",
     "One, two, three - swallow the key...\nin their footprints, I will follow.",
+    "I love a carrion, who's a real scavenger.",
+    "Excuse me little child, why the devious smile?\nWell, I've become what I've forsaken, and the irony's wild.",
+    "Are you in charge of this outfit?\n...No, not me, cousin -\nI wrestle distinction from the chompers of the buzzards.",
     "Thank you.",
   ];
 
