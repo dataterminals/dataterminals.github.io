@@ -16,6 +16,8 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   count (and falls back to the repo's GitHub description if a link has no `blurb`). This is progressive:
   if the API is offline or rate-limited, the page still looks complete. The response is cached in
   `localStorage` for a few hours so repeat visits don't re-hit the API.
+- **A live "currently working on" card.** The same API response decides it — whichever repo was
+  pushed last takes a full-width row above the grid. See below.
 
 ## Editing links
 
@@ -43,6 +45,23 @@ in `links[]` within each category.
 
 Note that only entries with `"featured": true` are rendered — dropping the flag keeps a link
 catalogued in `links.json` without showing it on the page.
+
+### The current-project card
+
+Above the grid sits one full-width card for whichever repo was pushed most recently, so the page
+reports what is actually being worked on rather than only what was curated. It needs no
+configuration — it reads the GitHub response the page already fetches.
+
+- If that repo is catalogued in `links.json`, the card borrows the entry's **title, blurb and url**
+  (so a PWA link wins over the bare GitHub one). Otherwise it falls back to the repo name and the
+  repo's GitHub description. Being catalogued is enough; it does not need `"featured"`.
+- If it *is* featured, its card is dropped from the grid so it doesn't appear twice — which can
+  leave the two-column grid with an odd one out on the last row.
+- This repo is held out of the running (`SELF_REPO` in `app.js`). Editing the page pushes it, so
+  leaving it in would make the card report itself every time the site is touched.
+- Nothing reserves the card's space: it can't be known without the API, so it is inserted when the
+  data lands and never appears if the API is unreachable or you're on `file://`. The repo list is
+  cached for 6h, so only a cold first visit sees it arrive late.
 
 ### Keeping the inline fallbacks in sync
 

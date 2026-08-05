@@ -256,6 +256,16 @@
     const name = String(top.full_name);
     const entry = catalogue.find((l) => l.repo && l.repo.toLowerCase() === name.toLowerCase());
 
+    // If the winner is also one of the featured cards, take it out of the grid:
+    // the beacon is already showing it, and the same card twice on one screen
+    // reads as a mistake. Costs the grid a card whenever it happens, so the row
+    // of two can end up with an odd one out.
+    for (const meta of listEl.querySelectorAll('.link__meta[data-repo]')) {
+      if (meta.dataset.repo.toLowerCase() !== name.toLowerCase()) continue;
+      meta.closest('.link').remove();
+      break;
+    }
+
     const card = buildCard({
       title: entry ? entry.title : name.split('/').pop(),
       url: entry ? entry.url : `https://github.com/${name}`,
