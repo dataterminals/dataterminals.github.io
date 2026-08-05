@@ -1,0 +1,24 @@
+# Guards the cache-busting stamps on index.html's script and stylesheet tags.
+# A stamp that wasn't refreshed after editing its file is invisible locally --
+# it only shows up as a returning visitor running new markup against old code.
+# Deployment is unaffected: the site is served by GitHub's legacy Pages build
+# straight from main, which runs independently of this workflow.
+name: check asset stamps
+
+on:
+  push:
+    branches: [main]
+    paths: ['index.html', '*.js', '*.css', 'scripts/stamp-assets.mjs', '.github/workflows/stamp-assets.yml']
+  pull_request:
+    paths: ['index.html', '*.js', '*.css', 'scripts/stamp-assets.mjs', '.github/workflows/stamp-assets.yml']
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/stamp-assets.mjs --check

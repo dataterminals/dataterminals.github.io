@@ -77,6 +77,33 @@ that touches those files:
 node scripts/check-fallbacks.mjs
 ```
 
+## Cache busting
+
+GitHub Pages serves every file with `Cache-Control: max-age=600` and gives you no way to change it.
+Each file's ten-minute window starts when *that file* was last fetched, so the windows drift apart —
+a returning visitor could hold a fresh `index.html` and a stale `app.js` at once, and run new markup
+against old code.
+
+So the script and stylesheet urls in `index.html` carry a hash of their own contents
+(`app.js?v=3551096c`). A changed file is a different url, so fetching the HTML fresh pulls its
+matching assets with it: the deploy lands as one piece or not at all. A file that *didn't* change
+keeps its url and stays cached.
+
+**Re-stamp after editing any `.js` or `.css`, and commit the result:**
+
+```bash
+node scripts/stamp-assets.mjs
+```
+
+[`scripts/stamp-assets.mjs`](scripts/stamp-assets.mjs) rewrites the stamps in place; `--check` only
+verifies them and exits non-zero, which is what CI runs on every push touching those files. Both
+modes are idempotent. Media in `assets/` is deliberately left unstamped (large, rarely changed), as
+are the JSON data files (already fetched with `cache: 'no-cache'`, so they revalidate on their own).
+
+This does **not** shorten the HTML's own ten-minute window, and nothing served by Pages can. A
+returning visitor still sees the previous page for up to ten minutes — then sees the new one whole.
+A first visit or a hard reload is immediate.
+
 ## Background video
 
 Drop a short, seamless, muted clip into [`assets/`](assets/) — see [`assets/README.md`](assets/README.md)
