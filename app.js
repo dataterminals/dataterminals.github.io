@@ -10,10 +10,46 @@
   // fetch fails. Mirrors the `featured` entries in links.json.
   const FALLBACK = [
     {
+      title: 'CMSF — Character Model Framework',
+      url: 'https://github.com/dataterminals/TFWCharModelSelFramework',
+      repo: 'dataterminals/TFWCharModelSelFramework',
+      blurb: 'Appends player-character skins to the select screen instead of overwriting the finite slots the game ships with. Install-once framework plus an authoring tool, so no two skin mods collide.',
+    },
+    {
       title: 'Forever Winter Almanac',
       url: 'https://dataterminals.github.io/forever-winter-almanac/',
       repo: 'dataterminals/forever-winter-almanac',
       blurb: 'Offline, installable PWA — interactive maps, weapon & attachment gunsmith, datamined game systems and the raiding-loot economy.',
+    },
+    {
+      title: 'Claude Usage Monitor',
+      url: 'https://github.com/dataterminals/claude-usage-monitor',
+      repo: 'dataterminals/claude-usage-monitor',
+      blurb: 'Windows tray app showing how close you are to your Claude plan limits — live gauges, burn rate, and the wait that puts you back on an even spend. Read from local transcripts.',
+    },
+    {
+      title: 'Vesktop Claude Bridge',
+      url: 'https://github.com/dataterminals/VesktopClaudeBridge',
+      repo: 'dataterminals/VesktopClaudeBridge',
+      blurb: 'Read your Discord from Claude Code — an Equicord/Vencord userplugin plus a local MCP sidecar. No screenshots, no copy-paste, no bot account.',
+    },
+    {
+      title: 'Bandits: Performance Override',
+      url: 'https://github.com/dataterminals/BanditsPerformanceOverride',
+      repo: 'dataterminals/BanditsPerformanceOverride',
+      blurb: 'Research + un-junking plan for Bandits: Week One FPS on B42.',
+    },
+    {
+      title: 'Politiko Time Wire',
+      url: 'https://dataterminals.github.io/PolitikoTimeWire/',
+      repo: 'dataterminals/PolitikoTimeWire',
+      blurb: 'Offline, installable PWA — Politiko runs one game year per real week, so this maps the in-game calendar onto your real one, month by month and timezone by timezone.',
+    },
+    {
+      title: 'TFW Modding Assistant',
+      url: 'https://github.com/dataterminals/TFWModdingAssistant',
+      repo: 'dataterminals/TFWModdingAssistant',
+      blurb: 'Menu-driven console tool for the two things that fail silently — UE4SS and TFWWorkbench. Tells you which of six causes you hit, then sets the stack up with pinned, hash-verified versions.',
     },
     {
       title: 'FWACT — Config Tool',
@@ -22,16 +58,22 @@
       blurb: "Total graphical control over the game's config (INI, GVAS .sav, advanced cvars) with in-game labels, tooltips, auto-backups and presets. Portable Tauri app.",
     },
     {
+      title: 'NewStefanMap',
+      url: 'https://dataterminals.github.io/NewStefanMap/',
+      repo: 'dataterminals/NewStefanMap',
+      blurb: "Phone-first reproduction of Stefan's live MBTA map — every train moving in real time on an SVG schematic, tap any station for arrivals. Client-side, no backend.",
+    },
+    {
+      title: 'TFW Update Ops',
+      url: 'https://github.com/dataterminals/tfw-update-ops',
+      repo: 'dataterminals/tfw-update-ops',
+      blurb: "Command post for Forever Winter game updates: the registry of what we own, the doctrine for handling a patch, and the live per-build state — so one patch isn't 25 independent panics.",
+    },
+    {
       title: 'GR: Breakpoint Modding KB',
       url: 'https://github.com/dataterminals/grb-modding-knowledgebase',
       repo: 'dataterminals/grb-modding-knowledgebase',
       blurb: 'Human- and AI-readable knowledgebase for modding Ghost Recon: Breakpoint — Anvil .forge format, ATK, and the asset-replacement pipeline.',
-    },
-    {
-      title: 'Bandits: Performance Override',
-      url: 'https://github.com/dataterminals/BanditsPerformanceOverride',
-      repo: 'dataterminals/BanditsPerformanceOverride',
-      blurb: 'Research + un-junking plan for Bandits: Week One FPS on B42.',
     },
   ];
 

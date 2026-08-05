@@ -1087,11 +1087,21 @@ main {
 .reveal:nth-child(1) { animation-delay: 0.05s; }
 .reveal:nth-child(2) { animation-delay: 0.16s; }
 .reveal:nth-child(3) { animation-delay: 0.27s; }
+/* One rung per featured card, 0.08s apart. Cards past the last rung inherit no
+   delay and would all rise at once — extend this list when links.json features
+   more of them. */
 .links .link { opacity: 0; transform: translateY(10px); animation: rise 0.7s var(--ease) forwards; }
 .links .link:nth-child(1) { animation-delay: 0.30s; }
 .links .link:nth-child(2) { animation-delay: 0.38s; }
 .links .link:nth-child(3) { animation-delay: 0.46s; }
 .links .link:nth-child(4) { animation-delay: 0.54s; }
+.links .link:nth-child(5) { animation-delay: 0.62s; }
+.links .link:nth-child(6) { animation-delay: 0.70s; }
+.links .link:nth-child(7) { animation-delay: 0.78s; }
+.links .link:nth-child(8) { animation-delay: 0.86s; }
+.links .link:nth-child(9) { animation-delay: 0.94s; }
+.links .link:nth-child(10) { animation-delay: 1.02s; }
+.links .link:nth-child(11) { animation-delay: 1.10s; }
 
 @keyframes rise {
   to { opacity: 1; transform: none; }
