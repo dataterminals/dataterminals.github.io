@@ -160,6 +160,7 @@
     "Excuse me little child, why the devious smile?\nWell, I've become what I've forsaken, and the irony's wild.",
     "Are you in charge of this outfit?\n...No, not me, cousin -\nI wrestle distinction from the chompers of the buzzards.",
     "I've been wondering how arrogant it is for me to keep doing the things that kill so many that I know...\n...and I've been noticing how quick these motherfuckers have the answers to existence just as soon as someone goes.",
+    "I guess I was seduced by the filth on the floor...\nI guess it just reminded me of shit that I saw.",
     "Thank you.",
   ];
 
