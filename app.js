@@ -163,6 +163,8 @@
     "I guess I was seduced by the filth on the floor...\nI guess it just reminded me of shit that I saw.",
     "This is the future soul of Ms. Deni - and the only thing worse than burning in hell...\n...is writing a tagline drop on a website *about* burning in hell!",
     "Thank you.",
+    "When you're a star...\nI know that you'll fix... everything.",
+    "Fear of a female planet?\nI just want you to know...\nthat we can still...\n...be friends.",
   ];
 
   const GH_USER = 'dataterminals';
