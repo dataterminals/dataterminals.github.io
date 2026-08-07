@@ -169,6 +169,7 @@
 
   const GH_USER = 'dataterminals';
   const CACHE_KEY = 'dt:gh:repos';
+  const EVENTS_CACHE_KEY = 'dt:gh:events';
   const CACHE_TTL = 6 * 60 * 60 * 1000; // 6h
   const listEl = document.getElementById('links');
 
@@ -176,6 +177,36 @@
   // pushes it, so leaving it in means the beacon reports itself every time the
   // site is touched — the one answer that says nothing about what's being built.
   const SELF_REPO = `${GH_USER}/${GH_USER}.github.io`.toLowerCase();
+
+  // How the current-project card is decided.
+  //
+  // A single timestamp can't tell building apart from housekeeping. A sweep that
+  // touches six repos with one janitorial commit each — a licence header, a line
+  // ending fix, splitting a monorepo — leaves every one of them looking newer
+  // than the project that got a solid week of work, and the beacon reports
+  // whichever repo the sweep happened to reach last. Arbitrary, and wrong.
+  //
+  // So the pick is scored from the push feed instead: every push in the window
+  // contributes, decayed by age, and the repo with the most weight wins. A lone
+  // touch scores once and loses to sustained work even when it is newer, while a
+  // burst that has since gone quiet decays out of contention. The half-life is
+  // deliberately short — this card claims the present tense.
+  const ACTIVITY_WINDOW_DAYS = 14;
+  const ACTIVITY_HALF_LIFE_DAYS = 2;
+
+  // The push feed is a second request, so it is the first thing to go missing on
+  // a flaky network or a spent rate limit. When it does, the pick falls back to
+  // the repo list's `pushed_at` and sweeps are filtered structurally: repos are
+  // clustered by how close together they were pushed (chained, so a slow manual
+  // sweep clusters as readily as a scripted one), and a cluster of at least
+  // SWEEP_MIN_REPOS is read as housekeeping and skipped entirely.
+  //
+  // Blunter than the scored path — it can only see timing, not volume, so it
+  // still can't tell a one-commit day from a busy one, and a genuine two-repo
+  // session stays below the threshold on purpose. It just has to be right more
+  // often than picking blind.
+  const SWEEP_GAP_MS = 90 * 1000;
+  const SWEEP_MIN_REPOS = 3;
 
   // Entrance stagger, in seconds: the featured grid climbs a rung per card, and
   // the current-project card lands just ahead of it. Set per card as an inline
@@ -248,22 +279,80 @@
 
   /* ---------- current project (most recently pushed repo) ---------- */
 
-  // The live beacon above the grid. Whichever repo was pushed last wins; if it
-  // happens to be catalogued in links.json we borrow that entry's title, blurb
-  // and url (a PWA link reads better than the bare GitHub one), and otherwise
-  // fall back to the repo's own name and GitHub description.
+  // Score every repo the push feed mentions, newest pushes counting for most,
+  // and return the heaviest name. Null if the feed told us nothing usable — the
+  // caller falls back to `pushed_at` from there.
+  function pickByActivity(events) {
+    if (!Array.isArray(events)) return null;
+
+    const now = Date.now();
+    const scores = new Map();
+
+    for (const e of events) {
+      if (!e || e.type !== 'PushEvent') continue;
+      const name = e.repo && e.repo.name;
+      const at = Date.parse(e.created_at);
+      if (!name || !at || String(name).toLowerCase() === SELF_REPO) continue;
+
+      const ageDays = (now - at) / 86400000;
+      if (ageDays < 0 || ageDays > ACTIVITY_WINDOW_DAYS) continue;
+
+      const weight = Math.pow(0.5, ageDays / ACTIVITY_HALF_LIFE_DAYS);
+      scores.set(name, (scores.get(name) || 0) + weight);
+    }
+
+    let top = null;
+    for (const [name, score] of scores) {
+      if (!top || score > top.score) top = { name, score };
+    }
+    return top ? top.name : null;
+  }
+
+  // Fallback pick: newest `pushed_at`, minus anything that looks like a sweep.
+  // Walking the sorted list and starting a new cluster whenever the gap opens up
+  // means a sweep is caught by its shape rather than by any fixed window, so a
+  // scripted burst and a slow manual one both register.
+  function pickByPush(repos) {
+    const sorted = repos
+      .filter((r) => r.pushed_at && String(r.full_name).toLowerCase() !== SELF_REPO)
+      .sort((a, b) => Date.parse(b.pushed_at) - Date.parse(a.pushed_at));
+    if (!sorted.length) return null;
+
+    let cluster = [];
+    const clusters = [cluster];
+    for (const r of sorted) {
+      const prev = cluster[cluster.length - 1];
+      if (prev && Date.parse(prev.pushed_at) - Date.parse(r.pushed_at) > SWEEP_GAP_MS) {
+        cluster = [];
+        clusters.push(cluster);
+      }
+      cluster.push(r);
+    }
+
+    // Newest cluster that isn't a sweep. If every one of them is — a page opened
+    // in the middle of a big sweep and nothing else — take the newest repo
+    // anyway rather than showing no card at all.
+    for (const c of clusters) {
+      if (c.length < SWEEP_MIN_REPOS) return c[0].full_name;
+    }
+    return sorted[0].full_name;
+  }
+
+  // The live beacon above the grid. Whichever repo is being worked on hardest
+  // wins (see the scoring notes up top); if it happens to be catalogued in
+  // links.json we borrow that entry's title, blurb and url (a PWA link reads
+  // better than the bare GitHub one), and otherwise fall back to the repo's own
+  // name and GitHub description.
   //
   // Nothing reserves space for this card: it can't be known without the API, so
   // it is prepended when the data lands and simply never appears if it doesn't.
-  function renderCurrent(repos, catalogue) {
-    let top = null;
-    for (const r of repos) {
-      if (!r.pushed_at || String(r.full_name).toLowerCase() === SELF_REPO) continue;
-      if (!top || Date.parse(r.pushed_at) > Date.parse(top.pushed_at)) top = r;
-    }
-    if (!top) return;
+  function renderCurrent(repos, events, catalogue) {
+    const name = pickByActivity(events) || pickByPush(repos);
+    if (!name) return;
 
-    const name = String(top.full_name);
+    // The repo list is what carries descriptions; the push feed only names names.
+    // A pick with no matching entry still renders, just without the fallback blurb.
+    const top = repos.find((r) => String(r.full_name).toLowerCase() === name.toLowerCase()) || {};
     const entry = catalogue.find((l) => l.repo && l.repo.toLowerCase() === name.toLowerCase());
 
     // If the winner is also one of the featured cards, take it out of the grid:
@@ -294,14 +383,28 @@
 
   /* ---------- GitHub enrichment (progressive, silent) ---------- */
 
-  function readCache() {
+  function readCache(key) {
     try {
-      const raw = localStorage.getItem(CACHE_KEY);
+      const raw = localStorage.getItem(key);
       if (!raw) return null;
       const parsed = JSON.parse(raw);
       if (!parsed || !Array.isArray(parsed.data)) return null;
       return parsed; // { t, data }
     } catch { return null; }
+  }
+
+  // Fetch through the cache: serve anything still inside the TTL, otherwise go
+  // out and refresh, and hand back whatever stale copy we have if that fails.
+  async function cached(key, fetcher) {
+    const hit = readCache(key);
+    if (hit && Date.now() - hit.t < CACHE_TTL) return hit.data;
+    try {
+      const data = await fetcher();
+      try { localStorage.setItem(key, JSON.stringify({ t: Date.now(), data })); } catch {}
+      return data;
+    } catch {
+      return hit ? hit.data : null;
+    }
   }
 
   async function fetchRepos() {
@@ -318,25 +421,32 @@
     }));
   }
 
-  async function getRepos() {
-    const cached = readCache();
-    if (cached && Date.now() - cached.t < CACHE_TTL) return cached.data;
-    try {
-      const data = await fetchRepos();
-      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), data })); } catch {}
-      return data;
-    } catch {
-      return cached ? cached.data : null; // fall back to stale cache if we have it
-    }
+  // One page is ~10 days of history at this account's rate — comfortably past
+  // the point where the age decay has made a push stop mattering.
+  async function fetchEvents() {
+    const url = `https://api.github.com/users/${GH_USER}/events/public?per_page=100`;
+    const res = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
+    if (!res.ok) throw new Error(`gh ${res.status}`);
+    const raw = await res.json();
+    // Pushes only, trimmed to the three fields the scoring reads — the raw feed
+    // is far too big for localStorage.
+    return raw
+      .filter((e) => e.type === 'PushEvent')
+      .map((e) => ({ type: e.type, repo: { name: e.repo && e.repo.name }, created_at: e.created_at }));
   }
 
   async function enrich(catalogue) {
-    const repos = await getRepos();
+    // Both requests go out together, and the page survives either coming back
+    // empty: no events costs the scored pick, no repos costs the whole pass.
+    const [repos, events] = await Promise.all([
+      cached(CACHE_KEY, fetchRepos),
+      cached(EVENTS_CACHE_KEY, fetchEvents),
+    ]);
     if (!repos) return;
 
     // Prepend the current-project card first, so the stamping pass below picks
     // its meta up in the same sweep as the grid's.
-    renderCurrent(repos, catalogue);
+    renderCurrent(repos, events, catalogue);
 
     const byName = new Map(repos.map((r) => [String(r.full_name).toLowerCase(), r]));
 

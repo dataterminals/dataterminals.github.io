@@ -11,13 +11,13 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   it straight from `main` (an empty `.nojekyll` disables Jekyll processing).
 - **Content is data-driven.** The page fetches [`links.json`](links.json) and renders everything from it.
   To add / remove / reorder a link, edit that file — no HTML changes.
-- **Hybrid freshness.** After the curated content renders, the page makes a single call to the public
-  GitHub API (`/users/dataterminals/repos`) and enriches each card with its last-pushed date and star
-  count (and falls back to the repo's GitHub description if a link has no `blurb`). This is progressive:
-  if the API is offline or rate-limited, the page still looks complete. The response is cached in
+- **Hybrid freshness.** After the curated content renders, the page calls the public GitHub API
+  (`/users/dataterminals/repos`) and enriches each card with its last-pushed date and star count
+  (and falls back to the repo's GitHub description if a link has no `blurb`). This is progressive:
+  if the API is offline or rate-limited, the page still looks complete. Responses are cached in
   `localStorage` for a few hours so repeat visits don't re-hit the API.
-- **A live "currently working on" card.** The same API response decides it — whichever repo was
-  pushed last takes a full-width row above the grid. See below.
+- **A live "currently working on" card.** A second call (`/users/dataterminals/events/public`) scores
+  which repo is genuinely being worked on; it takes a full-width row above the grid. See below.
 
 ## Editing links
 
@@ -48,10 +48,25 @@ catalogued in `links.json` without showing it on the page.
 
 ### The current-project card
 
-Above the grid sits one full-width card for whichever repo was pushed most recently, so the page
-reports what is actually being worked on rather than only what was curated. It needs no
-configuration — it reads the GitHub response the page already fetches.
+Above the grid sits one full-width card for whichever repo is actually being worked on, so the page
+reports the present tense rather than only what was curated. It needs no configuration.
 
+**How the repo is picked.** Not by "newest push" — that can't tell building apart from housekeeping.
+A sweep that touches six repos with one janitorial commit each (a licence header, a line-ending fix,
+splitting a monorepo) leaves every one of them looking newer than the project that got a solid week
+of work, and the card ends up reporting whichever repo the sweep happened to reach last.
+
+So the pick is scored from the push feed (`/users/dataterminals/events/public`) instead: every push
+in the last `ACTIVITY_WINDOW_DAYS` contributes, decayed by its age on a half-life of
+`ACTIVITY_HALF_LIFE_DAYS`, and the heaviest repo wins. A lone touch scores once and loses to sustained work even when it is
+newer; a burst that has since gone quiet decays out of contention. Both constants live in `app.js`.
+
+- **If the push feed is unavailable** (it's the second request, so it's first to go missing on a spent
+  rate limit), the pick falls back to newest `pushed_at` with sweeps filtered structurally: repos are
+  clustered by how close together they were pushed — chained, so a slow manual sweep clusters as
+  readily as a scripted one — and a cluster of `SWEEP_MIN_REPOS` or more is skipped as housekeeping.
+  Blunter than the scored path, since timing is all it can see: it can't tell a one-commit day from a
+  busy one, and a genuine two-repo session stays under the threshold on purpose.
 - If that repo is catalogued in `links.json`, the card borrows the entry's **title, blurb and url**
   (so a PWA link wins over the bare GitHub one). Otherwise it falls back to the repo name and the
   repo's GitHub description. Being catalogued is enough; it does not need `"featured"`.
@@ -60,7 +75,7 @@ configuration — it reads the GitHub response the page already fetches.
 - This repo is held out of the running (`SELF_REPO` in `app.js`). Editing the page pushes it, so
   leaving it in would make the card report itself every time the site is touched.
 - Nothing reserves the card's space: it can't be known without the API, so it is inserted when the
-  data lands and never appears if the API is unreachable or you're on `file://`. The repo list is
+  data lands and never appears if the API is unreachable or you're on `file://`. Both responses are
   cached for 6h, so only a cold first visit sees it arrive late.
 
 ### Keeping the inline fallbacks in sync
