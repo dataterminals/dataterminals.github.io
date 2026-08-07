@@ -173,6 +173,8 @@
     "Oops, so sorry - this is just the implant, talking for me.",
     "I'm a young girl - I want happy,\nwe deserve that, dreams collapsing.",
     "Hand, over hand, over hand, over fist.",
+    "Now you're all up in the family tree, come broken-nuclear,\nwith termites corroded in your veins, and elected to drown the pain.",
+    "Some where deep beneath me, a fracture seized at my neck,\nbreath was it - a flag that marked the end of my peace.",
   ];
 
   const GH_USER = 'dataterminals';
