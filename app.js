@@ -169,6 +169,10 @@
     "Everybody's afraid to say that it just sucks\nto watch talented artists and singers pretending they sell drugs,\nbut the white journalists love it - they think it defines black,\nlike murder and pain is kitschy, and rap is good for a laugh.",
     "We went from battle-rap to gun talk, like nobody noticed the change.",
     "Cry out with a fiendish ring.",
+    "I might have been born yesterday, friend -\nbut I stayed up all night.",
+    "Oops, so sorry - this is just the implant, talking for me.",
+    "I'm a young girl - I want happy,\nwe deserve that, dreams collapsing.",
+    "Hand, over hand, over hand, over fist.",
   ];
 
   const GH_USER = 'dataterminals';
