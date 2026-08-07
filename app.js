@@ -165,6 +165,7 @@
     "Thank you.",
     "When you're a star...\nI know that you'll fix... everything.",
     "Fear of a female planet?\nI just want you to know...\nthat we can still...\n...be friends.",
+    "Maybe I'm wrong, but I think there's more to this song\nthan a couple suicide planes from your 'allahu-akhbar.'",
   ];
 
   const GH_USER = 'dataterminals';
