@@ -168,6 +168,7 @@
     "Maybe I'm wrong, but I think there's more to this song\nthan a couple suicide planes from your 'allahu-akhbar.'",
     "Everybody's afraid to say that it just sucks\nto watch talented artists and singers pretending they sell drugs,\nbut the white journalists love it - they think it defines black,\nlike murder and pain is kitschy, and rap is good for a laugh.",
     "We went from battle-rap to gun talk, like nobody noticed the change.",
+    "Cry out with a fiendish ring.",
   ];
 
   const GH_USER = 'dataterminals';
