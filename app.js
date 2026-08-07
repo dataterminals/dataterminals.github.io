@@ -149,7 +149,7 @@
     "Whoever said that we're not supposed to get ecstatic?\nYou're off that media-induced comatose anesthetic.",
     "Looks like God and them forgot to take their happy pills again,\nbecause every shit-eater from your nightmares is getting top cream.",
     "Outta the ground,\ninto the sky,\noutta the sky,\ninto the dirt.",
-    "Sequence scenerey: nuzzle of the beak buried deeply.",
+    "Sequence scenery: nuzzle of the beak buried deeply.",
     "I used to give a hangnail's fuck about patience.",
     "Biodegradable and highly relatable.",
     "When everything you've ever learned or admired is disconnected - then bring some wire.",
@@ -174,7 +174,7 @@
     "I'm a young girl - I want happy,\nwe deserve that, dreams collapsing.",
     "Hand, over hand, over hand, over fist.",
     "Now you're all up in the family tree, come broken-nuclear,\nwith termites corroded in your veins, and elected to drown the pain.",
-    "Some where deep beneath me, a fracture seized at my neck,\nbreath was it - a flag that marked the end of my peace.",
+    "Somewhere deep beneath me, a fracture seized at my neck,\nbreath was it - a flag that marked the end of my peace.",
   ];
 
   const GH_USER = 'dataterminals';
