@@ -175,6 +175,8 @@
     "Hand, over hand, over hand, over fist.",
     "Now you're all up in the family tree, come broken-nuclear,\nwith termites corroded in your veins, and elected to drown the pain.",
     "Somewhere deep beneath me, a fracture seized at my neck,\nbreath was it - a flag that marked the end of my peace.",
+    "Epiphanies leap out and surprise-\n-off a batch of dead friends-\nthe hardest way to get zen.",
+    "It's all teenage poetry - martyrs without causes.",
   ];
 
   const GH_USER = 'dataterminals';
