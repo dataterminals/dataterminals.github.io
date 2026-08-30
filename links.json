@@ -5,12 +5,30 @@
     "github": "https://github.com/dataterminals"
   },
   "categories": [
-    { "id": "forever-winter", "label": "The Forever Winter" },
-    { "id": "zomboid", "label": "Project Zomboid" },
-    { "id": "vintage-story", "label": "Vintage Story" },
-    { "id": "ghost-recon", "label": "Ghost Recon: Breakpoint" },
-    { "id": "politiko", "label": "Politiko" },
-    { "id": "tools", "label": "Tools & Misc" }
+    {
+      "id": "forever-winter",
+      "label": "The Forever Winter"
+    },
+    {
+      "id": "zomboid",
+      "label": "Project Zomboid"
+    },
+    {
+      "id": "vintage-story",
+      "label": "Vintage Story"
+    },
+    {
+      "id": "ghost-recon",
+      "label": "Ghost Recon: Breakpoint"
+    },
+    {
+      "id": "politiko",
+      "label": "Politiko"
+    },
+    {
+      "id": "tools",
+      "label": "Tools & Misc"
+    }
   ],
   "links": [
     {
@@ -93,7 +111,14 @@
       "blurb": "Human- and AI-readable knowledgebase for modding Ghost Recon: Breakpoint — Anvil .forge format, ATK, and the asset-replacement pipeline.",
       "featured": true
     },
-
+    {
+      "title": "Tier 1 Crowdfund Registry",
+      "url": "https://dataterminals.github.io/t1-crowdfunds/",
+      "repo": "dataterminals/t1-crowdfunds",
+      "category": "ghost-recon",
+      "blurb": "Every crowdfund Tier 1 Imports has run, with dates, creators, sign-ups and where each mod ended up — reconstructed from a channel that deletes its own history.",
+      "featured": true
+    },
     {
       "title": "Forever Winter Skin Mods",
       "url": "https://github.com/dataterminals/forever-winter-skin-mods",
@@ -115,7 +140,6 @@
       "category": "forever-winter",
       "blurb": "Compatibility fix for the Heavy Rifle Rebalance mod (Nexus #76) — rebuilds the pak for build 0.9.3.9.2."
     },
-
     {
       "title": "Bandits: Homestead",
       "url": "https://github.com/dataterminals/BanditsWeekOneHomestead",
@@ -172,7 +196,6 @@
       "category": "zomboid",
       "blurb": "Compatibility shim fixing Slayetta Faces (and legacy FM_Data face packs) on Build 42."
     },
-
     {
       "title": "Boards for Charcoal",
       "url": "https://github.com/dataterminals/lionfox_BoardsForCharcoal",
@@ -215,7 +238,6 @@
       "category": "vintage-story",
       "blurb": "Lit torches act as minor heat sources, warming nearby players and rooms."
     },
-
     {
       "title": "Politiko Time Wire",
       "url": "https://dataterminals.github.io/PolitikoTimeWire/",
@@ -223,7 +245,6 @@
       "category": "politiko",
       "blurb": "Offline, installable PWA — Politiko runs one game year per real week, so this maps the in-game calendar onto your real one, month by month and timezone by timezone."
     },
-
     {
       "title": "Revenge QuickFormat",
       "url": "https://github.com/dataterminals/RevengeQuickFormat",

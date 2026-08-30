@@ -1082,6 +1082,7 @@ main {
 .shelf__link:nth-child(5) { --gd: 10s;   --ff: 8.3s; --fd1: -5.4s; --fd2: -4.7s; }
 .shelf__link:nth-child(6) { --gd: 10.7s; --ff: 7.2s; --fd1: -3.8s; --fd2: -8.5s; }
 .shelf__link:nth-child(7) { --gd: 9.2s;  --ff: 8.8s; --fd1: -6.5s; --fd2: -2.6s; }
+.shelf__link:nth-child(8) { --gd: 11.4s; --ff: 7.5s; --fd1: -2.9s; --fd2: -7.3s; }
 
 @keyframes shelf-float {
   0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
