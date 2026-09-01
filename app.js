@@ -177,6 +177,14 @@
     "Somewhere deep beneath me, a fracture seized at my neck,\nbreath was it - a flag that marked the end of my peace.",
     "Epiphanies leap out and surprise-\n-off a batch of dead friends-\nthe hardest way to get zen.",
     "It's all teenage poetry - martyrs without causes.",
+    "I bet you'd only run, if you saw what goes inside...\n...our own.\nAnd I'd bet you'd lead the way, if it were up to you to decide-\nbut it's not.",
+    "When one little bump leads to shock, miss a beat -\nyou run for cover, in this heat.",
+    "...Just keep my grill locked, and hope the entropy stops.",
+    "Timepiece must've read early morning at least, so I lay death's-cousin.",
+    "...Slept my last sleep, while I counted cloned sheep,\nand dreamt about nothing for the last time ever.\nThe ignorance was blissful, just in recollection,\na gift of innocent time, or a merciful deception?",
+    "High-incident clips between a crumple zone.",
+    "Awoke to hazy landscapes, to find my world defies the laws my own mind mandates.",
+    "My clarity was found under the arm of an economy-sized mousetrap.",
   ];
 
   const GH_USER = 'dataterminals';
