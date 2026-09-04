@@ -69,6 +69,12 @@
       repo: 'dataterminals/grb-modding-knowledgebase',
       blurb: 'Human- and AI-readable knowledgebase for modding Ghost Recon: Breakpoint — Anvil .forge format, ATK, and the asset-replacement pipeline.',
     },
+    {
+      title: 'Tier 1 Crowdfund Registry',
+      url: 'https://dataterminals.github.io/t1-crowdfunds/',
+      repo: 'dataterminals/t1-crowdfunds',
+      blurb: 'Every crowdfund Tier 1 Imports has run, with dates, creators, sign-ups and where each mod ended up — reconstructed from a channel that deletes its own history.',
+    },
   ];
 
   // Inline fallback for the sub-tagline bank, mirroring subtaglines.json, so the
@@ -185,6 +191,7 @@
     "High-incident clips between a crumple zone.",
     "Awoke to hazy landscapes, to find my world defies the laws my own mind mandates.",
     "My clarity was found under the arm of an economy-sized mousetrap.",
+    "Rumble out of bed and stumble to the kitchen,\npour myself a cup of ambition - and yawn,\nand stretch, and my life is a mess, and\nif I ever make it home today, then god bless.",
   ];
 
   const GH_USER = 'dataterminals';

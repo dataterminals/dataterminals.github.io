@@ -1,0 +1,246 @@
+{
+  "categories": [
+    {
+      "id": "politiko",
+      "label": "Politiko"
+    },
+    {
+      "id": "youtube",
+      "label": "YouTube"
+    },
+    {
+      "id": "amazon",
+      "label": "Amazon"
+    },
+    {
+      "id": "ebay",
+      "label": "eBay"
+    },
+    {
+      "id": "chime",
+      "label": "Chime"
+    },
+    {
+      "id": "pi",
+      "label": "Pi Connect"
+    }
+  ],
+  "scripts": [
+    {
+      "label": "Align Watch",
+      "name": "Politiko — Align Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.7.0",
+      "description": "Mirrors your character's political-compass chart from the profile screen onto the home page: last measured social/economic axes, every change since you installed it, and the projected effect of alignment actions you have taken since that reading. Passive — zero added requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/align-watch.user.js"
+    },
+    {
+      "label": "Bar Watch",
+      "name": "Politiko — Bar Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.2.0",
+      "description": "Time-to-full for Energy, Juice and HP — the one thing the game's own bars never say. Reads the attribute payload the client already fetched and projects it forward with the client's own arithmetic; adds zero requests. Alerts when a bar reaches a level you set, in the page by default, and optionally in the tab title, the favicon and a tone.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/bar-watch.user.js"
+    },
+    {
+      "label": "Comms Move",
+      "name": "Politiko — Comms Move",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.1.1",
+      "description": "Adds a drag bar to the game's Comms dock so you can put it somewhere other than the bottom-right corner, and remembers where. Touches the DOM of the page you are on and nothing else — no network, no data, no storage beyond the position.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/comms-move.user.js"
+    },
+    {
+      "label": "Gov Watch",
+      "name": "Politiko — Gov Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.4.0",
+      "description": "A change ledger for the government. Records every policy axis, seat, justice, congress member and presidential number the app already fetched, and reports what moved between two readings — with the window the change happened in, never a timestamp it cannot know. Passive; zero added requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/gov-watch.user.js"
+    },
+    {
+      "label": "Jack Watch",
+      "name": "Politiko — Jack Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.1.0",
+      "description": "Solves the blackjack table the game never advertises a number for: the right action and what every other one costs, the chances behind it, a running count with the evidence for whether it means anything, and the money in and out. Reads only responses the game already fetched. Passive; zero added requests; presses nothing.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/jack-watch.user.js"
+    },
+    {
+      "label": "Market Watch",
+      "name": "Politiko — Market Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "1.5.0",
+      "description": "Records numeric series out of market/API responses the app already fetched, charts them locally, and fires threshold / %-move / rate-of-change alerts. Fully passive — it places no orders and originates no requests; a buy/sell rule hands you a sized shortcut to the stocks screen instead.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/market-watch.user.js"
+    },
+    {
+      "label": "People Watch",
+      "name": "Politiko — People Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "1.11.0",
+      "description": "Builds a local ledger of players' last-online times, cities, ranks and combat records from the profiles you open, and sorts it least-active-first. Fully passive: it reads responses the game already made and originates nothing. Includes a next/back walk so filling the ledger by hand is one keypress per player — along the roster, or along the panel's own sorted and filtered list.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/people-watch.user.js"
+    },
+    {
+      "label": "Poll Watch",
+      "name": "Politiko — Poll Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.4.0",
+      "description": "Keeps every opinion-poll memo you run — timestamped in real and game time, with the bloc spread, the per-issue trend since your last poll, and TSV/JSON export. Passive: it reads the memo the game already handed you and originates no requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/poll-watch.user.js"
+    },
+    {
+      "label": "Quick Jump",
+      "name": "Politiko — Quick Jump",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.7.0",
+      "description": "A launcher for the 64 screens the sidebar cannot reach. Offers every parameterless route the game ships, and learns the ID-bearing ones — casinos above all — from responses the game already fetched while you played. Shows the casino's city gate next to the door so you never load a floor you cannot enter. Passive: zero added requests, and every jump is one you pressed a key for.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/quick-jump.user.js"
+    },
+    {
+      "label": "Raid Watch",
+      "name": "Politiko — Raid Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.7.0",
+      "description": "Records faction raids from responses the game already fetched: the raid list your faction page polls on its own every five seconds, its event log, and the post-mortem report. Builds the event-type vocabulary the client never spells out, charts the score curve, and ranks who actually did the work. Passive — zero added requests, and it never touches a raid action.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/raid-watch.user.js"
+    },
+    {
+      "label": "Shop Watch",
+      "name": "Politiko — Shop Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.3.0",
+      "description": "First light on the city shops. Records the store payloads the app already fetched when you walked into a shop, and reports every field the server sent that the client never renders — the cheap way to find out whether a restock time is on the wire. Also brackets a restock whenever a stock number goes up between two of your own visits. Passive; zero added requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/shop-watch.user.js"
+    },
+    {
+      "label": "Sleeper Watch",
+      "name": "Politiko — Sleeper Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.7.0",
+      "description": "Keeps the sleeper-recruitment timers alive after you leave the page. Reads the poll the recruitment screen already makes, remembers when each lead's meeting window opens, counts it down on every Politiko page, and hands you a one-click jump back with that lead's own issue pre-selected. Also counts down the faction advocate/embezzle cooldowns. Passive — zero added requests, and it never meets, canvasses, drops, advocates or embezzles.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/sleeper-watch.user.js"
+    },
+    {
+      "label": "Slot Watch",
+      "name": "Politiko — Slot Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.2.0",
+      "description": "Keeps the settlement receipts the Capitol Cash slot machine prints once and forgets, draws your bankroll against what the house edge says it should be, and prices a wager-by-autospin run before you place it. Reads only responses the game already fetched. Passive; zero added requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/slot-watch.user.js"
+    },
+    {
+      "label": "Time Bridge",
+      "name": "Politiko — Time Bridge",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.1.0",
+      "description": "Carries the game-clock anchor Time Watch already captured over to the Politiko Time Wire planner, so the planner calibrates itself instead of waiting for you to copy a code. Moves one string between two pages on your own machine; touches the network not at all.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/time-bridge.user.js"
+    },
+    {
+      "label": "Time Watch",
+      "name": "Politiko — Time Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.9.0",
+      "description": "Passive game-clock calibrator: reads the /api/time responses the app already polls, shows the real↔game time mapping, month schedule, and next-September countdown in your local timezone. Zero added requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/time-watch.user.js"
+    },
+    {
+      "label": "World Watch",
+      "name": "Politiko — World Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.5.0",
+      "description": "Plots the game world on the same political compass the game draws for your character — the law, public opinion, the street, the media and the citizens you have seen, as five separate readings — and breaks the same thing down city by city. Reads only responses the app already fetched. Passive; zero added requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/world-watch.user.js"
+    },
+    {
+      "label": "WS Watch",
+      "name": "Politiko — WS Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.8.0",
+      "description": "Read-only observer for the three WebSockets the game itself opens (/ws/chat, /ws/market, /ws/casino/poker). Records which frame types arrive, what keys they carry, how often they arrive, and the values of four named server fields (a closed allowlist — no usernames, no message bodies). Opens no connection, transmits nothing, adds zero requests. Temporary measuring instrument — it tells you when it has nothing left to learn.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/ws-watch.user.js"
+    },
+    {
+      "label": "XP Watch",
+      "name": "Politiko — XP Watch",
+      "category": "politiko",
+      "site": "politiko.io",
+      "version": "0.7.0",
+      "description": "Ledger of your own stat/skill changes, diffed from responses the game already fetched: per-action XP where one action sits alone in a window, train/education awards measured exactly, everything else honestly labelled passive or ambiguous. Passive — zero added requests.",
+      "download": "https://raw.githubusercontent.com/dataterminals/politiko-research/main/userscripts/xp-watch.user.js"
+    },
+    {
+      "label": "YouTube Queue",
+      "name": "YouTube Queue",
+      "category": "youtube",
+      "site": "youtube.com",
+      "version": "0.2.0",
+      "description": "Queue any video from any view — hover button, Shift-click, or the Q key — plus a queue panel that works on every page: running totals, one-click remove, drag reorder, and restore-after-reload.",
+      "download": "https://raw.githubusercontent.com/dataterminals/YouTubeQueue/main/src/youtube-queue.user.js"
+    },
+    {
+      "label": "Amazon Tweaks",
+      "name": "Amazon Tweaks",
+      "category": "amazon",
+      "site": "amazon.com",
+      "version": "0.2.1",
+      "description": "A small, growing collection of quality-of-life tweaks for amazon.com. Starts with a cohesive dark theme (toggleable) that covers modern React/hashed-class pages via a saturation-aware background sweeper. Purely cosmetic/read-only — it never clicks a buy control, submits a form, or makes a network request.",
+      "download": "https://raw.githubusercontent.com/dataterminals/AmazonTweaks/main/src/amazon-tweaks.user.js"
+    },
+    {
+      "label": "Amazon Claude Bridge",
+      "name": "Shopping Claude Bridge — Amazon",
+      "category": "amazon",
+      "site": "amazon.com",
+      "version": "0.7.0",
+      "description": "Read-only extractor library for amazon.com. Exposes window.__amzx so an assistant driving the browser can pull a compact, de-sponsored JSON record of the current page instead of reading a 60 KB accessibility tree. Never clicks a buy control, submits a form, or reads credentials.",
+      "download": "https://raw.githubusercontent.com/dataterminals/ShoppingClaudeBridge/main/src/amazon-claude-bridge.user.js"
+    },
+    {
+      "label": "eBay Claude Bridge",
+      "name": "Shopping Claude Bridge — eBay",
+      "category": "ebay",
+      "site": "ebay.com",
+      "version": "0.4.0",
+      "description": "Read-only extractor library for ebay.com. Exposes window.__ebayx so an assistant driving the browser can pull a compact JSON record of the current page instead of reading a 60 KB accessibility tree. Never clicks a control, submits a form, or reads credentials.",
+      "download": "https://raw.githubusercontent.com/dataterminals/ShoppingClaudeBridge/main/src/ebay-claude-bridge.user.js"
+    },
+    {
+      "label": "Chime Data Grabber",
+      "name": "Chime Data Grabber",
+      "category": "chime",
+      "site": "app.chime.com",
+      "version": "0.3.0",
+      "description": "One-click export of Chime checking/savings/credit-builder transactions to a clean CSV (and optional JSON) for feeding into Cowork/Claude. Read-only, same-origin, never touches credentials.",
+      "download": "https://raw.githubusercontent.com/dataterminals/ChimeDataGrabber/main/src/chime-data-grabber.user.js"
+    },
+    {
+      "label": "Pi Connect Bridge",
+      "name": "Pi Connect Claude Bridge",
+      "category": "pi",
+      "site": "connect.raspberrypi.com",
+      "version": "0.2.1",
+      "description": "Turns the Raspberry Pi Connect browser shell into a callable API. Exposes window.__pix so an assistant driving the browser can run a command and get {stdout, exitCode} back, instead of typing at a terminal widget and screen-scraping the result. Rides the session already authenticated in this browser; opens no port and stores no credential.",
+      "download": "https://raw.githubusercontent.com/dataterminals/PiConnectClaudeBridge/main/src/pi-connect-claude-bridge.user.js"
+    }
+  ]
+}
