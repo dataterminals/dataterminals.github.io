@@ -321,7 +321,13 @@ main {
 }
 
 /* ---- Links (card grid) ---- */
+/* The one feature with a label of its own, so its permalink handle hangs off the
+   end of that row rather than floating in a corner. */
 .links__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   font-size: 0.7rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -486,46 +492,9 @@ main {
 
 /* ================= Natal chart ================= */
 .chart {
-  position: relative;                         /* anchors .chart__anchor */
-  padding-top: clamp(1.5rem, 4vh, 2rem);      /* a band for the permalink handle */
+  position: relative;                         /* anchors the permalink handle */
+  padding-top: clamp(1.5rem, 4vh, 2rem);      /* a band for it to sit in */
   padding-bottom: 2vh;
-  scroll-margin-top: clamp(0.75rem, 3vh, 1.75rem);  /* don't land flush at the top */
-}
-/* Permalink to #natalchart — the one bit of chrome on an otherwise headless
-   section, so keep it faint until hovered. Reuses the shelf's float/flicker
-   keyframes for a common visual language; negative delays desync it from them.
-   The global reduced-motion rule kills the animation. */
-.chart__anchor {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: inline-flex;
-  width: clamp(19px, 4.5vw, 22px);
-  height: clamp(19px, 4.5vw, 22px);
-  color: var(--ink-faint);
-  will-change: transform, opacity;
-  animation: shelf-float 10.5s ease-in-out infinite, shelf-flicker 8.6s ease-in-out infinite;
-  animation-delay: -3.7s, -2.4s;
-  transition: color 0.3s var(--ease);
-}
-.chart__anchor svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 0 5px rgba(216, 121, 76, 0.28)) drop-shadow(0 1px 2px rgba(8, 4, 2, 0.5));
-  transition: transform 0.3s var(--ease), filter 0.3s var(--ease);
-}
-.chart__anchor:hover,
-.chart__anchor:focus-visible { color: var(--accent-soft); outline: none; }
-.chart__anchor:hover svg,
-.chart__anchor:focus-visible svg {
-  transform: translateY(-2px) scale(1.1);
-  filter: drop-shadow(0 0 8px rgba(230, 162, 113, 0.6)) drop-shadow(0 0 16px rgba(216, 121, 76, 0.35));
 }
 .chart__eyebrow {
   font-size: 0.7rem;
@@ -764,8 +733,13 @@ main {
 }
 
 /* ================= Tarot ================= */
-/* Ends the page, so it carries the tail the shelf used to. */
-.tarot { padding-bottom: 7vh; }
+/* Ends the page, so it carries the tail the shelf used to. The top band matches
+   the chart's: room for the permalink handle without crowding the first card. */
+.tarot {
+  position: relative;
+  padding-top: clamp(1.5rem, 4vh, 2rem);
+  padding-bottom: 7vh;
+}
 .tarot__deck { display: flex; flex-direction: column; gap: clamp(1.4rem, 4vw, 2.2rem); }
 .tarot__featured { display: flex; flex-direction: column; align-items: center; gap: 0.95rem; }
 .sig-row { display: flex; align-items: center; justify-content: center; gap: clamp(0.25rem, 1.5vw, 1rem); }
@@ -1103,6 +1077,106 @@ main {
   75%  { opacity: 0.9; }
 }
 
+/* ================= Permalink handles ================= */
+/* One per feature — the work grid, the shelf, the userscript rack, the natal
+   chart, the tarot spread — so a single feature can be handed to someone as a
+   url instead of "scroll down a bit". permalinks.js turns a click into a copy;
+   the markup stays a plain in-page link, so it still works with the script gone.
+
+   Faint until hovered, and drifting + glow-flickering on the shelf's keyframes
+   above so the page keeps one glow language. The --p* timings per instance keep
+   any two of them from pulsing in unison (with each other or with the icons).
+   The global reduced-motion rule kills the animation. */
+.permalink {
+  --pf: 10.5s;   /* float duration   */
+  --pk: 8.6s;    /* flicker duration */
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: clamp(19px, 4.5vw, 22px);
+  height: clamp(19px, 4.5vw, 22px);
+  color: var(--ink-faint);
+  will-change: transform, opacity;
+  animation: shelf-float var(--pf) ease-in-out infinite, shelf-flicker var(--pk) ease-in-out infinite;
+  animation-delay: var(--pd1, 0s), var(--pd2, 0s);
+  transition: color 0.3s var(--ease);
+}
+.permalink svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(216, 121, 76, 0.28)) drop-shadow(0 1px 2px rgba(8, 4, 2, 0.5));
+  transition: transform 0.3s var(--ease), filter 0.3s var(--ease);
+}
+/* .is-copied borrows the hover look for a moment after a successful copy, one
+   step brighter — the pointer is already on the handle, so a lift on its own
+   wouldn't register as a response to the click. */
+.permalink:hover,
+.permalink:focus-visible,
+.permalink.is-copied { color: var(--accent-soft); outline: none; }
+.permalink:hover svg,
+.permalink:focus-visible svg,
+.permalink.is-copied svg {
+  transform: translateY(-2px) scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(230, 162, 113, 0.6)) drop-shadow(0 0 16px rgba(216, 121, 76, 0.35));
+}
+.permalink.is-copied svg {
+  filter: drop-shadow(0 0 10px rgba(230, 162, 113, 0.78)) drop-shadow(0 0 22px rgba(216, 121, 76, 0.42));
+}
+
+/* Hung in the top-right of a headless section, in a band reserved for it. */
+.permalink--corner { position: absolute; top: 0; right: 0; }
+/* The rack has a panel instead of a band, so tuck the handle inside its edge. */
+.uscripts > .permalink--corner {
+  top: clamp(0.6rem, 2.4vw, 0.8rem);
+  right: clamp(0.6rem, 2.4vw, 0.8rem);
+}
+
+/* The shelf has neither a label to hang a handle off nor a corner to put one
+   in, so its handle sits centred under the rail. Not at the right-hand end of
+   the rail: the column caps at --maxw while the icon gaps keep growing, so the
+   slack left over there is always narrower than the gap between two icons, and
+   a handle parked in it reads as a ninth destination rather than a control. */
+.shelf-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Landing on a hash shouldn't put the section flush against the viewport top. */
+.links,
+.shelf-bar,
+.uscripts,
+.chart,
+.tarot { scroll-margin-top: clamp(0.75rem, 3vh, 1.75rem); }
+
+/* Per-instance desync — see the note above. */
+.links__eyebrow .permalink { --pf: 9.2s;  --pk: 7.4s; --pd1: -1.6s; --pd2: -5.3s; }
+.permalink--shelf          { --pf: 11.4s; --pk: 9.3s; --pd1: -6.8s; --pd2: -0.9s; }
+.uscripts > .permalink     { --pf: 10s;   --pk: 6.8s; --pd1: -4.1s; --pd2: -7.6s; }
+.chart > .permalink        { --pf: 10.5s; --pk: 8.6s; --pd1: -3.7s; --pd2: -2.4s; }
+.tarot > .permalink        { --pf: 12.2s; --pk: 7.9s; --pd1: -8.4s; --pd2: -3.2s; }
+
+/* The copy outcome, announced for anything that can't see a colour flash or a
+   pointer-anchored readout. Injected once by permalinks.js. */
+.permalink__live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ================= Userscript rack ================= */
 /* The middle child of .elsewhere, between the shelf and the Discord card. Given
    a panel — same outline and gradient as a link card — so it reads as one
@@ -1113,6 +1187,7 @@ main {
    `hidden` attribute until real data lands, and a class-level display would
    outrank the UA sheet's rule for the attribute and show an empty panel. */
 .uscripts {
+  position: relative;                    /* the permalink handle sits in the corner */
   width: 100%;
   padding: clamp(0.85rem, 3vw, 1.05rem) clamp(0.85rem, 3vw, 1.1rem) clamp(0.9rem, 3vw, 1.1rem);
   border: 1px solid rgba(216, 121, 76, 0.18);

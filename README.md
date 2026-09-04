@@ -155,6 +155,42 @@ It's pure enhancement, and both consumers guard on `window.leaderTip` before bin
 descriptions are also on each tile in a `hidden` span the link points `aria-describedby` at, so
 anything that can't hover gets the same words.
 
+## Permalink handles
+
+Every feature of the page carries a small chain glyph that copies that feature's own url, so one
+piece of the page can be handed to someone instead of "scroll down a bit":
+
+| Handle | Anchor | Where it sits |
+| --- | --- | --- |
+| Selected work | `#work` | the end of the eyebrow row |
+| Elsewhere (the link shelf) | `#shelf` | centred under the icon rail |
+| Userscripts | `#userscripts` | the panel's top-right corner |
+| Natal chart | `#natalchart` | the top-right of its padding band |
+| Tarot | `#tarot` | the same |
+
+The shelf is the odd one out. It has no label to hang a handle off and no corner to put one in, and
+parking it at the right-hand end of the rail doesn't work either: the column caps at `--maxw` while
+the icon gaps keep growing with the viewport, so the slack left over there is always narrower than
+the gap between two icons — a handle sitting in it reads as a ninth destination rather than a
+control. Hence the `.shelf-bar` wrapper and the centred handle beneath.
+
+Each one is a plain `<a href="#id">` in the markup. [`permalinks.js`](permalinks.js) upgrades a
+click into a copy, stamps the hash in with `history.replaceState`, lights the handle for a moment
+and puts the result up in the shared readout. Deliberately **no jump**: the handle sits on the thing
+it points at, so scrolling to it is a no-op at best, and at worst it drags the confirmation off the
+pointer, since `tip.js` drops a pinned readout the moment the page scrolls.
+
+It degrades in layers. Without the script the handle is still an ordinary in-page link — click,
+jump, read the url out of the address bar. Without `window.leaderTip` the copy still happens and
+only the label is missing. Where the async clipboard isn't available (`file://` and plain http
+aren't secure contexts) it falls back to `document.execCommand('copy')`, and if that's refused too
+the readout says so rather than pretending — the url is in the address bar either way. The outcome
+also goes into an `aria-live` region, since neither an ember flash nor a pointer-anchored label
+reaches a screen reader.
+
+Styling is shared: `.permalink` borrows the shelf's float and flicker keyframes so the page keeps
+one glow language, with per-instance `--p*` timings so no two pulse in unison.
+
 ## Cache busting
 
 GitHub Pages serves every file with `Cache-Control: max-age=600` and gives you no way to change it.

@@ -14,7 +14,7 @@
   <meta property="og:url" content="https://dataterminals.github.io/">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d8794c'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=3aad7562">
+  <link rel="stylesheet" href="styles.css?v=708a553c">
 </head>
 <body>
   <!-- Blurred looping background. Drop assets/bg.webm + assets/bg.mp4 (+ poster.jpg) in.
@@ -36,8 +36,10 @@
         <p class="hero__subtag" id="subtag"><!-- one random phrase from subtaglines.json, injected by app.js --></p>
       </header>
 
-      <section class="links" aria-label="Selected projects">
-        <p class="links__eyebrow">Selected work</p>
+      <!-- Each feature's id doubles as its shareable anchor; the .permalink
+           handle beside it copies that url (permalinks.js). -->
+      <section class="links" id="work" aria-label="Selected projects">
+        <p class="links__eyebrow">Selected work<a class="permalink" href="#work" data-name="Selected work" aria-label="Copy a link to Selected work"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a></p>
         <div class="links__list" id="links">
           <!-- rendered from links.json (featured), enriched from the GitHub API -->
         </div>
@@ -48,50 +50,56 @@
       <div class="elsewhere">
         <!-- Floating external-link shelf. Icons drift + glow-flicker (desynced per
              icon via nth-child); shelf.js swaps the native tooltip for a
-             cursor-anchored leader-line readout (see the tarot signature diagram). -->
-        <nav class="shelf" aria-label="Elsewhere">
-          <a class="shelf__link" href="https://github.com/dataterminals" target="_blank" rel="noopener"
-             aria-label="GitHub (opens github.com/dataterminals)" data-name="GitHub" data-url="github.com/dataterminals">
-            <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-          </a>
-          <a class="shelf__link" href="https://dataterminals.github.io/blog/" target="_blank" rel="noopener"
-             aria-label="Blog (opens dataterminals.github.io/blog)" data-name="Blog" data-url="dataterminals.github.io/blog">
-            <svg class="shelf__icon shelf__icon--stroke" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.6" y="3.2" width="14.8" height="17.6" rx="2.2"/><path d="M8.2 8.2H15.8M8.2 12H15.8M8.2 15.8H12.8"/></svg>
-          </a>
-          <a class="shelf__link" href="https://dataterminals.github.io/forever-winter-almanac/" target="_blank" rel="noopener"
-             aria-label="Forever Winter Almanac (opens dataterminals.github.io/forever-winter-almanac)" data-name="Forever Winter Almanac" data-url="dataterminals.github.io/forever-winter-almanac">
-            <svg class="shelf__icon shelf__icon--stroke" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5V20.5 M4.64 7.75L19.36 16.25 M19.36 7.75L4.64 16.25 M10.7 3.5H13.3 M10.7 20.5H13.3 M18.71 17.38L20.01 15.12 M3.99 8.88L5.29 6.62 M18.71 6.62L20.01 8.88 M3.99 15.12L5.29 17.38"/></svg>
-          </a>
-          <a class="shelf__link" href="https://dataterminals.github.io/NewStefanMap/" target="_blank" rel="noopener"
-             aria-label="NewStefanMap (opens dataterminals.github.io/NewStefanMap)" data-name="NewStefanMap" data-url="dataterminals.github.io/NewStefanMap">
-            <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm2.6 7a2.6 2.6 0 1 0-5.2 0 2.6 2.6 0 0 0 5.2 0Z"/></svg>
-          </a>
-          <a class="shelf__link" href="https://dataterminals.github.io/PolitikoTimeWire/" target="_blank" rel="noopener"
-             aria-label="Politiko Time Wire (opens dataterminals.github.io/PolitikoTimeWire)" data-name="Politiko Time Wire" data-url="dataterminals.github.io/PolitikoTimeWire">
-            <svg class="shelf__icon shelf__icon--stroke" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.4 12H4.8 M19.2 12H22.6 M3.1 10.3V13.7 M20.9 10.3V13.7 M12 7.4V12H16"/><circle cx="12" cy="12" r="7.2"/></svg>
-          </a>
-          <a class="shelf__link" href="https://dataterminals.github.io/t1-crowdfunds/" target="_blank" rel="noopener"
-             aria-label="Tier 1 Crowdfund Registry (opens dataterminals.github.io/t1-crowdfunds)" data-name="T1 Crowdfund Registry" data-url="dataterminals.github.io/t1-crowdfunds">
-            <!-- The Tier 1 Imports skull mark, redrawn as a single-colour glyph for this
-                 shelf. The T1 sigil is knocked out of the fill rather than drawn on top,
-                 so it survives being one colour at 24px. Source art: t1-crowdfunds/assets/t1-skull.png -->
-            <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M13.6 2.8C9.2 2 5.4 4.2 3.9 7.4 3.1 9 1.6 10.3 1.5 12.1c-.1 1.3.6 2.2 1.5 2.7v2.6h1v1.5h1v-1.5h1v1.7h1v-1.7h1v1.6h1v-1.6h1v1.3h1v-1.3h1.8V2.8ZM3.6 10.6 7 9.9l.4 2-2.5 1.2-1.5-1.1ZM9.1 5.6h1.3v7H9.1ZM7.2 7.6h5.1v1.2H7.2ZM10.4 12l1.6-1 .6 1-1.6 1Z"/><path d="M14 3.6h3.4v1.5H14ZM17 6.6h4.6v1.5H17ZM14.4 9.6h2.8v1.5h-2.8ZM17.6 12.4h3.8v1.5h-3.8ZM14.8 15.2h2.4v1.5h-2.4Z"/></svg>
-          </a>
-          <a class="shelf__link" href="https://next.nexusmods.com/profile/dataterminals" target="_blank" rel="noopener"
-             aria-label="Nexus Mods (opens next.nexusmods.com/profile/dataterminals)" data-name="Nexus Mods" data-url="next.nexusmods.com/profile/dataterminals">
-            <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.8l8.83 5.1v10.2L12 22.2l-8.83-5.1V6.9L12 1.8Zm0 5.1L7.58 9.45v5.1L12 17.1l4.42-2.55v-5.1L12 6.9Z"/><circle cx="12" cy="12" r="1.7"/></svg>
-          </a>
-          <a class="shelf__link" href="https://steamcommunity.com/id/BDENIM" target="_blank" rel="noopener"
-             aria-label="Steam (opens steamcommunity.com/id/BDENIM)" data-name="Steam" data-url="steamcommunity.com/id/BDENIM">
-            <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg>
-          </a>
-        </nav>
+             cursor-anchored leader-line readout (see the tarot signature diagram).
+             The .shelf-bar wrapper exists to give the permalink handle something
+             to hang off — the rail itself has no label and no padding band. -->
+        <div class="shelf-bar" id="shelf">
+          <nav class="shelf" aria-label="Elsewhere">
+            <a class="shelf__link" href="https://github.com/dataterminals" target="_blank" rel="noopener"
+               aria-label="GitHub (opens github.com/dataterminals)" data-name="GitHub" data-url="github.com/dataterminals">
+              <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            </a>
+            <a class="shelf__link" href="https://dataterminals.github.io/blog/" target="_blank" rel="noopener"
+               aria-label="Blog (opens dataterminals.github.io/blog)" data-name="Blog" data-url="dataterminals.github.io/blog">
+              <svg class="shelf__icon shelf__icon--stroke" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.6" y="3.2" width="14.8" height="17.6" rx="2.2"/><path d="M8.2 8.2H15.8M8.2 12H15.8M8.2 15.8H12.8"/></svg>
+            </a>
+            <a class="shelf__link" href="https://dataterminals.github.io/forever-winter-almanac/" target="_blank" rel="noopener"
+               aria-label="Forever Winter Almanac (opens dataterminals.github.io/forever-winter-almanac)" data-name="Forever Winter Almanac" data-url="dataterminals.github.io/forever-winter-almanac">
+              <svg class="shelf__icon shelf__icon--stroke" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5V20.5 M4.64 7.75L19.36 16.25 M19.36 7.75L4.64 16.25 M10.7 3.5H13.3 M10.7 20.5H13.3 M18.71 17.38L20.01 15.12 M3.99 8.88L5.29 6.62 M18.71 6.62L20.01 8.88 M3.99 15.12L5.29 17.38"/></svg>
+            </a>
+            <a class="shelf__link" href="https://dataterminals.github.io/NewStefanMap/" target="_blank" rel="noopener"
+               aria-label="NewStefanMap (opens dataterminals.github.io/NewStefanMap)" data-name="NewStefanMap" data-url="dataterminals.github.io/NewStefanMap">
+              <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm2.6 7a2.6 2.6 0 1 0-5.2 0 2.6 2.6 0 0 0 5.2 0Z"/></svg>
+            </a>
+            <a class="shelf__link" href="https://dataterminals.github.io/PolitikoTimeWire/" target="_blank" rel="noopener"
+               aria-label="Politiko Time Wire (opens dataterminals.github.io/PolitikoTimeWire)" data-name="Politiko Time Wire" data-url="dataterminals.github.io/PolitikoTimeWire">
+              <svg class="shelf__icon shelf__icon--stroke" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.4 12H4.8 M19.2 12H22.6 M3.1 10.3V13.7 M20.9 10.3V13.7 M12 7.4V12H16"/><circle cx="12" cy="12" r="7.2"/></svg>
+            </a>
+            <a class="shelf__link" href="https://dataterminals.github.io/t1-crowdfunds/" target="_blank" rel="noopener"
+               aria-label="Tier 1 Crowdfund Registry (opens dataterminals.github.io/t1-crowdfunds)" data-name="T1 Crowdfund Registry" data-url="dataterminals.github.io/t1-crowdfunds">
+              <!-- The Tier 1 Imports skull mark, redrawn as a single-colour glyph for this
+                   shelf. The T1 sigil is knocked out of the fill rather than drawn on top,
+                   so it survives being one colour at 24px. Source art: t1-crowdfunds/assets/t1-skull.png -->
+              <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M13.6 2.8C9.2 2 5.4 4.2 3.9 7.4 3.1 9 1.6 10.3 1.5 12.1c-.1 1.3.6 2.2 1.5 2.7v2.6h1v1.5h1v-1.5h1v1.7h1v-1.7h1v1.6h1v-1.6h1v1.3h1v-1.3h1.8V2.8ZM3.6 10.6 7 9.9l.4 2-2.5 1.2-1.5-1.1ZM9.1 5.6h1.3v7H9.1ZM7.2 7.6h5.1v1.2H7.2ZM10.4 12l1.6-1 .6 1-1.6 1Z"/><path d="M14 3.6h3.4v1.5H14ZM17 6.6h4.6v1.5H17ZM14.4 9.6h2.8v1.5h-2.8ZM17.6 12.4h3.8v1.5h-3.8ZM14.8 15.2h2.4v1.5h-2.4Z"/></svg>
+            </a>
+            <a class="shelf__link" href="https://next.nexusmods.com/profile/dataterminals" target="_blank" rel="noopener"
+               aria-label="Nexus Mods (opens next.nexusmods.com/profile/dataterminals)" data-name="Nexus Mods" data-url="next.nexusmods.com/profile/dataterminals">
+              <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.8l8.83 5.1v10.2L12 22.2l-8.83-5.1V6.9L12 1.8Zm0 5.1L7.58 9.45v5.1L12 17.1l4.42-2.55v-5.1L12 6.9Z"/><circle cx="12" cy="12" r="1.7"/></svg>
+            </a>
+            <a class="shelf__link" href="https://steamcommunity.com/id/BDENIM" target="_blank" rel="noopener"
+               aria-label="Steam (opens steamcommunity.com/id/BDENIM)" data-name="Steam" data-url="steamcommunity.com/id/BDENIM">
+              <svg class="shelf__icon shelf__icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/></svg>
+            </a>
+          </nav>
+          <a class="permalink permalink--shelf" href="#shelf" data-name="Elsewhere" aria-label="Copy a link to Elsewhere"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a>
+        </div>
 
         <!-- Userscript rack. Rendered from userscripts.json by userscripts.js,
              which keeps the section hidden until real data lands (as the Discord
              card does), so a failed fetch leaves no empty panel rather than an
              empty one. Each tile links at the script's own @downloadURL. -->
         <section class="uscripts" id="userscripts" aria-label="Userscripts" hidden>
+          <a class="permalink permalink--corner" href="#userscripts" data-name="Userscripts" aria-label="Copy a link to Userscripts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a>
           <p class="uscripts__eyebrow">Userscripts</p>
           <div class="uscripts__filters" id="us-filters" role="group" aria-label="Filter userscripts by site">
             <!-- one chip per category, rendered by userscripts.js -->
@@ -110,19 +118,15 @@
         </section>
       </div>
     </div>
-    <!-- id doubles as the shareable anchor: dataterminals.github.io/#natalchart -->
     <section class="chart" id="natalchart" aria-label="Natal chart">
-      <!-- Permalink handle. Drifts + glow-flickers like the shelf icons, on its
-           own timing so the two never pulse in unison. -->
-      <a class="chart__anchor" href="#natalchart" aria-label="Link to the natal chart">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      </a>
+      <a class="permalink permalink--corner" href="#natalchart" data-name="the natal chart" aria-label="Copy a link to the natal chart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a>
       <div class="chart__wrap" id="natal">
         <!-- wheel + placements rendered by natal.js -->
       </div>
     </section>
 
     <section class="tarot" id="tarot" aria-label="Tarot">
+      <a class="permalink permalink--corner" href="#tarot" data-name="the tarot spread" aria-label="Copy a link to the tarot spread"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a>
       <div class="tarot__deck" id="tarot-deck">
         <!-- cards rendered by tarot.js -->
       </div>
@@ -137,6 +141,7 @@
   <!-- tip.js owns the shared hover readout; the two below bind to it. -->
   <script src="tip.js?v=4ee27096"></script>
   <script src="shelf.js?v=c02bdc49"></script>
+  <script src="permalinks.js?v=3fa09499"></script>
   <script src="userscripts.js?v=a82e2878"></script>
 </body>
 </html>
