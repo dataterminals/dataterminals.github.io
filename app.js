@@ -723,22 +723,6 @@
     startGlitchLoop(chars);
   }
 
-  /* ---------- background video readiness ---------- */
-
-  function initVideo() {
-    const v = document.querySelector('.bg__video');
-    if (!v) return;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) return; // CSS hides it; leave the gradient
-    const show = () => v.classList.add('is-ready');
-    if (v.readyState >= 2) show();
-    v.addEventListener('loadeddata', show, { once: true });
-    v.addEventListener('canplay', show, { once: true });
-    // Some browsers need a nudge; ignore rejections (no file yet, etc.).
-    const p = v.play();
-    if (p && typeof p.catch === 'function') p.catch(() => {});
-  }
-
   /* ---------- animated spindle wordmark ---------- */
 
   function initWordmark() {
@@ -801,7 +785,7 @@
 
   async function boot() {
     initWordmark();
-    initVideo();
+    // The background clip belongs to theme.js — there is one per theme.
     initSubtag(); // fire-and-forget; falls back to the inline bank
     initTaglineGlitch();
 

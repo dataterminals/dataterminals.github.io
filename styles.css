@@ -1,24 +1,65 @@
 /* dataterminals.github.io — warm, identity-forward landing page
-   Palette pulled from the oxblood/sepia background loop. No external assets. */
+   Palette pulled from the background loop. No external assets.
+
+   Two themes ship: `ember` (the oxblood/sepia default, below) and `night`,
+   further down. Everything that carries a theme's identity is a token here, and
+   most are stated as a bare `r, g, b` triple so a rule can tint with it —
+   `rgba(var(--accent-rgb), 0.4)` — instead of hard-coding the hue a hundred
+   times over. A theme restates the tokens; no component rule knows it exists.
+   theme.js swaps `data-theme` on <html> and the background clip to match. */
 
 :root {
+  /* ---- Theme: ember (default) ---- */
   --bg-0: #100804;            /* deepest warm black */
   --bg-1: #1c0f0a;            /* oxblood base */
   --bg-2: #2a140d;            /* warmer highlight for the gradient */
-  --ink: #f1e7da;             /* warm bone — primary text */
-  --ink-dim: #c8b3a3;         /* muted taupe — secondary */
-  --ink-faint: #94796a;       /* faint — meta */
-  --accent: #d8794c;          /* terracotta ember — links / hover */
-  --accent-soft: #e6a271;     /* softer warm gold */
-  --hair: rgba(241, 231, 218, 0.13);
-  --hair-strong: rgba(241, 231, 218, 0.26);
+  --bg-3: #241009;            /* …and its warmest corner */
 
-  /* astro glyph coverage + aspect palette */
-  --glyph: "Segoe UI Symbol", "Noto Sans Symbols2", "Apple Symbols", "Segoe UI Emoji", var(--serif);
-  --mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+  --ink-rgb: 241, 231, 218;       /* warm bone — primary text */
+  --ink-dim: #c8b3a3;             /* muted taupe — secondary */
+  --ink-faint-rgb: 148, 121, 106; /* faint — meta */
+  --accent-rgb: 216, 121, 76;     /* terracotta ember — links / hover */
+  --accent-soft-rgb: 230, 162, 113;
+  --gold-rgb: 230, 184, 119;      /* the lit edge on the userscript tiles */
+  --gold-soft-rgb: 230, 178, 120;
+  --gold-lit: #f0cb95;            /* text on a gold-lined tile, hovered */
+  --parch-rgb: 233, 210, 181;     /* the wordmark's bloom */
+  --shade-rgb: 8, 4, 2;           /* deepest shadow, under text */
+
+  --ground-rgb: 16, 8, 4;         /* the scrim's black */
+  --well-rgb: 12, 6, 3;           /* chips, tiles, the hover readout */
+  --card-rgb: 44, 21, 14;         /* card ground — head of the 165° gradient */
+  --card-foot-rgb: 18, 10, 6;     /* …and its foot */
+  --card-lit-rgb: 54, 26, 17;     /* hovered */
+  --card-lit-foot-rgb: 22, 12, 7;
+  --card-hot-rgb: 58, 27, 17;     /* the current-project card */
+  --card-hot-foot-rgb: 24, 13, 8;
+  --card-ring: #17100c;           /* punch-out ring on the presence avatar */
+
+  --bg-blur: 4px;                 /* how far the clip is pushed out of focus */
+
+  /* How hard the scrim sits on the clip. A darker clip wants a lighter scrim,
+     so this is per-theme rather than baked into .bg__scrim. */
+  --scrim-edge: 0.70;             /* the vignette's outer stop */
+  --scrim-top: 0.50;
+  --scrim-mid: 0.40;
+  --scrim-foot: 0.86;             /* heaviest at the foot, under the tarot row */
+
   --hard: #e07a4e;   /* square / opposition — warm ember */
   --soft: #79c2cf;   /* trine / sextile — cool teal */
   --conj: #e6b877;   /* conjunction — warm gold */
+
+  /* Derived — a theme restates the triple above, never these. */
+  --ink: rgb(var(--ink-rgb));
+  --ink-faint: rgb(var(--ink-faint-rgb));
+  --accent: rgb(var(--accent-rgb));
+  --accent-soft: rgb(var(--accent-soft-rgb));
+  --hair: rgba(var(--ink-rgb), 0.13);
+  --hair-strong: rgba(var(--ink-rgb), 0.26);
+
+  /* astro glyph coverage */
+  --glyph: "Segoe UI Symbol", "Noto Sans Symbols2", "Apple Symbols", "Segoe UI Emoji", var(--serif);
+  --mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
 
   --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -32,6 +73,54 @@
      Used by .elsewhere's gap and its margin-top; keep them derived from this. */
   --shelf-gap: clamp(1.5rem, 3.8vh, 2.25rem);
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---- Theme: night ----
+   Read off the clip it rides on: wet asphalt under sodium vapour, the whole
+   frame cast green by a camcorder left on auto white balance. Same structure as
+   ember, only the hues move — so every rule below this point is written once
+   and follows whichever theme is mounted. */
+:root[data-theme="night"] {
+  --bg-0: #050b0a;
+  --bg-1: #0c1614;
+  --bg-2: #172a26;
+  --bg-3: #112220;
+
+  --ink-rgb: 232, 240, 236;
+  --ink-dim: #a8bcb6;
+  --ink-faint-rgb: 116, 138, 132;
+  --accent-rgb: 217, 164, 65;      /* sodium vapour — the streetlights */
+  --accent-soft-rgb: 240, 204, 134;
+  --gold-rgb: 233, 200, 126;
+  --gold-soft-rgb: 230, 197, 132;
+  --gold-lit: #f6e0b0;
+  --parch-rgb: 219, 232, 224;      /* the clip's blown highlights are green-white */
+  --shade-rgb: 2, 7, 6;
+
+  --ground-rgb: 5, 12, 11;
+  --well-rgb: 4, 10, 9;
+  --card-rgb: 22, 38, 34;
+  --card-foot-rgb: 9, 18, 17;
+  --card-lit-rgb: 29, 48, 43;
+  --card-lit-foot-rgb: 12, 23, 21;
+  --card-hot-rgb: 32, 52, 45;
+  --card-hot-foot-rgb: 13, 25, 22;
+  --card-ring: #0b1513;
+
+  /* Street scenes carry far more edge than the ember loop's soft folds — faces
+     and signage stay readable at 4px and start competing with the text. */
+  --bg-blur: 7px;
+
+  /* The night clip runs about a third darker than the ember loop even after the
+     mid-tone lift in the encode, so the scrim eases off to let it read. */
+  --scrim-edge: 0.58;
+  --scrim-top: 0.38;
+  --scrim-mid: 0.30;
+  --scrim-foot: 0.80;
+
+  --hard: #e08a4e;
+  --soft: #7fc4b6;
+  --conj: #e9c87e;
 }
 
 * { box-sizing: border-box; }
@@ -55,11 +144,11 @@ body {
   inset: 0;
   z-index: -2;
   overflow: hidden;
-  /* Warm oxblood fallback — this is what shows until a video is dropped in,
-     and behind any video whose frame is transparent while loading. */
+  /* The theme's gradient — what shows before the clip fades in, behind any frame
+     that is transparent while loading, and for good if the clip can't play. */
   background:
     radial-gradient(120% 130% at 72% 8%, var(--bg-2) 0%, transparent 46%),
-    linear-gradient(158deg, #241009 0%, var(--bg-1) 52%, var(--bg-0) 100%);
+    linear-gradient(158deg, var(--bg-3) 0%, var(--bg-1) 52%, var(--bg-0) 100%);
 }
 
 .bg__video {
@@ -69,8 +158,10 @@ body {
   height: 100%;
   object-fit: cover;
   background: transparent;
-  /* Slightly blurred, per the brief; scale hides the soft blur edge. */
-  filter: blur(4px) saturate(1.06) contrast(1.02);
+  /* Slightly blurred, per the brief; scale hides the soft blur edge. How much is
+     per-theme: the point is an abstract wash, and a busier clip needs more of it
+     to get there. */
+  filter: blur(var(--bg-blur)) saturate(1.06) contrast(1.02);
   transform: scale(1.09);
   opacity: 0;
   transition: opacity 1.2s var(--ease);
@@ -83,8 +174,8 @@ body {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(115% 95% at 26% 22%, transparent 0%, rgba(16, 8, 4, 0.70) 100%),
-    linear-gradient(185deg, rgba(16, 8, 4, 0.50) 0%, rgba(16, 8, 4, 0.40) 40%, rgba(16, 8, 4, 0.86) 100%);
+    radial-gradient(115% 95% at 26% 22%, transparent 0%, rgba(var(--ground-rgb), var(--scrim-edge)) 100%),
+    linear-gradient(185deg, rgba(var(--ground-rgb), var(--scrim-top)) 0%, rgba(var(--ground-rgb), var(--scrim-mid)) 40%, rgba(var(--ground-rgb), var(--scrim-foot)) 100%);
 }
 
 /* Faint film grain for the analog/classical feel (self-contained SVG noise). */
@@ -98,6 +189,90 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* ---- Theme switch ----
+   Fixed to the top-right corner, over everything but the hover readout. A
+   hairline capsule: a track whose thumb slides to the side of the mounted
+   theme, and the theme's name in mono micro-caps beside it. It rides the same
+   tokens as the rest of the page, so it recolours along with what it switches.
+
+   Hidden until theme.js mounts it (`hidden` in the markup, cleared on boot),
+   because with the script absent there is nothing to switch. */
+.theme {
+  position: fixed;
+  top: max(clamp(0.8rem, 2.2vh, 1.35rem), env(safe-area-inset-top));
+  right: max(clamp(0.8rem, 2.2vw, 1.35rem), env(safe-area-inset-right));
+  z-index: 5;
+}
+
+.theme__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.3rem 0.6rem 0.3rem 0.5rem;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  /* The clip runs under this corner, so the capsule carries its own ground. */
+  background: rgba(var(--well-rgb), 0.5);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.theme__switch:hover {
+  color: var(--ink-dim);
+  border-color: var(--hair-strong);
+  background: rgba(var(--well-rgb), 0.66);
+}
+.theme__switch:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+
+.theme__track {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  background: rgba(var(--accent-rgb), 0.12);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.theme__switch:hover .theme__track {
+  border-color: rgba(var(--accent-rgb), 0.6);
+  background: rgba(var(--accent-rgb), 0.2);
+}
+
+/* Parked left on ember, right on night. Both ends are lit — this switches
+   between two themes rather than turning one on, so neither is the "off" seat. */
+.theme__thumb {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.75);
+  transition: transform 0.42s var(--ease), background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+:root[data-theme="night"] .theme__thumb { transform: translateX(11px); }
+
+.theme__name {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Phones: the name is the widest part of the capsule and the corner is tight,
+   so the track carries it alone. The accessible name on the button still says
+   which theme is mounted and what the press does. */
+@media (max-width: 480px) {
+  .theme__switch { padding: 0.3rem 0.5rem; }
+  .theme__name { display: none; }
+}
+
 /* ---- Layout ---- */
 main {
   position: relative;
@@ -108,7 +283,7 @@ main {
   align-items: center;
   gap: var(--main-gap);
   /* Legibility insurance over busy footage — imperceptible over dark footage. */
-  text-shadow: 0 1px 2px rgba(8, 4, 2, 0.5);
+  text-shadow: 0 1px 2px rgba(var(--shade-rgb), 0.5);
 }
 /* A definite width, not shrink-to-fit. .elsewhere is here so the Discord card
    has a width to fill: left to size itself, it resolves to its own min-content
@@ -149,7 +324,7 @@ main {
   height: 7px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 14px 1px rgba(216, 121, 76, 0.7);
+  box-shadow: 0 0 14px 1px rgba(var(--accent-rgb), 0.7);
 }
 
 .hero__name {
@@ -212,7 +387,7 @@ main {
   /* entrance once, then a lazy perpetual drift that starts after it lands */
   animation: tl-in 1.5s var(--ease) both, tl-float var(--fd, 9s) ease-in-out infinite;
   animation-delay: var(--d, 0s), calc(var(--d, 0s) + 1.5s);
-  text-shadow: 0 1px 3px rgba(8, 4, 2, 0.6);
+  text-shadow: 0 1px 3px rgba(var(--shade-rgb), 0.6);
   will-change: transform;
 }
 /* varied drift speeds so the phrases desync into an organic float */
@@ -234,21 +409,21 @@ main {
 }
 .tl-en {
   color: var(--ink-dim);
-  text-shadow: 0 1px 3px rgba(8, 4, 2, 0.6), 0 0 8px rgba(233, 210, 181, 0.38), 0 0 18px rgba(216, 121, 76, 0.2);
+  text-shadow: 0 1px 3px rgba(var(--shade-rgb), 0.6), 0 0 8px rgba(var(--parch-rgb), 0.38), 0 0 18px rgba(var(--accent-rgb), 0.2);
   animation: tl-in 1.5s var(--ease) both, en-flicker 7s ease-in-out infinite, tl-float var(--fd, 9.5s) ease-in-out infinite;
   animation-delay: 0.2s, 2s, 1.7s;
 }
 /* ever-so-slight glow flicker on the English anchor */
 @keyframes en-flicker {
-  0%, 100% { opacity: 0.95; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 8px rgba(233,210,181,.38), 0 0 18px rgba(216,121,76,.2); }
-  7%  { opacity: 0.87; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 5px rgba(233,210,181,.26), 0 0 12px rgba(216,121,76,.11); }
-  8%  { opacity: 0.95; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 8px rgba(233,210,181,.38), 0 0 18px rgba(216,121,76,.2); }
-  40% { opacity: 0.96; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 10px rgba(233,210,181,.44), 0 0 22px rgba(216,121,76,.24); }
-  42% { opacity: 0.82; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 4px rgba(233,210,181,.2), 0 0 10px rgba(216,121,76,.09); }
-  43% { opacity: 0.94; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 8px rgba(233,210,181,.38), 0 0 18px rgba(216,121,76,.2); }
-  71% { opacity: 0.96; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 8px rgba(233,210,181,.38), 0 0 18px rgba(216,121,76,.2); }
-  72.5% { opacity: 0.88; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 6px rgba(233,210,181,.3), 0 0 14px rgba(216,121,76,.14); }
-  74% { opacity: 0.95; text-shadow: 0 1px 3px rgba(8,4,2,.6), 0 0 8px rgba(233,210,181,.38), 0 0 18px rgba(216,121,76,.2); }
+  0%, 100% { opacity: 0.95; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 8px rgba(var(--parch-rgb),.38), 0 0 18px rgba(var(--accent-rgb),.2); }
+  7%  { opacity: 0.87; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 5px rgba(var(--parch-rgb),.26), 0 0 12px rgba(var(--accent-rgb),.11); }
+  8%  { opacity: 0.95; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 8px rgba(var(--parch-rgb),.38), 0 0 18px rgba(var(--accent-rgb),.2); }
+  40% { opacity: 0.96; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 10px rgba(var(--parch-rgb),.44), 0 0 22px rgba(var(--accent-rgb),.24); }
+  42% { opacity: 0.82; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 4px rgba(var(--parch-rgb),.2), 0 0 10px rgba(var(--accent-rgb),.09); }
+  43% { opacity: 0.94; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 8px rgba(var(--parch-rgb),.38), 0 0 18px rgba(var(--accent-rgb),.2); }
+  71% { opacity: 0.96; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 8px rgba(var(--parch-rgb),.38), 0 0 18px rgba(var(--accent-rgb),.2); }
+  72.5% { opacity: 0.88; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 6px rgba(var(--parch-rgb),.3), 0 0 14px rgba(var(--accent-rgb),.14); }
+  74% { opacity: 0.95; text-shadow: 0 1px 3px rgba(var(--shade-rgb),.6), 0 0 8px rgba(var(--parch-rgb),.38), 0 0 18px rgba(var(--accent-rgb),.2); }
 }
 @keyframes tl-in {
   from { opacity: 0; transform: translateY(9px) scale(0.98); filter: blur(5px); }
@@ -279,7 +454,7 @@ main {
 .subtag__phrase {
   display: inline-block;
   color: var(--ink-dim);
-  text-shadow: 0 1px 3px rgba(8, 4, 2, 0.6), 0 0 8px rgba(233, 210, 181, 0.34), 0 0 18px rgba(216, 121, 76, 0.18);
+  text-shadow: 0 1px 3px rgba(var(--shade-rgb), 0.6), 0 0 8px rgba(var(--parch-rgb), 0.34), 0 0 18px rgba(var(--accent-rgb), 0.18);
   /* Prefer a single line; when a phrase can't fit, break into balanced lines of
      near-equal length (centered by .hero__subtag) rather than a long+short pair. */
   text-wrap: balance;
@@ -305,7 +480,7 @@ main {
   font-family: var(--glyph);   /* astro-symbol coverage */
   font-style: normal;          /* symbols shouldn't inherit the italic slant */
   color: var(--accent-soft);
-  text-shadow: 0 0 5px rgba(230, 162, 113, 0.55), 0 0 11px rgba(216, 121, 76, 0.3);
+  text-shadow: 0 0 5px rgba(var(--accent-soft-rgb), 0.55), 0 0 11px rgba(var(--accent-rgb), 0.3);
   pointer-events: none;
   animation: subtag-glitch 0.16s steps(2, end) both;
 }
@@ -351,9 +526,9 @@ main {
   flex-direction: column;
   align-items: stretch;
   padding: 1rem 1.1rem 0.9rem;
-  border: 1px solid rgba(216, 121, 76, 0.18);
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
   border-radius: 11px;
-  background: linear-gradient(165deg, rgba(44, 21, 14, 0.5), rgba(18, 10, 6, 0.58));
+  background: linear-gradient(165deg, rgba(var(--card-rgb), 0.5), rgba(var(--card-foot-rgb), 0.58));
   text-decoration: none;
   color: inherit;
   transition: border-color 0.3s var(--ease), background 0.3s var(--ease),
@@ -361,8 +536,8 @@ main {
 }
 .link:hover,
 .link:focus-visible {
-  border-color: rgba(216, 121, 76, 0.42);
-  background: linear-gradient(165deg, rgba(54, 26, 17, 0.66), rgba(22, 12, 7, 0.72));
+  border-color: rgba(var(--accent-rgb), 0.42);
+  background: linear-gradient(165deg, rgba(var(--card-lit-rgb), 0.66), rgba(var(--card-lit-foot-rgb), 0.72));
   transform: translateY(-2px);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32);
   outline: none;
@@ -429,18 +604,18 @@ main {
    shelf icons and the chart anchor, so the page has one glow language. */
 .link--current {
   grid-column: 1 / -1;
-  border-color: rgba(216, 121, 76, 0.42);
-  background: linear-gradient(165deg, rgba(58, 27, 17, 0.62), rgba(24, 13, 8, 0.66));
+  border-color: rgba(var(--accent-rgb), 0.42);
+  background: linear-gradient(165deg, rgba(var(--card-hot-rgb), 0.62), rgba(var(--card-hot-foot-rgb), 0.66));
   will-change: box-shadow;
   /* Static floor for the glow. The animation overrides it whenever it runs
      (animations outrank normal declarations, hover included), so this is what
      shows under prefers-reduced-motion, where the global rule kills it. */
-  box-shadow: 0 0 18px rgba(216, 121, 76, 0.2), 0 0 40px rgba(216, 121, 76, 0.11), 0 8px 22px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.2), 0 0 40px rgba(var(--accent-rgb), 0.11), 0 8px 22px rgba(0, 0, 0, 0.3);
 }
 .link--current:hover,
 .link--current:focus-visible {
   border-color: var(--accent);
-  box-shadow: 0 0 22px rgba(216, 121, 76, 0.28), 0 0 50px rgba(216, 121, 76, 0.15), 0 8px 22px rgba(0, 0, 0, 0.32);
+  box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.28), 0 0 50px rgba(var(--accent-rgb), 0.15), 0 8px 22px rgba(0, 0, 0, 0.32);
 }
 
 /* The kicker naming what the card is — sized off .links__eyebrow so the two
@@ -453,18 +628,18 @@ main {
   text-transform: uppercase;
   color: var(--accent-soft);
   opacity: 0.85;
-  text-shadow: 0 0 10px rgba(216, 121, 76, 0.35);
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.35);
 }
 
 /* Irregular, like shelf-flicker — a glow that wavers rather than pulsing on a
    metronome. Kept to box-shadow so it never fights the card's hover transform. */
 @keyframes ember-breathe {
-  0%, 100% { box-shadow: 0 0 15px rgba(216, 121, 76, 0.17), 0 0 34px rgba(216, 121, 76, 0.09), 0 8px 22px rgba(0, 0, 0, 0.3); }
-  18%      { box-shadow: 0 0 20px rgba(216, 121, 76, 0.25), 0 0 46px rgba(216, 121, 76, 0.14), 0 8px 22px rgba(0, 0, 0, 0.3); }
-  31%      { box-shadow: 0 0 12px rgba(216, 121, 76, 0.13), 0 0 28px rgba(216, 121, 76, 0.07), 0 8px 22px rgba(0, 0, 0, 0.3); }
-  54%      { box-shadow: 0 0 22px rgba(216, 121, 76, 0.28), 0 0 52px rgba(216, 121, 76, 0.16), 0 8px 22px rgba(0, 0, 0, 0.3); }
-  67%      { box-shadow: 0 0 14px rgba(216, 121, 76, 0.15), 0 0 30px rgba(216, 121, 76, 0.08), 0 8px 22px rgba(0, 0, 0, 0.3); }
-  83%      { box-shadow: 0 0 19px rgba(216, 121, 76, 0.23), 0 0 42px rgba(216, 121, 76, 0.13), 0 8px 22px rgba(0, 0, 0, 0.3); }
+  0%, 100% { box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.17), 0 0 34px rgba(var(--accent-rgb), 0.09), 0 8px 22px rgba(0, 0, 0, 0.3); }
+  18%      { box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.25), 0 0 46px rgba(var(--accent-rgb), 0.14), 0 8px 22px rgba(0, 0, 0, 0.3); }
+  31%      { box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.13), 0 0 28px rgba(var(--accent-rgb), 0.07), 0 8px 22px rgba(0, 0, 0, 0.3); }
+  54%      { box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.28), 0 0 52px rgba(var(--accent-rgb), 0.16), 0 8px 22px rgba(0, 0, 0, 0.3); }
+  67%      { box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.15), 0 0 30px rgba(var(--accent-rgb), 0.08), 0 8px 22px rgba(0, 0, 0, 0.3); }
+  83%      { box-shadow: 0 0 19px rgba(var(--accent-rgb), 0.23), 0 0 42px rgba(var(--accent-rgb), 0.13), 0 8px 22px rgba(0, 0, 0, 0.3); }
 }
 
 /* ---- Footer ---- */
@@ -503,7 +678,7 @@ main {
   color: var(--ink-faint);
   margin: 0 0 clamp(1.2rem, 4vh, 2.2rem);
 }
-.chart__sub { color: rgba(148, 121, 106, 0.7); }
+.chart__sub { color: rgba(var(--ink-faint-rgb), 0.7); }
 
 /* Control bar — sits above the two-column wrap so neither column has to give
    up width. Two segmented switches: which house system draws the cusps, and
@@ -532,7 +707,7 @@ main {
   padding: 2px;
   border: 1px solid var(--hair);
   border-radius: 999px;
-  background: rgba(241, 231, 218, 0.03);
+  background: rgba(var(--ink-rgb), 0.03);
 }
 /* Once the options wrap to more than one row a pill outline reads wrong. */
 .seg[data-many] { --cols: 4; border-radius: 14px; }
@@ -544,8 +719,8 @@ main {
   width: 0;
   height: 0;                            /* both set from the live button box */
   border-radius: 999px;
-  background: rgba(216, 121, 76, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(230, 162, 113, 0.34), 0 0 10px rgba(216, 121, 76, 0.18);
+  background: rgba(var(--accent-rgb), 0.16);
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-soft-rgb), 0.34), 0 0 10px rgba(var(--accent-rgb), 0.18);
   transition: transform 0.34s var(--ease), width 0.34s var(--ease), height 0.2s var(--ease);
 }
 .seg__opt {
@@ -591,7 +766,7 @@ main {
 
 /* rings + ticks */
 .ring-c { fill: none; stroke: var(--hair-strong); stroke-width: 1; }
-.ring-hub { stroke: rgba(241, 231, 218, 0.09); }
+.ring-hub { stroke: rgba(var(--ink-rgb), 0.09); }
 .ring-spoke { stroke: var(--hair); stroke-width: 1; }
 .ring-mini { stroke: var(--hair); stroke-width: 1; }
 
@@ -604,7 +779,7 @@ main {
 
 /* houses */
 .cusp { stroke: var(--hair); stroke-width: 1; }
-.cusp-axis { stroke: rgba(230, 178, 120, 0.55); stroke-width: 1.4; }
+.cusp-axis { stroke: rgba(var(--gold-soft-rgb), 0.55); stroke-width: 1.4; }
 .house-num { font-family: var(--sans); font-size: 8px; fill: var(--ink-faint); }
 .axis-label { font-family: var(--sans); font-size: 9.5px; letter-spacing: 0.06em; fill: var(--ink-dim); }
 
@@ -693,8 +868,8 @@ main {
   transition: background 0.2s var(--ease);
 }
 .chart__list li:hover,
-.chart__list li.is-on { background: rgba(241, 231, 218, 0.06); }
-.chart__list li:focus-visible { outline: none; background: rgba(241, 231, 218, 0.06); }
+.chart__list li.is-on { background: rgba(var(--ink-rgb), 0.06); }
+.chart__list li:focus-visible { outline: none; background: rgba(var(--ink-rgb), 0.06); }
 .pl-glyph { font-family: var(--glyph); width: 1.3em; text-align: center; color: var(--ink-dim); flex: 0 0 auto; }
 .pl-name { color: var(--ink); flex: 1 1 auto; }
 .pl-r { color: var(--accent-soft); font-family: var(--glyph); }
@@ -707,7 +882,7 @@ main {
 /* Flashes when a house-system change actually moves a placement. */
 .pl-house--moved { animation: house-moved 1.5s var(--ease) 1; }
 @keyframes house-moved {
-  0%, 55% { color: var(--accent-soft); text-shadow: 0 0 8px rgba(216, 121, 76, 0.5); }
+  0%, 55% { color: var(--accent-soft); text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5); }
   100% { color: var(--ink-faint); text-shadow: none; }
 }
 /* Cusps + house numbers fade back in when the system is swapped. */
@@ -778,21 +953,21 @@ main {
   display: flex; flex-direction: column; align-items: center;
   padding: 0.6rem 0.5rem; text-align: center; overflow: hidden;
   border-radius: 10px;
-  border: 1px solid rgba(216, 121, 76, 0.28);
-  background: linear-gradient(165deg, rgba(44, 21, 14, 0.9), rgba(18, 10, 6, 0.94));
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38), inset 0 0 20px rgba(216, 121, 76, 0.05);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
+  background: linear-gradient(165deg, rgba(var(--card-rgb), 0.9), rgba(var(--card-foot-rgb), 0.94));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38), inset 0 0 20px rgba(var(--accent-rgb), 0.05);
 }
 .tcard--featured .tcard__face {
   padding: 0.75rem 0.6rem;
-  border-color: rgba(230, 178, 120, 0.5);
-  box-shadow: 0 0 22px rgba(216, 121, 76, 0.18), 0 8px 26px rgba(0, 0, 0, 0.45), inset 0 0 26px rgba(216, 121, 76, 0.09);
+  border-color: rgba(var(--gold-soft-rgb), 0.5);
+  box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.18), 0 8px 26px rgba(0, 0, 0, 0.45), inset 0 0 26px rgba(var(--accent-rgb), 0.09);
 }
 
 .tcard__kicker { position: absolute; top: 0.5rem; left: 0; right: 0; font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
 .tcard__num { font-family: var(--serif); font-size: 0.72rem; letter-spacing: 0.14em; color: var(--suit); }
 .tcard--featured .tcard__num { margin-top: 0.5rem; font-size: 0.82rem; }
 .tcard__emblem { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; min-height: 0; }
-.tcard__glyph { font-family: var(--glyph); font-size: 1.8rem; color: var(--ink); text-shadow: 0 0 7px rgba(216, 121, 76, 0.4); }
+.tcard__glyph { font-family: var(--glyph); font-size: 1.8rem; color: var(--ink); text-shadow: 0 0 7px rgba(var(--accent-rgb), 0.4); }
 .tcard__abbr { font-family: var(--sans); font-size: 1.15rem; letter-spacing: 0.04em; color: var(--ink); }
 .tcard--featured .tcard__glyph { font-size: 2.4rem; }
 .tcard__name { font-family: var(--serif); font-size: 0.72rem; line-height: 1.12; color: var(--ink); }
@@ -839,9 +1014,9 @@ main {
   margin-inline: auto;      /* .presence is full-width now; keep the card centred */
   padding: 1rem 1.15rem;
   border-radius: 12px;
-  border: 1px solid rgba(216, 121, 76, 0.28);
-  background: linear-gradient(165deg, rgba(44, 21, 14, 0.9), rgba(18, 10, 6, 0.94));
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38), inset 0 0 20px rgba(216, 121, 76, 0.05);
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
+  background: linear-gradient(165deg, rgba(var(--card-rgb), 0.9), rgba(var(--card-foot-rgb), 0.94));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38), inset 0 0 20px rgba(var(--accent-rgb), 0.05);
   text-shadow: none;
 }
 
@@ -866,7 +1041,7 @@ main {
   right: -1px; bottom: -1px;
   width: 15px; height: 15px;
   border-radius: 50%;
-  border: 2.5px solid #17100c;   /* punch-out ring against the card */
+  border: 2.5px solid var(--card-ring);   /* punch-out ring against the card */
   background: var(--ink-faint);
 }
 .presence__dot[data-status="online"]  { background: #5fae6e; }
@@ -913,7 +1088,7 @@ main {
   letter-spacing: 0.05em;
   border-radius: 5px;
   border: 1px solid var(--hair-strong);
-  background: rgba(241, 231, 218, 0.05);
+  background: rgba(var(--ink-rgb), 0.05);
   color: var(--ink-dim);
 }
 .presence__tag-badge { width: 0.9em; height: 0.9em; }
@@ -968,7 +1143,7 @@ main {
   margin-top: 0.4rem;
   height: 3px;
   border-radius: 2px;
-  background: rgba(241, 231, 218, 0.12);
+  background: rgba(var(--ink-rgb), 0.12);
   overflow: hidden;
 }
 .presence__bar-fill {
@@ -1037,7 +1212,7 @@ main {
   width: 100%;
   height: 100%;
   display: block;
-  filter: drop-shadow(0 0 5px rgba(216, 121, 76, 0.28)) drop-shadow(0 1px 2px rgba(8, 4, 2, 0.5));
+  filter: drop-shadow(0 0 5px rgba(var(--accent-rgb), 0.28)) drop-shadow(0 1px 2px rgba(var(--shade-rgb), 0.5));
   transition: transform 0.3s var(--ease), filter 0.3s var(--ease);
 }
 .shelf__icon--fill { fill: currentColor; }
@@ -1045,7 +1220,7 @@ main {
 .shelf__link:hover .shelf__icon,
 .shelf__link:focus-visible .shelf__icon {
   transform: translateY(-3px) scale(1.1);
-  filter: drop-shadow(0 0 8px rgba(230, 162, 113, 0.6)) drop-shadow(0 0 16px rgba(216, 121, 76, 0.35));
+  filter: drop-shadow(0 0 8px rgba(var(--accent-soft-rgb), 0.6)) drop-shadow(0 0 16px rgba(var(--accent-rgb), 0.35));
 }
 
 /* desynced timings — non-harmonic durations + offset phases */
@@ -1109,7 +1284,7 @@ main {
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 5px rgba(216, 121, 76, 0.28)) drop-shadow(0 1px 2px rgba(8, 4, 2, 0.5));
+  filter: drop-shadow(0 0 5px rgba(var(--accent-rgb), 0.28)) drop-shadow(0 1px 2px rgba(var(--shade-rgb), 0.5));
   transition: transform 0.3s var(--ease), filter 0.3s var(--ease);
 }
 /* .is-copied borrows the hover look for a moment after a successful copy, one
@@ -1122,10 +1297,10 @@ main {
 .permalink:focus-visible svg,
 .permalink.is-copied svg {
   transform: translateY(-2px) scale(1.1);
-  filter: drop-shadow(0 0 8px rgba(230, 162, 113, 0.6)) drop-shadow(0 0 16px rgba(216, 121, 76, 0.35));
+  filter: drop-shadow(0 0 8px rgba(var(--accent-soft-rgb), 0.6)) drop-shadow(0 0 16px rgba(var(--accent-rgb), 0.35));
 }
 .permalink.is-copied svg {
-  filter: drop-shadow(0 0 10px rgba(230, 162, 113, 0.78)) drop-shadow(0 0 22px rgba(216, 121, 76, 0.42));
+  filter: drop-shadow(0 0 10px rgba(var(--accent-soft-rgb), 0.78)) drop-shadow(0 0 22px rgba(var(--accent-rgb), 0.42));
 }
 
 /* Hung in the top-right of a headless section, in a band reserved for it. */
@@ -1190,9 +1365,9 @@ main {
   position: relative;                    /* the permalink handle sits in the corner */
   width: 100%;
   padding: clamp(0.85rem, 3vw, 1.05rem) clamp(0.85rem, 3vw, 1.1rem) clamp(0.9rem, 3vw, 1.1rem);
-  border: 1px solid rgba(216, 121, 76, 0.18);
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
   border-radius: 11px;
-  background: linear-gradient(165deg, rgba(44, 21, 14, 0.5), rgba(18, 10, 6, 0.58));
+  background: linear-gradient(165deg, rgba(var(--card-rgb), 0.5), rgba(var(--card-foot-rgb), 0.58));
 }
 
 /* Same voice as .links__eyebrow, centred — the panel has no left edge to hang
@@ -1220,7 +1395,7 @@ main {
   padding: 0.2rem 0.55rem;
   border: 1px solid var(--hair);
   border-radius: 999px;
-  background: rgba(12, 6, 3, 0.35);
+  background: rgba(var(--well-rgb), 0.35);
   font-family: var(--sans);
   font-size: 0.7rem;
   line-height: 1.5;
@@ -1231,8 +1406,8 @@ main {
 .uscripts__chip:hover { color: var(--ink-dim); border-color: var(--hair-strong); }
 .uscripts__chip[aria-pressed="true"] {
   color: var(--accent-soft);
-  border-color: rgba(216, 121, 76, 0.45);
-  background: rgba(216, 121, 76, 0.1);
+  border-color: rgba(var(--accent-rgb), 0.45);
+  background: rgba(var(--accent-rgb), 0.1);
 }
 .uscripts__chip:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 .uscripts__count {
@@ -1257,9 +1432,9 @@ main {
   justify-content: space-between;
   gap: 0.2rem;
   padding: 0.42rem 0.55rem 0.4rem;
-  border: 1px solid rgba(216, 121, 76, 0.16);
+  border: 1px solid rgba(var(--accent-rgb), 0.16);
   border-radius: 8px;
-  background: rgba(12, 6, 3, 0.3);
+  background: rgba(var(--well-rgb), 0.3);
   text-decoration: none;
   color: var(--ink-dim);
   transition: color 0.25s var(--ease), border-color 0.25s var(--ease),
@@ -1281,17 +1456,17 @@ main {
    kills both — same arrangement as .link--current. */
 .uscript:hover,
 .uscript:focus-visible {
-  color: #f0cb95;
-  border-color: rgba(230, 184, 119, 0.5);
-  background: rgba(230, 184, 119, 0.1);
-  box-shadow: 0 0 13px rgba(230, 184, 119, 0.24), 0 0 28px rgba(230, 162, 113, 0.13);
+  color: var(--gold-lit);
+  border-color: rgba(var(--gold-rgb), 0.5);
+  background: rgba(var(--gold-rgb), 0.1);
+  box-shadow: 0 0 13px rgba(var(--gold-rgb), 0.24), 0 0 28px rgba(var(--accent-soft-rgb), 0.13);
   outline: none;
   will-change: transform, box-shadow;
   animation: uscript-float 4.6s ease-in-out infinite, uscript-flare 2.9s ease-in-out infinite;
 }
-.uscript:focus-visible { border-color: rgba(230, 184, 119, 0.8); }
+.uscript:focus-visible { border-color: rgba(var(--gold-rgb), 0.8); }
 .uscript:hover .uscript__ver,
-.uscript:focus-visible .uscript__ver { color: rgba(230, 184, 119, 0.75); opacity: 1; }
+.uscript:focus-visible .uscript__ver { color: rgba(var(--gold-rgb), 0.75); opacity: 1; }
 
 /* A shorter, tighter shelf-float: the tile is anchored in a grid rather than
    drifting free, so it lifts and wanders rather than swimming. */
@@ -1305,15 +1480,15 @@ main {
 /* shelf-flicker's irregular rhythm, carried on the glow instead of on opacity —
    dimming a tile would take its label with it. */
 @keyframes uscript-flare {
-  0%, 100% { box-shadow: 0 0 13px rgba(230, 184, 119, 0.26), 0 0 28px rgba(230, 162, 113, 0.14); }
-  8%       { box-shadow: 0 0 8px  rgba(230, 184, 119, 0.15), 0 0 20px rgba(230, 162, 113, 0.08); }
-  10%      { box-shadow: 0 0 15px rgba(230, 184, 119, 0.30), 0 0 32px rgba(230, 162, 113, 0.16); }
-  42%      { box-shadow: 0 0 19px rgba(230, 184, 119, 0.38), 0 0 40px rgba(230, 162, 113, 0.21); }
-  45%      { box-shadow: 0 0 10px rgba(230, 184, 119, 0.19), 0 0 23px rgba(230, 162, 113, 0.10); }
-  47%      { box-shadow: 0 0 16px rgba(230, 184, 119, 0.32), 0 0 34px rgba(230, 162, 113, 0.17); }
-  72%      { box-shadow: 0 0 12px rgba(230, 184, 119, 0.24), 0 0 27px rgba(230, 162, 113, 0.13); }
-  74%      { box-shadow: 0 0 20px rgba(230, 184, 119, 0.40), 0 0 42px rgba(230, 162, 113, 0.22); }
-  76%      { box-shadow: 0 0 13px rgba(230, 184, 119, 0.26), 0 0 28px rgba(230, 162, 113, 0.14); }
+  0%, 100% { box-shadow: 0 0 13px rgba(var(--gold-rgb), 0.26), 0 0 28px rgba(var(--accent-soft-rgb), 0.14); }
+  8%       { box-shadow: 0 0 8px  rgba(var(--gold-rgb), 0.15), 0 0 20px rgba(var(--accent-soft-rgb), 0.08); }
+  10%      { box-shadow: 0 0 15px rgba(var(--gold-rgb), 0.30), 0 0 32px rgba(var(--accent-soft-rgb), 0.16); }
+  42%      { box-shadow: 0 0 19px rgba(var(--gold-rgb), 0.38), 0 0 40px rgba(var(--accent-soft-rgb), 0.21); }
+  45%      { box-shadow: 0 0 10px rgba(var(--gold-rgb), 0.19), 0 0 23px rgba(var(--accent-soft-rgb), 0.10); }
+  47%      { box-shadow: 0 0 16px rgba(var(--gold-rgb), 0.32), 0 0 34px rgba(var(--accent-soft-rgb), 0.17); }
+  72%      { box-shadow: 0 0 12px rgba(var(--gold-rgb), 0.24), 0 0 27px rgba(var(--accent-soft-rgb), 0.13); }
+  74%      { box-shadow: 0 0 20px rgba(var(--gold-rgb), 0.40), 0 0 42px rgba(var(--accent-soft-rgb), 0.22); }
+  76%      { box-shadow: 0 0 13px rgba(var(--gold-rgb), 0.26), 0 0 28px rgba(var(--accent-soft-rgb), 0.14); }
 }
 
 .uscript__name { font-size: 0.76rem; line-height: 1.3; }
@@ -1347,7 +1522,7 @@ main {
 }
 .tip__leader.is-on { opacity: 1; }
 .tip__line { stroke: var(--hair-strong); stroke-width: 1; }
-.tip__line, .tip__node { filter: drop-shadow(0 0 4px rgba(216, 121, 76, 0.35)); }
+.tip__line, .tip__node { filter: drop-shadow(0 0 4px rgba(var(--accent-rgb), 0.35)); }
 .tip__node { fill: var(--accent-soft); }
 .tip__tick { fill: var(--ink-faint); }
 
@@ -1363,7 +1538,7 @@ main {
   padding: 0.42rem 0.6rem 0.46rem;
   border: 1px solid var(--hair);
   border-radius: 7px;
-  background: rgba(12, 6, 3, 0.82);
+  background: rgba(var(--well-rgb), 0.82);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);

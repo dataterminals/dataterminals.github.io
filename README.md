@@ -19,6 +19,8 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   `localStorage` for a few hours so repeat visits don't re-hit the API.
 - **A live "currently working on" card.** A second call (`/users/dataterminals/events/public`) scores
   which repo is genuinely being worked on; it takes a full-width row above the grid. See below.
+- **Two themes.** The capsule in the top-right corner swaps the background loop and the whole
+  palette with it, and remembers the choice. See below.
 
 ## Editing links
 
@@ -218,11 +220,43 @@ This does **not** shorten the HTML's own ten-minute window, and nothing served b
 returning visitor still sees the previous page for up to ten minutes — then sees the new one whole.
 A first visit or a hard reload is immediate.
 
-## Background video
+## Themes and the background video
 
-Drop a short, seamless, muted clip into [`assets/`](assets/) — see [`assets/README.md`](assets/README.md)
-for the exact filenames (`bg.webm` / `bg.mp4` / `poster.jpg`), size guidance, and ffmpeg one-liners.
-Until a clip is present the page shows a designed gradient fallback, so it never looks broken.
+Two themes ship, switched from the capsule in the top-right corner:
+
+- **`ember`** — the default. Oxblood and sepia, terracotta accents.
+- **`night`** — wet asphalt under sodium vapour, off a camcorder tape. Green-black
+  ground, sodium-gold accents.
+
+A theme is a palette plus the clip it was pulled from. The palette lives entirely
+in [`styles.css`](styles.css), keyed off `data-theme` on `<html>`: everything that
+carries a theme's identity is a token in the `:root` block, and the ones written as
+a bare `r, g, b` triple exist so a rule can tint with them —
+`rgba(var(--accent-rgb), 0.4)` — rather than restating the hue. A theme restates
+the tokens and nothing else; no component rule knows there is more than one.
+
+[`theme.js`](theme.js) owns the rest: which theme is mounted, the `<video>` that
+goes with it, and the switch. The clip is mounted from there rather than written
+into `index.html`, because hard-coding one theme's `<source>`s would make a
+visitor on the *other* theme download both — there is one `<video>` per theme,
+built the first time that theme is asked for and kept afterwards, so switching
+back is an instant cross-fade rather than a second download. The choice is
+remembered in `localStorage` under `dt:theme`, and a small inline script in
+`<head>` replays it before the first paint so the palette doesn't flash.
+
+Everything degrades: no `localStorage`, no video support, or `theme.js` absent
+all leave the default theme's CSS gradient and a page that reads fine. The switch
+is `hidden` in the markup and revealed only once it is wired, so it is never a
+dead control. Under `prefers-reduced-motion` no clip is fetched at all.
+
+**Adding a theme** takes three edits: the media into [`assets/`](assets/) (see
+[`assets/README.md`](assets/README.md) for filenames, size guidance and the
+ffmpeg recipes, including how the night loop's seam was cross-faded), a palette
+block in `styles.css`, and an entry in `THEMES` in `theme.js`. Two of those
+tokens are worth knowing about — `--bg-blur`, how far the clip is pushed out of
+focus, and the `--scrim-*` alphas, how hard the scrim sits on it. A busier or
+darker clip needs different values from the ember loop's, and the night theme
+sets both.
 
 ## Local preview
 
