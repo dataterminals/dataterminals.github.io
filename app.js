@@ -192,6 +192,7 @@
     "Awoke to hazy landscapes, to find my world defies the laws my own mind mandates.",
     "My clarity was found under the arm of an economy-sized mousetrap.",
     "Rumble out of bed and stumble to the kitchen,\npour myself a cup of ambition - and yawn,\nand stretch, and my life is a mess, and\nif I ever make it home today, then god bless.",
+    "in your floating-whip system,\nin the bread-lines, the prisons,\nand from the chip under your wrist-skin:\n'You are so fucking paranoid.'",
   ];
 
   const GH_USER = 'dataterminals';
