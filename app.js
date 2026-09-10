@@ -109,7 +109,6 @@
     "They'll grift and grate, grab and take, then tell you that it's the other way around.",
     "Come on baby, scrape my data.",
     "My reflection's slightly off...\n...All I can see is a content farm.",
-    "EYECANTLOOKAWAY",
     "The real narcissists are the culture that treats inconvenience as if it's emotional abuse.",
     "We've been taught that anyone who makes us feel bad is fundamentally broken,\nwhen sometimes, they just live in a world that doesn't revolve around you.",
     "Navigating a challenging personality is the bedrock of how a society functions.",
