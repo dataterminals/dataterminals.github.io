@@ -44,6 +44,33 @@ ffmpeg -i source.mp4 -an -c:v libx264 -crf 27 -preset slow -pix_fmt yuv420p -mov
 ffmpeg -i source.mp4 -ss 00:00:01 -vframes 1 -q:v 4 assets/poster.jpg
 ```
 
+### How `bg.*` was cut
+
+The ember loop is one shot from the same music video the night loop came from:
+1:51.20 to 1:55.00, a slow drift across a stone relief -- a winged figure with a
+sword, the whole frame tinted oxblood. First pass of this clip was a zoomed-in
+crop pushed towards orange; this is the whole frame at its own colour.
+
+```bash
+# 1. The shot, frame-accurate, with a frame of margin at each edge. The source
+#    is letterboxed 1280x720 -- cropdetect at 16 or 24 agrees on the 532-line
+#    picture at y=94 (at 8 it reads the bars as picture). The picture inside the
+#    bars averages Y~60, so only a touch of lift is needed to land beside the
+#    loop it replaces (Y~71); the bars had made it read far darker than it is.
+ffmpeg -ss 111.24 -to 114.96 -i source.mp4 -an -vf   "crop=1280:532:0:94,eq=gamma=1.06:saturation=1.1,hqdn3d=2:1.5:4:3,   fps=15,scale=960:-2"   -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
+
+# 2. The seam. 3.7 s is too short to lose a second of it to a dissolve, and a
+#    slow camera drift reads the same run backwards -- so the loop is the shot
+#    forward then reversed, 7.4 s with no cut anywhere. The reversed half drops
+#    its first frame so the turn doesn't hold a doubled one.
+ffmpeg -i keep.mp4 -filter_complex   "[0:v]split[a][b];[b]reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];   [a][r]concat=n=2:v=1:a=0[out]"   -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
+
+# 3. Ship it, same settings as the others.
+ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1   -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg.webm
+ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150   -pix_fmt yuv420p -movflags +faststart assets/bg.mp4
+ffmpeg -ss 1.8 -i loop.mp4 -vframes 1 -q:v 4 assets/poster.jpg
+```
+
 ### How `bg-night.*` was cut
 
 Cut from the first 47 s of a camcorder-shot music video, keeping only the
