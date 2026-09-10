@@ -203,7 +203,7 @@
   // site is touched — the one answer that says nothing about what's being built.
   const SELF_REPO = `${GH_USER}/${GH_USER}.github.io`.toLowerCase();
 
-  // How the current-project card is decided.
+  // How the current-project block is decided.
   //
   // A single timestamp can't tell building apart from housekeeping. A sweep that
   // touches six repos with one janitorial commit each — a licence header, a line
@@ -233,13 +233,27 @@
   const SWEEP_GAP_MS = 90 * 1000;
   const SWEEP_MIN_REPOS = 3;
 
+  // How many projects the beacon block reports. The first is the beacon proper
+  // and the rest are runners-up; the block only ever shows as many as the
+  // scoring actually turned up, so a quiet fortnight still yields one card.
+  const CURRENT_COUNT = 3;
+
   // Entrance stagger, in seconds: the featured grid climbs a rung per card, and
-  // the current-project card lands just ahead of it. Set per card as an inline
-  // custom property rather than by :nth-child, so inserting the current-project
-  // card later doesn't renumber (and so restart) the cards already on screen.
+  // the beacon block climbs its own, shorter rung just ahead of it. Set per card
+  // as an inline custom property rather than by :nth-child, so inserting the
+  // beacon block later doesn't renumber (and so restart) the cards already on
+  // screen.
   const RISE_FIRST = 0.3;
   const RISE_STEP = 0.08;
   const RISE_CURRENT = 0.22;
+  const RISE_CURRENT_STEP = 0.05;
+
+  // Where each beacon card enters its 9.4s ember cycle. Negative, so a card is
+  // already mid-breath when it lands rather than igniting on arrival, and picked
+  // to share no common factor with the cycle or each other — three cards on one
+  // offset would breathe in lockstep, which is the metronome the glow is shaped
+  // to avoid.
+  const EMBER_PHASES = ['-2.6s', '-5.9s', '-8.3s'];
 
   /* ---------- helpers ---------- */
 
@@ -305,10 +319,13 @@
   /* ---------- current project (most recently pushed repo) ---------- */
 
   // Score every repo the push feed mentions, newest pushes counting for most,
-  // and return the heaviest name. Null if the feed told us nothing usable — the
-  // caller falls back to `pushed_at` from there.
-  function pickByActivity(events) {
-    if (!Array.isArray(events)) return null;
+  // and return the heaviest `limit` names, heaviest first. Empty if the feed
+  // told us nothing usable — the caller falls back to `pushed_at` from there.
+  // Short is fine and meant: a fortnight with one live repo returns one name,
+  // and the block shrinks to match rather than padding itself out with stale
+  // work the kicker would then be lying about.
+  function pickByActivity(events, limit) {
+    if (!Array.isArray(events)) return [];
 
     const now = Date.now();
     const scores = new Map();
@@ -326,22 +343,21 @@
       scores.set(name, (scores.get(name) || 0) + weight);
     }
 
-    let top = null;
-    for (const [name, score] of scores) {
-      if (!top || score > top.score) top = { name, score };
-    }
-    return top ? top.name : null;
+    return [...scores]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([name]) => name);
   }
 
-  // Fallback pick: newest `pushed_at`, minus anything that looks like a sweep.
-  // Walking the sorted list and starting a new cluster whenever the gap opens up
-  // means a sweep is caught by its shape rather than by any fixed window, so a
-  // scripted burst and a slow manual one both register.
-  function pickByPush(repos) {
+  // Fallback pick: newest `pushed_at` first, minus anything that looks like a
+  // sweep. Walking the sorted list and starting a new cluster whenever the gap
+  // opens up means a sweep is caught by its shape rather than by any fixed
+  // window, so a scripted burst and a slow manual one both register.
+  function pickByPush(repos, limit) {
     const sorted = repos
       .filter((r) => r.pushed_at && String(r.full_name).toLowerCase() !== SELF_REPO)
       .sort((a, b) => Date.parse(b.pushed_at) - Date.parse(a.pushed_at));
-    if (!sorted.length) return null;
+    if (!sorted.length) return [];
 
     let cluster = [];
     const clusters = [cluster];
@@ -354,56 +370,80 @@
       cluster.push(r);
     }
 
-    // Newest cluster that isn't a sweep. If every one of them is — a page opened
-    // in the middle of a big sweep and nothing else — take the newest repo
-    // anyway rather than showing no card at all.
+    // Newest clusters first, skipping the sweeps and taking every repo a
+    // surviving cluster holds — a two-repo cluster is a genuine two-repo
+    // session, which is exactly the kind of thing this block exists to show.
+    const picks = [];
     for (const c of clusters) {
-      if (c.length < SWEEP_MIN_REPOS) return c[0].full_name;
+      if (c.length >= SWEEP_MIN_REPOS) continue;
+      for (const r of c) {
+        picks.push(r.full_name);
+        if (picks.length === limit) return picks;
+      }
     }
-    return sorted[0].full_name;
+
+    // If every cluster was a sweep — a page opened in the middle of a big one
+    // and nothing else — take the newest repos anyway rather than no card.
+    return picks.length ? picks : sorted.slice(0, limit).map((r) => r.full_name);
   }
 
-  // The live beacon above the grid. Whichever repo is being worked on hardest
-  // wins (see the scoring notes up top); if it happens to be catalogued in
-  // links.json we borrow that entry's title, blurb and url (a PWA link reads
-  // better than the bare GitHub one), and otherwise fall back to the repo's own
-  // name and GitHub description.
+  // The live beacon block above the grid: up to CURRENT_COUNT repos, ranked by
+  // how hard each is being worked on (see the scoring notes up top). The
+  // heaviest takes a full-width row of its own; the runners-up drop into the
+  // grid's own two columns beneath it, so three live projects cost two rows
+  // rather than three and the ranking stays legible at a glance.
   //
-  // Nothing reserves space for this card: it can't be known without the API, so
-  // it is prepended when the data lands and simply never appears if it doesn't.
+  // Where a pick is catalogued in links.json we borrow that entry's title, blurb
+  // and url (a PWA link reads better than the bare GitHub one), and otherwise
+  // fall back to the repo's own name and GitHub description.
+  //
+  // Nothing reserves space for these cards: they can't be known without the API,
+  // so they are prepended when the data lands and simply never appear if it
+  // doesn't.
   function renderCurrent(repos, events, catalogue) {
-    const name = pickByActivity(events) || pickByPush(repos);
-    if (!name) return;
+    const scored = pickByActivity(events, CURRENT_COUNT);
+    const names = scored.length ? scored : pickByPush(repos, CURRENT_COUNT);
+    if (!names.length) return;
 
-    // The repo list is what carries descriptions; the push feed only names names.
-    // A pick with no matching entry still renders, just without the fallback blurb.
-    const top = repos.find((r) => String(r.full_name).toLowerCase() === name.toLowerCase()) || {};
-    const entry = catalogue.find((l) => l.repo && l.repo.toLowerCase() === name.toLowerCase());
-
-    // If the winner is also one of the featured cards, take it out of the grid:
-    // the beacon is already showing it, and the same card twice on one screen
-    // reads as a mistake. Costs the grid a card whenever it happens, so the row
-    // of two can end up with an odd one out.
+    // Any pick that is also a featured card comes out of the grid: the block is
+    // already showing it, and the same card twice on one screen reads as a
+    // mistake. Costs the grid a card each time it happens, so the rows of two
+    // can end up with an odd one out.
+    const picked = new Set(names.map((n) => n.toLowerCase()));
     for (const meta of listEl.querySelectorAll('.link__meta[data-repo]')) {
-      if (meta.dataset.repo.toLowerCase() !== name.toLowerCase()) continue;
-      meta.closest('.link').remove();
-      break;
+      if (picked.has(meta.dataset.repo.toLowerCase())) meta.closest('.link').remove();
     }
 
-    const card = buildCard({
-      title: entry ? entry.title : name.split('/').pop(),
-      url: entry ? entry.url : `https://github.com/${name}`,
-      blurb: (entry && entry.blurb) || top.description || '',
-      repo: name,
+    const cards = names.map((name, i) => {
+      // The repo list is what carries descriptions; the push feed only names
+      // names. A pick with no matching entry still renders, just without the
+      // fallback blurb.
+      const top = repos.find((r) => String(r.full_name).toLowerCase() === name.toLowerCase()) || {};
+      const entry = catalogue.find((l) => l.repo && l.repo.toLowerCase() === name.toLowerCase());
+
+      const card = buildCard({
+        title: entry ? entry.title : name.split('/').pop(),
+        url: entry ? entry.url : `https://github.com/${name}`,
+        blurb: (entry && entry.blurb) || top.description || '',
+        repo: name,
+      });
+      card.classList.add('link--current');
+      if (i) card.classList.add('link--also');
+      card.style.setProperty('--rise-delay', `${(RISE_CURRENT + i * RISE_CURRENT_STEP).toFixed(2)}s`);
+      card.style.setProperty('--ember-phase', EMBER_PHASES[i % EMBER_PHASES.length]);
+
+      const kicker = el('span', 'link__kicker');
+      kicker.textContent = i ? 'Also working on' : 'Currently working on';
+      card.querySelector('.link__main').prepend(kicker);
+      return card;
     });
-    card.classList.add('link--current');
-    card.style.setProperty('--rise-delay', `${RISE_CURRENT}s`);
 
-    const kicker = el('span', 'link__kicker');
-    kicker.textContent = 'Currently working on';
-    card.querySelector('.link__main').prepend(kicker);
+    // A single runner-up would sit in the left column with a featured card
+    // pulled up beside it, which muddles the two tiers together. Let it span
+    // instead, so the block always ends on a clean edge.
+    if (cards.length === 2) cards[1].classList.add('link--also-wide');
 
-    listEl.prepend(card);
+    listEl.prepend(...cards);
   }
 
   /* ---------- GitHub enrichment (progressive, silent) ---------- */
@@ -469,8 +509,8 @@
     ]);
     if (!repos) return;
 
-    // Prepend the current-project card first, so the stamping pass below picks
-    // its meta up in the same sweep as the grid's.
+    // Prepend the current-project block first, so the stamping pass below picks
+    // its metas up in the same sweep as the grid's.
     renderCurrent(repos, events, catalogue);
 
     const byName = new Map(repos.map((r) => [String(r.full_name).toLowerCase(), r]));
@@ -788,8 +828,8 @@
     initTaglineGlitch();
 
     // `catalogue` is every link; `featured` is the subset the grid renders. The
-    // current-project card looks itself up in the full catalogue, since the repo
-    // pushed last is often one that isn't featured.
+    // current-project cards look themselves up in the full catalogue, since the
+    // repos being pushed are often ones that aren't featured.
     let catalogue = FALLBACK;
     let featured = FALLBACK;
     try {

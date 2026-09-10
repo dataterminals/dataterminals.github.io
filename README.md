@@ -17,8 +17,9 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   (and falls back to the repo's GitHub description if a link has no `blurb`). This is progressive:
   if the API is offline or rate-limited, the page still looks complete. Responses are cached in
   `localStorage` for a few hours so repeat visits don't re-hit the API.
-- **A live "currently working on" card.** A second call (`/users/dataterminals/events/public`) scores
-  which repo is genuinely being worked on; it takes a full-width row above the grid. See below.
+- **A live "currently working on" block.** A second call (`/users/dataterminals/events/public`) scores
+  which repos are genuinely being worked on and shows the top three above the grid — a full-width
+  beacon plus two runners-up. See below.
 - **Two themes.** The capsule in the top-right corner swaps the background loop and the whole
   palette with it, and remembers the choice. See below.
 
@@ -49,37 +50,51 @@ in `links[]` within each category.
 Note that only entries with `"featured": true` are rendered — dropping the flag keeps a link
 catalogued in `links.json` without showing it on the page.
 
-### The current-project card
+### The current-project block
 
-Above the grid sits one full-width card for whichever repo is actually being worked on, so the page
-reports the present tense rather than only what was curated. It needs no configuration.
+Above the grid sit up to `CURRENT_COUNT` cards (three) for the repos actually being worked on, so the
+page reports the present tense rather than only what was curated. It needs no configuration.
 
-**How the repo is picked.** Not by "newest push" — that can't tell building apart from housekeeping.
+The heaviest repo is the **beacon**: a full-width row, the brightest ember glow, kicker "Currently
+working on". The runners-up drop into the grid's own two columns beneath it, dimmer and kicked "Also
+working on", so three live projects cost two rows rather than three and the ranking stays legible at
+a glance. Every glow on a card is scaled by a single `--ember` custom property, which is the whole of
+what separates the two tiers — there is no second copy of the keyframes to keep in step.
+
+**How the repos are picked.** Not by "newest push" — that can't tell building apart from housekeeping.
 A sweep that touches six repos with one janitorial commit each (a licence header, a line-ending fix,
 splitting a monorepo) leaves every one of them looking newer than the project that got a solid week
-of work, and the card ends up reporting whichever repo the sweep happened to reach last.
+of work, and the block ends up reporting whichever repos the sweep happened to reach last.
 
 So the pick is scored from the push feed (`/users/dataterminals/events/public`) instead: every push
 in the last `ACTIVITY_WINDOW_DAYS` contributes, decayed by its age on a half-life of
-`ACTIVITY_HALF_LIFE_DAYS`, and the heaviest repo wins. A lone touch scores once and loses to sustained work even when it is
-newer; a burst that has since gone quiet decays out of contention. Both constants live in `app.js`.
+`ACTIVITY_HALF_LIFE_DAYS`, and the heaviest repos win in order. A lone touch scores once and loses to
+sustained work even when it is newer; a burst that has since gone quiet decays out of contention.
+Both constants live in `app.js`.
+
+- **The block shows only what qualifies.** A fortnight with one live repo renders one card, exactly as
+  before; two renders two. Nothing is topped up from older work to fill the third slot, because the
+  kicker would then be claiming a present tense that isn't there. A lone runner-up spans the full
+  width instead of leaving half a row for the grid to fill, so the block always ends on a clean edge.
 
 - **If the push feed is unavailable** (it's the second request, so it's first to go missing on a spent
   rate limit), the pick falls back to newest `pushed_at` with sweeps filtered structurally: repos are
   clustered by how close together they were pushed — chained, so a slow manual sweep clusters as
   readily as a scripted one — and a cluster of `SWEEP_MIN_REPOS` or more is skipped as housekeeping.
+  Clusters are then read newest-first and every repo a surviving one holds is taken, since a two-repo
+  cluster is a genuine two-repo session — exactly the kind of thing this block exists to show.
   Blunter than the scored path, since timing is all it can see: it can't tell a one-commit day from a
   busy one, and a genuine two-repo session stays under the threshold on purpose.
-- If that repo is catalogued in `links.json`, the card borrows the entry's **title, blurb and url**
+- If a picked repo is catalogued in `links.json`, its card borrows the entry's **title, blurb and url**
   (so a PWA link wins over the bare GitHub one). Otherwise it falls back to the repo name and the
   repo's GitHub description. Being catalogued is enough; it does not need `"featured"`.
 - If it *is* featured, its card is dropped from the grid so it doesn't appear twice — which can
-  leave the two-column grid with an odd one out on the last row.
+  leave the two-column grid with an odd one out on the last row, and now happens up to three times.
 - This repo is held out of the running (`SELF_REPO` in `app.js`). Editing the page pushes it, so
-  leaving it in would make the card report itself every time the site is touched.
-- Nothing reserves the card's space: it can't be known without the API, so it is inserted when the
-  data lands and never appears if the API is unreachable or you're on `file://`. Both responses are
-  cached for 6h, so only a cold first visit sees it arrive late.
+  leaving it in would make the block report itself every time the site is touched.
+- Nothing reserves the block's space: it can't be known without the API, so the cards are inserted
+  when the data lands and never appear if the API is unreachable or you're on `file://`. Both
+  responses are cached for 6h, so only a cold first visit sees them arrive late.
 
 ### Keeping the inline fallbacks in sync
 
