@@ -197,6 +197,11 @@
   const EVENTS_CACHE_KEY = 'dt:gh:events';
   const CACHE_TTL = 6 * 60 * 60 * 1000; // 6h
   const listEl = document.getElementById('links');
+  // The beacon block's own grid and the section wrapping it. Both are in the
+  // markup but the section is `hidden` until renderCurrent has something to put
+  // there, so a page that never reaches the API shows no empty labelled band.
+  const currentEl = document.getElementById('current-list');
+  const currentSection = document.getElementById('current');
 
   // This repo is held out of the "currently working on" pick. Editing the page
   // pushes it, so leaving it in means the beacon reports itself every time the
@@ -387,19 +392,23 @@
     return picks.length ? picks : sorted.slice(0, limit).map((r) => r.full_name);
   }
 
-  // The live beacon block above the grid: up to CURRENT_COUNT repos, ranked by
-  // how hard each is being worked on (see the scoring notes up top). The
-  // heaviest takes a full-width row of its own; the runners-up drop into the
-  // grid's own two columns beneath it, so three live projects cost two rows
-  // rather than three and the ranking stays legible at a glance.
+  // The live beacon block: up to CURRENT_COUNT repos, ranked by how hard each is
+  // being worked on (see the scoring notes up top). The heaviest takes a
+  // full-width row of its own; the runners-up drop into the block's two columns
+  // beneath it, so three live projects cost two rows rather than three and the
+  // ranking stays legible at a glance.
+  //
+  // The block carries one "Currently working on" label of its own, in the same
+  // voice as "Selected work" below it — so the cards themselves say nothing
+  // about their own status and rank is left to the shape of them. Three cards
+  // repeating a kicker each was the label three times over for one claim.
   //
   // Where a pick is catalogued in links.json we borrow that entry's title, blurb
   // and url (a PWA link reads better than the bare GitHub one), and otherwise
   // fall back to the repo's own name and GitHub description.
   //
-  // Nothing reserves space for these cards: they can't be known without the API,
-  // so they are prepended when the data lands and simply never appear if it
-  // doesn't.
+  // Nothing reserves space for any of this: it can't be known without the API,
+  // so the section is unhidden when the data lands and stays gone if it doesn't.
   function renderCurrent(repos, events, catalogue) {
     const scored = pickByActivity(events, CURRENT_COUNT);
     const names = scored.length ? scored : pickByPush(repos, CURRENT_COUNT);
@@ -431,10 +440,6 @@
       if (i) card.classList.add('link--also');
       card.style.setProperty('--rise-delay', `${(RISE_CURRENT + i * RISE_CURRENT_STEP).toFixed(2)}s`);
       card.style.setProperty('--ember-phase', EMBER_PHASES[i % EMBER_PHASES.length]);
-
-      const kicker = el('span', 'link__kicker');
-      kicker.textContent = i ? 'Also working on' : 'Currently working on';
-      card.querySelector('.link__main').prepend(kicker);
       return card;
     });
 
@@ -443,7 +448,8 @@
     // instead, so the block always ends on a clean edge.
     if (cards.length === 2) cards[1].classList.add('link--also-wide');
 
-    listEl.prepend(...cards);
+    currentEl.append(...cards);
+    currentSection.hidden = false;
   }
 
   /* ---------- GitHub enrichment (progressive, silent) ---------- */
@@ -509,13 +515,15 @@
     ]);
     if (!repos) return;
 
-    // Prepend the current-project block first, so the stamping pass below picks
-    // its metas up in the same sweep as the grid's.
+    // Fill the beacon block first, so the stamping pass below picks its metas up
+    // in the same sweep as the grid's.
     renderCurrent(repos, events, catalogue);
 
     const byName = new Map(repos.map((r) => [String(r.full_name).toLowerCase(), r]));
 
-    for (const meta of listEl.querySelectorAll('.link__meta[data-repo]')) {
+    // Both grids at once — the beacon block's cards want the same stamp as the
+    // featured ones, and they are the only two .links__list on the page.
+    for (const meta of document.querySelectorAll('.links__list .link__meta[data-repo]')) {
       const r = byName.get(meta.dataset.repo.toLowerCase());
       if (!r) continue;
 

@@ -18,8 +18,8 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   if the API is offline or rate-limited, the page still looks complete. Responses are cached in
   `localStorage` for a few hours so repeat visits don't re-hit the API.
 - **A live "currently working on" block.** A second call (`/users/dataterminals/events/public`) scores
-  which repos are genuinely being worked on and shows the top three above the grid — a full-width
-  beacon plus two runners-up. See below.
+  which repos are genuinely being worked on and shows the top three in a labelled section of their
+  own above Selected work — a full-width beacon plus two runners-up. See below.
 - **Two themes.** The capsule in the top-right corner swaps the background loop and the whole
   palette with it, and remembers the choice. See below.
 
@@ -52,14 +52,21 @@ catalogued in `links.json` without showing it on the page.
 
 ### The current-project block
 
-Above the grid sit up to `CURRENT_COUNT` cards (three) for the repos actually being worked on, so the
-page reports the present tense rather than only what was curated. It needs no configuration.
+`#current` is a section of its own above `#work`, labelled **Currently working on** in the same voice
+as Selected work below it and carrying the same chain handle. It holds up to `CURRENT_COUNT` cards
+(three) for the repos actually being worked on, so the page reports the present tense rather than
+only what was curated. It needs no configuration.
 
-The heaviest repo is the **beacon**: a full-width row, the brightest ember glow, kicker "Currently
-working on". The runners-up drop into the grid's own two columns beneath it, dimmer and kicked "Also
-working on", so three live projects cost two rows rather than three and the ranking stays legible at
-a glance. Every glow on a card is scaled by a single `--ember` custom property, which is the whole of
-what separates the two tiers — there is no second copy of the keyframes to keep in step.
+The heaviest repo is the **beacon**: a full-width row with the brightest ember glow. The runners-up
+drop into the block's two columns beneath it, dimmer, so three live projects cost two rows rather
+than three and the ranking stays legible at a glance. Every glow on a card is scaled by a single
+`--ember` custom property, which is the whole of what separates the two tiers — there is no second
+copy of the keyframes to keep in step. The cards themselves say nothing about their own status:
+the section's one label makes the claim, and rank is left to the shape of them.
+
+The section is in `index.html` rather than injected whole, empty and `hidden`, for one reason:
+`permalinks.js` binds every chain handle in a single pass at load and would never see one added
+later. `hidden` costs no layout, so a page that never reaches the API is unchanged.
 
 **How the repos are picked.** Not by "newest push" — that can't tell building apart from housekeeping.
 A sweep that touches six repos with one janitorial commit each (a licence header, a line-ending fix,
@@ -72,10 +79,10 @@ in the last `ACTIVITY_WINDOW_DAYS` contributes, decayed by its age on a half-lif
 sustained work even when it is newer; a burst that has since gone quiet decays out of contention.
 Both constants live in `app.js`.
 
-- **The block shows only what qualifies.** A fortnight with one live repo renders one card, exactly as
-  before; two renders two. Nothing is topped up from older work to fill the third slot, because the
-  kicker would then be claiming a present tense that isn't there. A lone runner-up spans the full
-  width instead of leaving half a row for the grid to fill, so the block always ends on a clean edge.
+- **The block shows only what qualifies.** A fortnight with one live repo renders one card; two
+  renders two. Nothing is topped up from older work to fill the third slot, because the label would
+  then be claiming a present tense that isn't there. A lone runner-up spans the full width rather
+  than leaving half a row empty, so the block always ends on a clean edge.
 
 - **If the push feed is unavailable** (it's the second request, so it's first to go missing on a spent
   rate limit), the pick falls back to newest `pushed_at` with sweeps filtered structurally: repos are
@@ -92,9 +99,10 @@ Both constants live in `app.js`.
   leave the two-column grid with an odd one out on the last row, and now happens up to three times.
 - This repo is held out of the running (`SELF_REPO` in `app.js`). Editing the page pushes it, so
   leaving it in would make the block report itself every time the site is touched.
-- Nothing reserves the block's space: it can't be known without the API, so the cards are inserted
-  when the data lands and never appear if the API is unreachable or you're on `file://`. Both
-  responses are cached for 6h, so only a cold first visit sees them arrive late.
+- Nothing reserves the block's space: it can't be known without the API, so the section is unhidden
+  when the data lands and stays `hidden` — label, handle and all — if the API is unreachable or
+  you're on `file://`. Both responses are cached for 6h, so only a cold first visit sees it arrive
+  late.
 
 ### Keeping the inline fallbacks in sync
 

@@ -639,23 +639,12 @@ main {
    edge. app.js adds this only when there are exactly two cards. */
 .link--also-wide { grid-column: 1 / -1; }
 
-/* The kicker naming what the card is — sized off .links__eyebrow so the two
-   read as the same voice, but warm rather than faint. */
-.link__kicker {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.62rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+/* The block's label is #current's own .links__eyebrow, in the same voice as
+   "Selected work" below it — warmed a shade, since it is the live one. */
+#current > .links__eyebrow {
   color: var(--accent-soft);
-  opacity: 0.85;
-  text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.35);
-}
-/* Backed off in step with the runner-up's glow, so the tier reads as one move
-   rather than a dimmed card wearing a full-strength label. */
-.link--also .link__kicker {
-  opacity: 0.6;
-  text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.2);
+  opacity: 0.8;
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
 }
 
 /* Irregular, like shelf-flicker — a glow that wavers rather than pulsing on a
@@ -1360,6 +1349,7 @@ main {
 
 /* Per-instance desync — see the note above. */
 .links__eyebrow .permalink { --pf: 9.2s;  --pk: 7.4s; --pd1: -1.6s; --pd2: -5.3s; }
+#current .permalink        { --pf: 10.8s; --pk: 8.1s; --pd1: -5.4s; --pd2: -1.7s; }
 .permalink--shelf          { --pf: 11.4s; --pk: 9.3s; --pd1: -6.8s; --pd2: -0.9s; }
 .uscripts > .permalink     { --pf: 10s;   --pk: 6.8s; --pd1: -4.1s; --pd2: -7.6s; }
 .chart > .permalink        { --pf: 10.5s; --pk: 8.6s; --pd1: -3.7s; --pd2: -2.4s; }

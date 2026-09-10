@@ -56,6 +56,21 @@
 
       <!-- Each feature's id doubles as its shareable anchor; the .permalink
            handle beside it copies that url (permalinks.js). -->
+
+      <!-- The live beacon block: the repos actually being worked on, above the
+           curated grid. Empty and `hidden` here because none of it can be known
+           without the GitHub API — app.js fills it and unhides it when the data
+           lands, and it stays gone if that never happens, costing no layout
+           either way. It sits in the markup rather than being injected whole so
+           that its handle exists for permalinks.js, which binds every handle in
+           one pass at load and would never see one added later. -->
+      <section class="links" id="current" aria-label="Current projects" hidden>
+        <p class="links__eyebrow">Currently working on<a class="permalink" href="#current" data-name="Currently working on" aria-label="Copy a link to Currently working on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a></p>
+        <div class="links__list" id="current-list">
+          <!-- the top-scoring repos from the GitHub push feed, injected by app.js -->
+        </div>
+      </section>
+
       <section class="links" id="work" aria-label="Selected projects">
         <p class="links__eyebrow">Selected work<a class="permalink" href="#work" data-name="Selected work" aria-label="Copy a link to Selected work"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a></p>
         <div class="links__list" id="links">
