@@ -20,7 +20,7 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
 - **A live "currently working on" block.** A second call (`/users/dataterminals/events/public`) scores
   which repos are genuinely being worked on and shows the top three in a labelled section of their
   own above Selected work — a full-width beacon plus two runners-up. See below.
-- **Two themes.** The capsule in the top-right corner swaps the background loop and the whole
+- **Three themes.** The capsule in the top-right corner cycles the background loop and the whole
   palette with it, and remembers the choice. See below.
 
 ## Editing links
@@ -245,11 +245,14 @@ A first visit or a hard reload is immediate.
 
 ## Themes and the background video
 
-Two themes ship, switched from the capsule in the top-right corner:
+Three themes ship, cycled from the capsule in the top-right corner:
 
 - **`ember`** — the default. Oxblood and sepia, terracotta accents.
 - **`night`** — wet asphalt under sodium vapour, off a camcorder tape. Green-black
   ground, sodium-gold accents.
+- **`morning`** — out of a commuter train window on an overcast morning, off a
+  phone. Concrete-grey ground, a leather-red accent from the pillar and mustard
+  from the seat.
 
 A theme is a palette plus the clip it was pulled from. The palette lives entirely
 in [`styles.css`](styles.css), keyed off `data-theme` on `<html>`: everything that
@@ -263,7 +266,8 @@ goes with it, and the switch. The clip is mounted from there rather than written
 into `index.html`, because hard-coding one theme's `<source>`s would make a
 visitor on the *other* theme download both — there is one `<video>` per theme,
 built the first time that theme is asked for and kept afterwards, so switching
-back is an instant cross-fade rather than a second download. The choice is
+back is an instant cross-fade rather than a second download. The switch steps
+through the themes in the order `theme.js` declares them. The choice is
 remembered in `localStorage` under `dt:theme`, and a small inline script in
 `<head>` replays it before the first paint so the palette doesn't flash.
 
@@ -272,14 +276,17 @@ all leave the default theme's CSS gradient and a page that reads fine. The switc
 is `hidden` in the markup and revealed only once it is wired, so it is never a
 dead control. Under `prefers-reduced-motion` no clip is fetched at all.
 
-**Adding a theme** takes three edits: the media into [`assets/`](assets/) (see
+**Adding a theme** takes five edits: the media into [`assets/`](assets/) (see
 [`assets/README.md`](assets/README.md) for filenames, size guidance and the
-ffmpeg recipes, including how the night loop's seam was cross-faded), a palette
-block in `styles.css`, and an entry in `THEMES` in `theme.js`. Two of those
-tokens are worth knowing about — `--bg-blur`, how far the clip is pushed out of
-focus, and the `--scrim-*` alphas, how hard the scrim sits on it. A busier or
-darker clip needs different values from the ember loop's, and the night theme
-sets both.
+ffmpeg recipes, including how the night and morning loops' seams were
+cross-faded), a palette block in `styles.css`, a seat for it on the switch's
+track (`.theme__thumb`, same file), its name in the `<head>` boot script in
+`index.html`, and an entry in `THEMES` in `theme.js`. Three of those tokens are
+worth knowing about — `--bg-blur`, how far the clip is pushed out of focus; the
+`--scrim-*` alphas, how hard the scrim sits on it; and `--bg-pos`, which part of
+the clip survives being cropped to the viewport. A busier, darker or brighter
+clip needs different values from the ember loop's — night sets the first two,
+morning all three.
 
 ## Local preview
 

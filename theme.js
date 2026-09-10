@@ -1,9 +1,11 @@
-/* theme.js — the page's two background themes, and the switch that mounts them.
+/* theme.js — the page's three background themes, and the switch that mounts them.
 
    A theme is a palette plus the clip it was pulled from. `ember` is the house
    oxblood/sepia look; `night` is a stretch of camcorder tape — wet asphalt under
    sodium vapour, the whole frame cast green by a camera left on auto white
-   balance. Both are blurred and looping behind the same scrim.
+   balance; `morning` is thirty seconds of phone footage out of a commuter train
+   window, grey concrete going past a maroon pillar and a mustard seat. All three
+   are blurred and looping behind the same scrim.
 
    The palette lives entirely in styles.css, keyed off `data-theme` on <html>, so
    nothing here knows a colour. This file owns three things: which theme is
@@ -13,7 +15,8 @@
    hard-coding one theme's <source>s would make a visitor on the other theme
    download both. One <video> per theme, built the first time that theme is
    asked for and kept afterwards, so a switch back is an instant cross-fade
-   rather than a second download. The choice is remembered in localStorage; the
+   rather than a second download. The switch cycles through them in the order
+   they are declared. The choice is remembered in localStorage; the
    inline script in <head> replays it before the first paint so the palette
    doesn't flash, and this file picks it up from there.
 
@@ -39,6 +42,12 @@
       blurb: 'Wet asphalt under sodium vapour, off a camcorder tape.',
       poster: 'assets/poster-night.jpg',
       sources: [['assets/bg-night.webm', 'video/webm'], ['assets/bg-night.mp4', 'video/mp4']],
+    },
+    morning: {
+      label: 'morning',
+      blurb: 'Grey concrete past a mustard seat, off a phone on the morning train.',
+      poster: 'assets/poster-morning.jpg',
+      sources: [['assets/bg-morning.webm', 'video/webm'], ['assets/bg-morning.mp4', 'video/mp4']],
     },
   };
 
@@ -69,8 +78,8 @@
   const seed = document.querySelector('.bg__video'); // the element in the markup
   const layers = new Map();
 
-  // The first theme asked for claims the markup's element; any second theme gets
-  // one built to match. They stack in .bg and cross-fade on opacity alone.
+  // The first theme asked for claims the markup's element; any theme after it
+  // gets one built to match. They stack in .bg and cross-fade on opacity alone.
   function layerFor(id) {
     const held = layers.get(id);
     if (held) return held;

@@ -1,8 +1,8 @@
 /* dataterminals.github.io — warm, identity-forward landing page
    Palette pulled from the background loop. No external assets.
 
-   Two themes ship: `ember` (the oxblood/sepia default, below) and `night`,
-   further down. Everything that carries a theme's identity is a token here, and
+   Three themes ship: `ember` (the oxblood/sepia default, below), `night` and
+   `morning`, further down. Everything that carries a theme's identity is a token here, and
    most are stated as a bare `r, g, b` triple so a rule can tint with it —
    `rgba(var(--accent-rgb), 0.4)` — instead of hard-coding the hue a hundred
    times over. A theme restates the tokens; no component rule knows it exists.
@@ -37,6 +37,7 @@
   --card-ring: #17100c;           /* punch-out ring on the presence avatar */
 
   --bg-blur: 4px;                 /* how far the clip is pushed out of focus */
+  --bg-pos: 50% 50%;              /* which part of the clip survives the crop to the viewport */
 
   /* How hard the scrim sits on the clip. A darker clip wants a lighter scrim,
      so this is per-theme rather than baked into .bg__scrim. */
@@ -123,6 +124,61 @@
   --conj: #e9c87e;
 }
 
+/* ---- Theme: morning ----
+   Read off thirty seconds of phone footage out of a commuter train window on an
+   overcast morning: grey concrete going past, a maroon pillar down the right of
+   the frame, a mustard seat along the foot. The ground is the concrete under
+   the scrim; the accents are the seat and the pillar. */
+:root[data-theme="morning"] {
+  --bg-0: #121110;
+  --bg-1: #1e1b18;
+  --bg-2: #2e2823;
+  --bg-3: #27221d;
+
+  --ink-rgb: 240, 236, 228;
+  --ink-dim: #bfb6aa;
+  --ink-faint-rgb: 140, 132, 122;
+  --accent-rgb: 201, 84, 78;       /* the pillar's leather, lifted to read */
+  --accent-soft-rgb: 222, 128, 116;
+  --gold-rgb: 214, 176, 96;        /* the seat */
+  --gold-soft-rgb: 208, 172, 104;
+  --gold-lit: #ecd2a0;
+  --parch-rgb: 226, 222, 212;      /* flat daylight through the window */
+  --shade-rgb: 6, 5, 5;
+
+  --ground-rgb: 14, 13, 12;
+  --well-rgb: 12, 11, 10;
+  --card-rgb: 46, 38, 34;
+  --card-foot-rgb: 20, 17, 15;
+  --card-lit-rgb: 56, 46, 41;
+  --card-lit-foot-rgb: 24, 20, 18;
+  --card-hot-rgb: 60, 44, 40;
+  --card-hot-foot-rgb: 26, 20, 18;
+  --card-ring: #15120f;
+
+  /* The window sill is a hard line right across the frame, and there is a
+     nameplate on the seat back. Same push as the street scenes. */
+  --bg-blur: 7px;
+
+  /* The pillar runs down the right edge of the clip. A phone's portrait
+     viewport crops the clip to a column, and a centred column loses it, so the
+     crop is weighted to that edge; on a landscape viewport, where the full
+     width shows anyway, this is a no-op. Not all the way: the pillar alone is
+     a wall of maroon, and 85% leaves a strip of window beside it. */
+  --bg-pos: 85% 50%;
+
+  /* Daylight: the lightest of the three loops even after a pull-down in the
+     encode, so the scrim sits a shade harder than on ember. */
+  --scrim-edge: 0.74;
+  --scrim-top: 0.56;
+  --scrim-mid: 0.46;
+  --scrim-foot: 0.88;
+
+  --hard: #d4685e;
+  --soft: #7bb8c4;
+  --conj: #d9b56a;
+}
+
 * { box-sizing: border-box; }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -157,6 +213,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--bg-pos);
   background: transparent;
   /* Slightly blurred, per the brief; scale hides the soft blur edge. How much is
      per-theme: the point is an abstract wash, and a busier clip needs more of it
@@ -191,7 +248,7 @@ body {
 
 /* ---- Theme switch ----
    Fixed to the top-right corner, over everything but the hover readout. A
-   hairline capsule: a track whose thumb slides to the side of the mounted
+   hairline capsule: a track whose thumb slides to the seat of the mounted
    theme, and the theme's name in mono micro-caps beside it. It rides the same
    tokens as the rest of the page, so it recolours along with what it switches.
 
@@ -229,7 +286,7 @@ body {
 .theme__track {
   position: relative;
   flex: none;
-  width: 26px;
+  width: 32px;
   height: 13px;
   border-radius: 999px;
   border: 1px solid rgba(var(--accent-rgb), 0.4);
@@ -241,8 +298,9 @@ body {
   background: rgba(var(--accent-rgb), 0.2);
 }
 
-/* Parked left on ember, right on night. Both ends are lit — this switches
-   between two themes rather than turning one on, so neither is the "off" seat. */
+/* Parked left on ember, centre on night, right on morning — one seat per theme,
+   in the order the switch cycles through them. Every seat is lit: this steps
+   between themes rather than turning one on, so none of them is the "off" end. */
 .theme__thumb {
   position: absolute;
   top: 50%;
@@ -255,7 +313,8 @@ body {
   box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.75);
   transition: transform 0.42s var(--ease), background 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
-:root[data-theme="night"] .theme__thumb { transform: translateX(11px); }
+:root[data-theme="night"] .theme__thumb { transform: translateX(10.5px); }
+:root[data-theme="morning"] .theme__thumb { transform: translateX(21px); }
 
 .theme__name {
   font-family: var(--mono);
@@ -263,6 +322,12 @@ body {
   letter-spacing: 0.13em;
   text-transform: uppercase;
   line-height: 1;
+  /* The name is what sets the capsule's width, and the labels are different
+     lengths — so without this the whole control grows and shrinks on every
+     press. Held at the longest label instead: --theme-name-len is its letter
+     count, and each letter is one cell of the mono face plus its tracking. */
+  --theme-name-len: 7;             /* "morning" */
+  min-width: calc(var(--theme-name-len) * (1ch + 0.13em));
 }
 
 /* Phones: the name is the widest part of the capsule and the corner is tight,
