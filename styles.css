@@ -1,8 +1,8 @@
 /* dataterminals.github.io — warm, identity-forward landing page
    Palette pulled from the background loop. No external assets.
 
-   Three themes ship: `ember` (the oxblood/sepia default, below), `night` and
-   `morning`, further down. Everything that carries a theme's identity is a token here, and
+   Five themes ship: `ember` (the oxblood/sepia default, below), `night`,
+   `morning`, `flare` and `stone`, further down. Everything that carries a theme's identity is a token here, and
    most are stated as a bare `r, g, b` triple so a rule can tint with it —
    `rgba(var(--accent-rgb), 0.4)` — instead of hard-coding the hue a hundred
    times over. A theme restates the tokens; no component rule knows it exists.
@@ -179,6 +179,94 @@
   --conj: #d9b56a;
 }
 
+/* ---- Theme: flare ----
+   Read off fifteen seconds of the same tape as night: pink fireworks, fountains
+   of sparks over riot helmets, a figure against a fire, a statue, a running
+   crowd under a strobe. The ground is the smoke; the accent is the fireworks'
+   pink, and the sparks light the gold tokens. */
+:root[data-theme="flare"] {
+  --bg-0: #0c0a0a;
+  --bg-1: #171314;
+  --bg-2: #29201f;
+  --bg-3: #221a19;
+
+  --ink-rgb: 240, 234, 232;
+  --ink-dim: #c0b4b2;
+  --ink-faint-rgb: 142, 130, 128;
+  --accent-rgb: 222, 118, 138;     /* the fireworks */
+  --accent-soft-rgb: 236, 160, 172;
+  --gold-rgb: 236, 196, 128;       /* the sparks */
+  --gold-soft-rgb: 230, 190, 130;
+  --gold-lit: #f4dcac;
+  --parch-rgb: 236, 224, 222;      /* the burst's pink-white core */
+  --shade-rgb: 5, 3, 4;
+
+  --ground-rgb: 12, 9, 10;
+  --well-rgb: 10, 8, 9;
+  --card-rgb: 46, 34, 36;
+  --card-foot-rgb: 19, 14, 15;
+  --card-lit-rgb: 56, 42, 44;
+  --card-lit-foot-rgb: 23, 17, 18;
+  --card-hot-rgb: 60, 40, 44;
+  --card-hot-foot-rgb: 25, 17, 19;
+  --card-ring: #150f11;
+
+  /* Crowds, helmets and silhouettes: the busiest of the four clips, and the
+     one where a figure would read through anything softer. */
+  --bg-blur: 8px;
+
+  /* Averages beside ember, but the fire shot runs to Y≈120 and the sparks are
+     white — so the scrim sits a shade harder than ember's to hold those. */
+  --scrim-edge: 0.72;
+  --scrim-top: 0.54;
+  --scrim-mid: 0.44;
+  --scrim-foot: 0.88;
+
+  --hard: #de6e7a;
+  --soft: #7fbfc4;
+  --conj: #e8c47e;
+}
+
+/* ---- Theme: stone ----
+   Read off every statue close-up on the same tape as night and flare, strung
+   together: pale marble, an oxblood relief, and mostly the green-grey of the
+   arch's sculpture under sodium light. The ground is that stone; the accent is
+   verdigris, the one cool accent of the five, and old gilt on the gold. */
+:root[data-theme="stone"] {
+  --bg-0: #0a0c0a;
+  --bg-1: #151915;
+  --bg-2: #232a23;
+  --bg-3: #1d231d;
+
+  --ink-rgb: 236, 238, 232;
+  --ink-dim: #b6bcb2;
+  --ink-faint-rgb: 128, 136, 126;
+  --accent-rgb: 122, 186, 164;     /* verdigris */
+  --accent-soft-rgb: 160, 210, 192;
+  --gold-rgb: 210, 186, 132;       /* old gilt */
+  --gold-soft-rgb: 206, 184, 138;
+  --gold-lit: #ecdcb4;
+  --parch-rgb: 226, 228, 220;      /* marble */
+  --shade-rgb: 3, 5, 4;
+
+  --ground-rgb: 10, 12, 10;
+  --well-rgb: 8, 10, 8;
+  --card-rgb: 40, 46, 40;
+  --card-foot-rgb: 16, 19, 16;
+  --card-lit-rgb: 50, 57, 50;
+  --card-lit-foot-rgb: 20, 23, 20;
+  --card-hot-rgb: 52, 60, 50;
+  --card-hot-foot-rgb: 21, 25, 21;
+  --card-ring: #111511;
+
+  /* Carved faces are still faces. Between ember's folds and the street scenes. */
+  --bg-blur: 6px;
+
+  --hard: #d47a6a;
+  --soft: #7ec2b0;
+  --conj: #d9c08a;
+}
+
 * { box-sizing: border-box; }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -286,7 +374,9 @@ body {
 .theme__track {
   position: relative;
   flex: none;
-  width: 32px;
+  /* Five 7px seats at 9px steps from a 2px inset, and the same 2px inset past
+     the last one: 2 + 36 + 7 + 2, inside a 1px border. */
+  width: 49px;
   height: 13px;
   border-radius: 999px;
   border: 1px solid rgba(var(--accent-rgb), 0.4);
@@ -298,8 +388,8 @@ body {
   background: rgba(var(--accent-rgb), 0.2);
 }
 
-/* Parked left on ember, centre on night, right on morning — one seat per theme,
-   in the order the switch cycles through them. Every seat is lit: this steps
+/* One seat per theme, left to right in the order the switch cycles through
+   them: ember, night, morning, flare, stone. Every seat is lit: this steps
    between themes rather than turning one on, so none of them is the "off" end. */
 .theme__thumb {
   position: absolute;
@@ -313,8 +403,10 @@ body {
   box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.75);
   transition: transform 0.42s var(--ease), background 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
-:root[data-theme="night"] .theme__thumb { transform: translateX(10.5px); }
-:root[data-theme="morning"] .theme__thumb { transform: translateX(21px); }
+:root[data-theme="night"] .theme__thumb { transform: translateX(9px); }
+:root[data-theme="morning"] .theme__thumb { transform: translateX(18px); }
+:root[data-theme="flare"] .theme__thumb { transform: translateX(27px); }
+:root[data-theme="stone"] .theme__thumb { transform: translateX(36px); }
 
 .theme__name {
   font-family: var(--mono);

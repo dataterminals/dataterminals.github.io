@@ -1,11 +1,14 @@
-/* theme.js — the page's three background themes, and the switch that mounts them.
+/* theme.js — the page's five background themes, and the switch that mounts them.
 
    A theme is a palette plus the clip it was pulled from. `ember` is the house
    oxblood/sepia look; `night` is a stretch of camcorder tape — wet asphalt under
    sodium vapour, the whole frame cast green by a camera left on auto white
    balance; `morning` is thirty seconds of phone footage out of a commuter train
-   window, grey concrete going past a maroon pillar and a mustard seat. All three
-   are blurred and looping behind the same scrim.
+   window, grey concrete going past a maroon pillar and a mustard seat; `flare`
+   is the same tape as night — fireworks, sparks and fire over a riot, cut to the
+   shots without the performer in them; `stone` is every close-up of a statue
+   that tape has, strung together. All five are blurred and looping behind the
+   same scrim.
 
    The palette lives entirely in styles.css, keyed off `data-theme` on <html>, so
    nothing here knows a colour. This file owns three things: which theme is
@@ -33,21 +36,28 @@
   const THEMES = {
     ember: {
       label: 'ember',
-      blurb: 'Oxblood and sepia. The house look.',
       poster: 'assets/poster.jpg',
       sources: [['assets/bg.webm', 'video/webm'], ['assets/bg.mp4', 'video/mp4']],
     },
     night: {
       label: 'night',
-      blurb: 'Wet asphalt under sodium vapour, off a camcorder tape.',
       poster: 'assets/poster-night.jpg',
       sources: [['assets/bg-night.webm', 'video/webm'], ['assets/bg-night.mp4', 'video/mp4']],
     },
     morning: {
       label: 'morning',
-      blurb: 'Grey concrete past a mustard seat, off a phone on the morning train.',
       poster: 'assets/poster-morning.jpg',
       sources: [['assets/bg-morning.webm', 'video/webm'], ['assets/bg-morning.mp4', 'video/mp4']],
+    },
+    flare: {
+      label: 'flare',
+      poster: 'assets/poster-flare.jpg',
+      sources: [['assets/bg-flare.webm', 'video/webm'], ['assets/bg-flare.mp4', 'video/mp4']],
+    },
+    stone: {
+      label: 'stone',
+      poster: 'assets/poster-stone.jpg',
+      sources: [['assets/bg-stone.webm', 'video/webm'], ['assets/bg-stone.mp4', 'video/mp4']],
     },
   };
 
@@ -155,33 +165,11 @@
 
   apply(current, false);
 
+  // No hover readout on this control: the name beside the track already says
+  // which theme is mounted, and the button's accessible name says what a press
+  // does. The switch is the whole of it.
   if (btn && box) {
     box.hidden = false;
-
-    // The shared cursor readout, if it loaded. Near the top-right corner it lays
-    // itself out down and to the left on its own, so no placement hint is needed.
-    const tip = window.leaderTip;
-    const readout = () => ({
-      title: `Theme — ${THEMES[current].label}`,
-      sub: `Switch to ${THEMES[after(current)].label}`,
-      body: THEMES[current].blurb,
-    });
-    if (tip) tip.bind(btn, readout);
-
-    btn.addEventListener('click', (e) => {
-      apply(after(current), true);
-      // tip.js reads its content once, on entry — so a readout still standing
-      // after the press describes the theme we just left. Redraw it in place,
-      // at the pointer, or over the button when the press came from the
-      // keyboard (where a click reports 0, 0 and the readout is pinned).
-      if (!tip) return;
-      // On a touch screen the readout came up on the synthesised hover and has
-      // no mouseleave coming to take it away again. Clear it instead.
-      if (!window.matchMedia('(hover: hover)').matches) { tip.hide(); return; }
-      const r = btn.getBoundingClientRect();
-      const x = e.clientX || r.left + r.width / 2;
-      const y = e.clientY || r.top + r.height / 2;
-      tip.show(x, y, readout());
-    });
+    btn.addEventListener('click', () => apply(after(current), true));
   }
 })();

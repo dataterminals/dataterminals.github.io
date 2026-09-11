@@ -8,6 +8,8 @@ falls back gracefully at every step:
 | `ember`   | `bg.webm`         | `bg.mp4`             | `poster.jpg`          |
 | `night`   | `bg-night.webm`   | `bg-night.mp4`       | `poster-night.jpg`    |
 | `morning` | `bg-morning.webm` | `bg-morning.mp4`     | `poster-morning.jpg`  |
+| `flare` | `bg-flare.webm`   | `bg-flare.mp4`       | `poster-flare.jpg`    |
+| `stone` | `bg-stone.webm`   | `bg-stone.mp4`       | `poster-stone.jpg`    |
 
 The poster shows while the video buffers; if nothing here can play, the theme's
 CSS gradient stands in and the page still looks finished. Under
@@ -47,27 +49,35 @@ ffmpeg -i source.mp4 -ss 00:00:01 -vframes 1 -q:v 4 assets/poster.jpg
 ### How `bg.*` was cut
 
 The ember loop is one shot from the same music video the night loop came from:
-1:51.20 to 1:55.00, a slow drift across a stone relief -- a winged figure with a
-sword, the whole frame tinted oxblood. First pass of this clip was a zoomed-in
-crop pushed towards orange; this is the whole frame at its own colour.
+1:51.20 to 1:55.00, a slow drift across a stone relief — a winged figure with a
+sword, the whole frame tinted oxblood. The first cut of this clip was a
+zoomed-in crop pushed towards orange; this is the whole frame at its own colour.
 
 ```bash
 # 1. The shot, frame-accurate, with a frame of margin at each edge. The source
-#    is letterboxed 1280x720 -- cropdetect at 16 or 24 agrees on the 532-line
+#    is letterboxed 1280×720 — cropdetect at 16 or 24 agrees on the 532-line
 #    picture at y=94 (at 8 it reads the bars as picture). The picture inside the
-#    bars averages Y~60, so only a touch of lift is needed to land beside the
-#    loop it replaces (Y~71); the bars had made it read far darker than it is.
-ffmpeg -ss 111.24 -to 114.96 -i source.mp4 -an -vf   "crop=1280:532:0:94,eq=gamma=1.06:saturation=1.1,hqdn3d=2:1.5:4:3,   fps=15,scale=960:-2"   -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
+#    bars averages Y≈60, so only a touch of lift is needed to land beside the
+#    loop it replaces (Y≈71); the bars had made it read far darker than it is.
+ffmpeg -ss 111.24 -to 114.96 -i source.mp4 -an -vf \
+  "crop=1280:532:0:94,eq=gamma=1.06:saturation=1.1,hqdn3d=2:1.5:4:3,\
+   fps=15,scale=960:-2" \
+  -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
 
 # 2. The seam. 3.7 s is too short to lose a second of it to a dissolve, and a
-#    slow camera drift reads the same run backwards -- so the loop is the shot
+#    slow camera drift reads the same run backwards — so the loop is the shot
 #    forward then reversed, 7.4 s with no cut anywhere. The reversed half drops
 #    its first frame so the turn doesn't hold a doubled one.
-ffmpeg -i keep.mp4 -filter_complex   "[0:v]split[a][b];[b]reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];   [a][r]concat=n=2:v=1:a=0[out]"   -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
+ffmpeg -i keep.mp4 -filter_complex \
+  "[0:v]split[a][b];[b]reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];\
+   [a][r]concat=n=2:v=1:a=0[out]" \
+  -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
 
 # 3. Ship it, same settings as the others.
-ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1   -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg.webm
-ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150   -pix_fmt yuv420p -movflags +faststart assets/bg.mp4
+ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1 \
+  -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg.webm
+ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150 \
+  -pix_fmt yuv420p -movflags +faststart assets/bg.mp4
 ffmpeg -ss 1.8 -i loop.mp4 -vframes 1 -q:v 4 assets/poster.jpg
 ```
 
@@ -148,19 +158,133 @@ only a frame to choose and a seam to hide.
 #    half again brighter than the ember loop, so the gamma pulls it down rather
 #    than up — to Y≈75, a shade *lighter* than ember, leaving the rest to the
 #    scrim. A light denoise so phone grain doesn't eat the bitrate.
-ffmpeg -t 30 -i source.mp4 -an -vf   "crop=1080:780:0:560,eq=gamma=0.88:brightness=-0.01:saturation=1.05,   hqdn3d=2:1.5:4:3,fps=15,scale=960:-2"   -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
+ffmpeg -t 30 -i source.mp4 -an -vf \
+  "crop=1080:780:0:560,eq=gamma=0.88:brightness=-0.01:saturation=1.05,\
+   hqdn3d=2:1.5:4:3,fps=15,scale=960:-2" \
+  -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
 
 # 2. The seam. The take ends on trees and opens on brick, so the wrap wants a
 #    longer dissolve than the night loop's: 1.5 s of the tail over 1.5 s of the
 #    head, both dropped from the body. 30 s in, 28.5 s out.
-ffmpeg -i keep.mp4 -filter_complex   "[0:v]split=3[b][t][h];   [b]trim=start=1.5:end=28.5,setpts=PTS-STARTPTS[body];   [t]trim=start=28.5:end=30,setpts=PTS-STARTPTS[tail];   [h]trim=start=0:end=1.5,setpts=PTS-STARTPTS[head];   [tail][head]xfade=transition=fade:duration=1.5:offset=0[mix];   [body][mix]concat=n=2:v=1:a=0[out]"   -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
+ffmpeg -i keep.mp4 -filter_complex \
+  "[0:v]split=3[b][t][h];\
+   [b]trim=start=1.5:end=28.5,setpts=PTS-STARTPTS[body];\
+   [t]trim=start=28.5:end=30,setpts=PTS-STARTPTS[tail];\
+   [h]trim=start=0:end=1.5,setpts=PTS-STARTPTS[head];\
+   [tail][head]xfade=transition=fade:duration=1.5:offset=0[mix];\
+   [body][mix]concat=n=2:v=1:a=0[out]" \
+  -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
 
 # 3. Ship it, same settings as the night loop.
-ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1   -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg-morning.webm
-ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150   -pix_fmt yuv420p -movflags +faststart assets/bg-morning.mp4
+ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1 \
+  -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg-morning.webm
+ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150 \
+  -pix_fmt yuv420p -movflags +faststart assets/bg-morning.mp4
 ffmpeg -ss 10 -i loop.mp4 -vframes 1 -q:v 4 assets/poster-morning.jpg
 ```
 
 The pillar sits at the clip's right edge, which a phone's portrait viewport
 would crop away. The theme sets `--bg-pos: 85% 50%` so the column it keeps is
-the right-hand one, with a strip of window beside the pillar.
+the right-hand one.
+
+### How `bg-flare.*` was cut
+
+Thirteen seconds of the same music video as the ember and night loops, from
+3:10.48 to 3:26.16: everything from the first fireworks shot to the end of the
+running crowd, stopping on the cut to the man on fire, minus the two shots of
+silhouettes with their arms in the air (3:13.92 to 3:15.80 — three figures in
+the smoke, then the horseman). Seven shots, all hard cuts in the source, so as
+with the night loop the join between the two ranges stays hard and only the
+wrap-around seam is dissolved.
+
+```bash
+# 1. Crop the letterbox, pull the grade down a touch — the range averages
+#    Y≈77 with the fire shot running to 125 — denoise, thin to 15 fps, then
+#    keep the two ranges. Grading before the trims keeps them matched.
+ffmpeg -ss 190 -to 207 -i source.mp4 -an -filter_complex \
+  "[0:v]crop=1280:532:0:94,eq=gamma=0.92:saturation=1.08,hqdn3d=2:1.5:4:3,\
+        fps=15,scale=960:-2,split=2[a][b];\
+   [a]trim=0.48:3.90,setpts=PTS-STARTPTS[A];\
+   [b]trim=5.84:16.16,setpts=PTS-STARTPTS[B];\
+   [A][B]concat=n=2:v=1:a=0[out]" \
+  -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
+
+# 2. Cross-fade the last second over the first. 13.7 s in, 12.7 s out.
+ffmpeg -i keep.mp4 -filter_complex \
+  "[0:v]split=3[b][t][h];\
+   [b]trim=start=1:end=12.74,setpts=PTS-STARTPTS[body];\
+   [t]trim=start=12.74,setpts=PTS-STARTPTS[tail];\
+   [h]trim=start=0:end=1,setpts=PTS-STARTPTS[head];\
+   [tail][head]xfade=transition=fade:duration=1:offset=0[mix];\
+   [body][mix]concat=n=2:v=1:a=0[out]" \
+  -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
+
+# 3. Ship it. Smoke compresses well: ~0.5 MB of VP9.
+ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1 \
+  -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg-flare.webm
+ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150 \
+  -pix_fmt yuv420p -movflags +faststart assets/bg-flare.mp4
+ffmpeg -ss 2.2 -i loop.mp4 -vframes 1 -q:v 4 assets/poster-flare.jpg
+```
+
+**The strobe.** The running crowd at the end flashes at about 7 Hz. Measured per
+frame it swings Y≈52 to 73, a relative-luminance change of ~0.03 — a third of
+the 0.1 that counts as a general flash under WCAG 2.3.1 — before the blur and
+the scrim take more off. It was checked rather than assumed; check again if
+the grade or the scrim changes.
+
+### How `bg-stone.*` was cut
+
+Every close-up of a statue in the same music video as ember, night and flare,
+in the order they come: the pale classical figures, the oxblood relief (the
+ember shot), a red-tinted relief, the winged group at the top of the arch, the
+seated relief that keeps returning through the last minute, a stone detail in
+sepia, the facade. Ten ranges totalling 22.2 s. Everything else on the tape has
+someone in it.
+
+```bash
+# 1. Grade per range, since they are lit and tinted every which way: the pale
+#    figures at the start read Y≈120 against the winged group's 42, so each
+#    range gets its own gamma after its trim, and the loop holds near Y≈65
+#    throughout. Crop, denoise, thin and scale first so every range matches.
+ffmpeg -i source.mp4 -an -filter_complex \
+  "[0:v]crop=1280:532:0:94,hqdn3d=2:1.5:4:3,fps=15,scale=960:-2,\
+        split=10[s0][s1][s2][s3][s4][s5][s6][s7][s8][s9];\
+   [s0]trim=56.92:60.84,setpts=PTS-STARTPTS,eq=gamma=0.55[t0];\
+   [s1]trim=111.24:114.96,setpts=PTS-STARTPTS[t1];\
+   [s2]trim=128.48:129.96,setpts=PTS-STARTPTS,eq=gamma=1.1[t2];\
+   [s3]trim=142.80:145.32,setpts=PTS-STARTPTS,eq=gamma=1.3[t3];\
+   [s4]trim=175.04:176.72,setpts=PTS-STARTPTS,eq=gamma=1.05[t4];\
+   [s5]trim=202.60:204.52,setpts=PTS-STARTPTS[t5];\
+   [s6]trim=214.56:215.16,setpts=PTS-STARTPTS[t6];\
+   [s7]trim=219.16:221.72,setpts=PTS-STARTPTS,eq=gamma=1.3[t7];\
+   [s8]trim=238.64:240.56,setpts=PTS-STARTPTS,eq=gamma=1.05[t8];\
+   [s9]trim=242.76:244.64,setpts=PTS-STARTPTS,eq=gamma=1.1[t9];\
+   [t0][t1][t2][t3][t4][t5][t6][t7][t8][t9]concat=n=10:v=1:a=0[out]" \
+  -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
+
+# 2. Cross-fade the last second over the first; the joins between ranges stay
+#    hard, as the source cuts. 22.2 s in, 21.2 s out.
+ffmpeg -i keep.mp4 -filter_complex \
+  "[0:v]split=3[b][t][h];\
+   [b]trim=start=1:end=21.2,setpts=PTS-STARTPTS[body];\
+   [t]trim=start=21.2,setpts=PTS-STARTPTS[tail];\
+   [h]trim=start=0:end=1,setpts=PTS-STARTPTS[head];\
+   [tail][head]xfade=transition=fade:duration=1:offset=0[mix];\
+   [body][mix]concat=n=2:v=1:a=0[out]" \
+  -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
+
+# 3. Ship it. Stone holds still: ~0.35 MB of VP9.
+ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1 \
+  -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg-stone.webm
+ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150 \
+  -pix_fmt yuv420p -movflags +faststart assets/bg-stone.mp4
+ffmpeg -ss 9.5 -i loop.mp4 -vframes 1 -q:v 4 assets/poster-stone.jpg
+```
+
+**Finding them.** A 1 fps contact sheet of the whole tape (`fps=1,tile=12x7`,
+three sheets) finds the candidates; `select='gt(scene,0.10)'` over the whole
+tape gives the edges; a 4 fps strip of each candidate window confirms what is
+between them. Two of the ten wanted that last look: the shot after the sepia
+detail is a man's arm, not a statue's, and 3:50–3:58 is lasers and crowd, not
+the relief the 1 fps sheet seemed to show.
