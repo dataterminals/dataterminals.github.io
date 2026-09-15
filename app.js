@@ -142,7 +142,6 @@
     "Walk into the store,\nwith a pocket full of nickels.",
     "If you've got a lock and a gasmask outside of your own apartment,\nthen you could pretty safely say 'Life's ill, sometimes life might kill.'",
     "See the rubble glisten...\n...that's what I trust.",
-    "I knew a kid who navigated the slippery,\nand fuel-injected a speedball on her way down to Rose City -\nout the race before even making her mark,\nand now she'll never pick her shit up out of long-term parking.",
     "And if there's crack in the basement?\nThen crackheads stand adjacent.",
     "The rusty touch the rubble kinda like a plummeting MIG,\n'cause it's a dog-fight for the privilege of hope as a fix.",
     "Here lies the hair that she split from ten paces,\nand the gun still blazing - how's that for patience?",
