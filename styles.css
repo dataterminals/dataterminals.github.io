@@ -1426,10 +1426,12 @@ main {
 }
 
 /* ================= Permalink handles ================= */
-/* One per feature — the work grid, the shelf, the userscript rack, the natal
-   chart, the tarot spread — so a single feature can be handed to someone as a
-   url instead of "scroll down a bit". permalinks.js turns a click into a copy;
-   the markup stays a plain in-page link, so it still works with the script gone.
+/* One per feature — the work grid, the userscript rack, the natal chart, the
+   tarot spread — so a single feature can be handed to someone as a url instead
+   of "scroll down a bit". permalinks.js turns a click into a copy; the markup
+   stays a plain in-page link, so it still works with the script gone. The link
+   shelf has no handle: every icon on it is already a link out, and a ninth
+   glyph among them would read as a destination rather than a control.
 
    Faint until hovered, and drifting + glow-flickering on the shelf's keyframes
    above so the page keeps one glow language. The --p* timings per instance keep
@@ -1484,22 +1486,9 @@ main {
   right: clamp(0.6rem, 2.4vw, 0.8rem);
 }
 
-/* The shelf has neither a label to hang a handle off nor a corner to put one
-   in, so its handle sits centred under the rail. Not at the right-hand end of
-   the rail: the column caps at --maxw while the icon gaps keep growing, so the
-   slack left over there is always narrower than the gap between two icons, and
-   a handle parked in it reads as a ninth destination rather than a control. */
-.shelf-bar {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-}
-
 /* Landing on a hash shouldn't put the section flush against the viewport top. */
 .links,
-.shelf-bar,
+.shelf,
 .uscripts,
 .chart,
 .tarot { scroll-margin-top: clamp(0.75rem, 3vh, 1.75rem); }
@@ -1507,7 +1496,6 @@ main {
 /* Per-instance desync — see the note above. */
 .links__eyebrow .permalink { --pf: 9.2s;  --pk: 7.4s; --pd1: -1.6s; --pd2: -5.3s; }
 #current .permalink        { --pf: 10.8s; --pk: 8.1s; --pd1: -5.4s; --pd2: -1.7s; }
-.permalink--shelf          { --pf: 11.4s; --pk: 9.3s; --pd1: -6.8s; --pd2: -0.9s; }
 .uscripts > .permalink     { --pf: 10s;   --pk: 6.8s; --pd1: -4.1s; --pd2: -7.6s; }
 .chart > .permalink        { --pf: 10.5s; --pk: 8.6s; --pd1: -3.7s; --pd2: -2.4s; }
 .tarot > .permalink        { --pf: 12.2s; --pk: 7.9s; --pd1: -8.4s; --pd2: -3.2s; }

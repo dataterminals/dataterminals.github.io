@@ -182,22 +182,20 @@ anything that can't hover gets the same words.
 
 ## Permalink handles
 
-Every feature of the page carries a small chain glyph that copies that feature's own url, so one
+Most features of the page carry a small chain glyph that copies that feature's own url, so one
 piece of the page can be handed to someone instead of "scroll down a bit":
 
 | Handle | Anchor | Where it sits |
 | --- | --- | --- |
 | Selected work | `#work` | the end of the eyebrow row |
-| Elsewhere (the link shelf) | `#shelf` | centred under the icon rail |
 | Userscripts | `#userscripts` | the panel's top-right corner |
 | Natal chart | `#natalchart` | the top-right of its padding band |
 | Tarot | `#tarot` | the same |
 
-The shelf is the odd one out. It has no label to hang a handle off and no corner to put one in, and
-parking it at the right-hand end of the rail doesn't work either: the column caps at `--maxw` while
-the icon gaps keep growing with the viewport, so the slack left over there is always narrower than
-the gap between two icons — a handle sitting in it reads as a ninth destination rather than a
-control. Hence the `.shelf-bar` wrapper and the centred handle beneath.
+The link shelf is the one feature without a handle. It still answers to `#shelf` for anyone holding
+an older link, but there is nowhere on it a handle belongs: no label to hang one off, no corner to
+put one in, and every glyph already on the rail is a link out — a chain among them would read as a
+ninth destination rather than a control.
 
 Each one is a plain `<a href="#id">` in the markup. [`permalinks.js`](permalinks.js) upgrades a
 click into a copy, stamps the hash in with `history.replaceState`, lights the handle for a moment

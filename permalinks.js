@@ -1,8 +1,10 @@
 /* permalinks.js — the little chain handle that hangs off each feature.
 
-   The natal chart had one; now the selected-work grid, the link shelf, the
-   userscript rack and the tarot spread carry the same handle, so any single
-   feature can be handed to someone as a url instead of "scroll down a bit".
+   The natal chart had one; now the selected-work grid, the userscript rack and
+   the tarot spread carry the same handle, so any single feature can be handed
+   to someone as a url instead of "scroll down a bit". The link shelf is left
+   out: its icons are all links already, and a handle among them would read as
+   a ninth destination.
 
    Each handle is a real `<a href="#id">` in the markup, so with this file
    absent — or the clipboard refused — it still works the old way: click, jump,
