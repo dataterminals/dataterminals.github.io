@@ -10,6 +10,7 @@ falls back gracefully at every step:
 | `morning` | `bg-morning.webm` | `bg-morning.mp4`     | `poster-morning.jpg`  |
 | `flare` | `bg-flare.webm`   | `bg-flare.mp4`       | `poster-flare.jpg`    |
 | `stone` | `bg-stone.webm`   | `bg-stone.mp4`       | `poster-stone.jpg`    |
+| `transit` | `bg-transit.webm` | `bg-transit.mp4`   | `poster-transit.jpg`  |
 
 The poster shows while the video buffers; if nothing here can play, the theme's
 CSS gradient stands in and the page still looks finished. Under
@@ -288,3 +289,79 @@ tape gives the edges; a 4 fps strip of each candidate window confirms what is
 between them. Two of the ten wanted that last look: the shot after the sepia
 detail is a man's arm, not a statue's, and 3:50–3:58 is lasers and crowd, not
 the relief the 1 fps sheet seemed to show.
+
+### How `bg-transit.*` was cut
+
+Thirty-two seconds of phone footage from inside an empty train car, shot in
+portrait with the phone held low: steel doors down the left, orange seats and
+yellow grab poles running away down the car, and one thick pole close to the
+lens, just right of centre. One continuous take — but the phone drifts some
+230 px sideways over it, so no two moments of it line up, and a cross-fade seam
+would slide that near pole across the frame. So the pole is pinned: tracked in
+every frame and held dead still, with the car rocking around it instead. That
+part takes a script ([`scripts/pin-pole.py`](../scripts/pin-pole.py), Python
+with Pillow); the rest is ffmpeg.
+
+```bash
+# 1. Track the pole and pin it — the script's docstring has the details. Source
+#    frames 234..626 (7.80 s to 20.87 s): at both ends the car's slow sway around
+#    the pinned pole is at its stillest, and that is where the loop turns. Out comes
+#    the 980x710 band every frame of that stretch still covers once moved — the
+#    exit sign and the ceiling tubes above it, a knee edging into the bottom
+#    corner below — with the pole 58% of the way across. The same pass evens out
+#    a flicker the pole picks up from the lights (below).
+python scripts/pin-pole.py source.mp4 pinned.mp4
+
+# 2. Grade, denoise, thin, scale. The band averages Y≈113, so the gamma pulls
+#    hard, to Y≈75 — beside morning. A pull that strong takes the luma out from
+#    under the chroma: at full saturation the poles leave the RGB gamut (blue
+#    clips to zero on almost every pole pixel), so saturation comes down with
+#    it, to 0.75, where they sit back inside. The thinning to 15 fps comes after
+#    the pin, not before, since the flicker it evens out is counted in the
+#    phone's 30 fps frames; it keeps the even frames, so both turn frames stay.
+ffmpeg -i pinned.mp4 -an -vf "eq=gamma=0.64:saturation=0.75,hqdn3d=2:1.5:4:3,fps=15,scale=960:-2" \
+  -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p keep.mp4
+
+# 3. The seam. Pinned, the ends still don't match — the car sways around the
+#    pole — so, like the ember loop, the shot runs forward and then back: 13.1 s
+#    each way, 26.1 s in all, with no cut anywhere. The reversed half drops both
+#    its first and its last frame, so neither turn holds a doubled one.
+ffmpeg -i keep.mp4 -filter_complex \
+  "[0:v]split[a][b];[b]reverse,trim=start_frame=1:end_frame=196,setpts=PTS-STARTPTS[r];\
+   [a][r]concat=n=2:v=1:a=0[out]" \
+  -map "[out]" -c:v libx264 -crf 12 -preset veryfast -pix_fmt yuv420p loop.mp4
+
+# 4. Ship it, same settings as the others: ~1.1 MB of VP9, ~1.3 MB of H.264.
+ffmpeg -i loop.mp4 -an -c:v libvpx-vp9 -crf 36 -b:v 0 -g 150 -row-mt 1 \
+  -deadline good -cpu-used 2 -pix_fmt yuv420p assets/bg-transit.webm
+ffmpeg -i loop.mp4 -an -c:v libx264 -crf 27 -preset slow -profile:v high -g 150 \
+  -pix_fmt yuv420p -movflags +faststart assets/bg-transit.mp4
+ffmpeg -ss 6.5 -i loop.mp4 -vframes 1 -q:v 4 assets/poster-transit.jpg
+```
+
+**Pinned exactly, not smoothed.** The tracked pole jitters about a pixel from
+frame to frame, and that jitter is real rather than the tracker's noise: it is
+parallax — the pole is far nearer the lens than anything else in the car, so
+the phone shifting by a hair moves it much further than the rest. So only one of
+the two can stand still. Pinned to the raw track, the pole holds dead still and
+the car around it carries a faint rumble; smoothed, the car settles and the
+pole shakes again. Checking which is which wants a kymograph — one row of every
+frame stacked into a single image, time running down — where anything still is
+a straight vertical edge. Re-tracking the pinned clip proves nothing: the
+tracker just finds its own answer again.
+
+**The pole's flicker.** The pole is glossy, and a light it reflects beats
+against the frame rate: every 17–20 frames its colour creeps towards lemon and
+snaps back to gold, up to ~12 levels of green in a single frame, while the
+matte car barely stirs. Held still behind the text, that would pulse at 1.6 Hz.
+The pin script averages the pole's own pixels over time (a Gaussian, σ = 6
+frames) inside a mask that runs out to its edges; nothing moves in there any
+more, so the average costs no detail, and the flicker falls to ~0.03 levels.
+
+**15 fps, not 30.** The first cut kept the phone's 30 fps. On the page it moved
+too smoothly beside the other loops, so it is thinned to 15 like them — which
+also takes it from 1.8 MB of VP9 down to 1.1.
+
+**On a phone.** `--bg-pos` stays centred. A portrait viewport keeps the middle
+third of the clip, which puts the pole about three-quarters of the way across
+the screen rather than down its middle.

@@ -20,7 +20,7 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
 - **A live "currently working on" block.** A second call (`/users/dataterminals/events/public`) scores
   which repos are genuinely being worked on and shows the top three in a labelled section of their
   own above Selected work — a full-width beacon plus two runners-up. See below.
-- **Five themes.** The capsule in the top-right corner cycles the background loop and the whole
+- **Six themes.** The capsule in the top-right corner cycles the background loop and the whole
   palette with it, and remembers the choice. See below.
 
 ## Editing links
@@ -243,7 +243,7 @@ A first visit or a hard reload is immediate.
 
 ## Themes and the background video
 
-Five themes ship, cycled from the capsule in the top-right corner:
+Six themes ship, cycled from the capsule in the top-right corner:
 
 - **`ember`** — the default. Oxblood and sepia, terracotta accents.
 - **`night`** — wet asphalt under sodium vapour, off a camcorder tape. Green-black
@@ -255,8 +255,11 @@ Five themes ship, cycled from the capsule in the top-right corner:
   night. Smoke-grey ground, the fireworks' pink for an accent, the sparks on
   the gold.
 - **`stone`** — every statue close-up on that tape, strung together. Green-grey
-  stone ground, a verdigris accent (the one cool accent of the five), old gilt
+  stone ground, a verdigris accent (the one cool accent of the six), old gilt
   on the gold.
+- **`transit`** — inside an empty train car, off a phone, held still on the
+  nearest yellow pole while the car rocks around it. Slate ground, the seats'
+  orange for an accent, the poles' yellow on the gold.
 
 A theme is a palette plus the clip it was pulled from. The palette lives entirely
 in [`styles.css`](styles.css), keyed off `data-theme` on `<html>`: everything that
@@ -288,8 +291,8 @@ track (`.theme__thumb`, same file), its name in the `<head>` boot script in
 worth knowing about — `--bg-blur`, how far the clip is pushed out of focus; the
 `--scrim-*` alphas, how hard the scrim sits on it; and `--bg-pos`, which part of
 the clip survives being cropped to the viewport. A busier, darker or brighter
-clip needs different values from the ember loop's — night and flare set the
-first two, stone the blur alone, morning all three.
+clip needs different values from the ember loop's — night, flare and transit
+set the first two, stone the blur alone, morning all three.
 
 ## Local preview
 

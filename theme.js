@@ -1,4 +1,4 @@
-/* theme.js — the page's five background themes, and the switch that mounts them.
+/* theme.js — the page's six background themes, and the switch that mounts them.
 
    A theme is a palette plus the clip it was pulled from. `ember` is the house
    oxblood/sepia look; `night` is a stretch of camcorder tape — wet asphalt under
@@ -7,8 +7,9 @@
    window, grey concrete going past a maroon pillar and a mustard seat; `flare`
    is the same tape as night — fireworks, sparks and fire over a riot, cut to the
    shots without the performer in them; `stone` is every close-up of a statue
-   that tape has, strung together. All five are blurred and looping behind the
-   same scrim.
+   that tape has, strung together; `transit` is phone footage from inside an
+   empty train car, held still on the nearest yellow pole so the car rocks
+   around it. All six are blurred and looping behind the same scrim.
 
    The palette lives entirely in styles.css, keyed off `data-theme` on <html>, so
    nothing here knows a colour. This file owns three things: which theme is
@@ -58,6 +59,11 @@
       label: 'stone',
       poster: 'assets/poster-stone.jpg',
       sources: [['assets/bg-stone.webm', 'video/webm'], ['assets/bg-stone.mp4', 'video/mp4']],
+    },
+    transit: {
+      label: 'transit',
+      poster: 'assets/poster-transit.jpg',
+      sources: [['assets/bg-transit.webm', 'video/webm'], ['assets/bg-transit.mp4', 'video/mp4']],
     },
   };
 

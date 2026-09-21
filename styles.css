@@ -1,8 +1,8 @@
 /* dataterminals.github.io — warm, identity-forward landing page
    Palette pulled from the background loop. No external assets.
 
-   Five themes ship: `ember` (the oxblood/sepia default, below), `night`,
-   `morning`, `flare` and `stone`, further down. Everything that carries a theme's identity is a token here, and
+   Six themes ship: `ember` (the oxblood/sepia default, below), `night`,
+   `morning`, `flare`, `stone` and `transit`, further down. Everything that carries a theme's identity is a token here, and
    most are stated as a bare `r, g, b` triple so a rule can tint with it —
    `rgba(var(--accent-rgb), 0.4)` — instead of hard-coding the hue a hundred
    times over. A theme restates the tokens; no component rule knows it exists.
@@ -211,7 +211,7 @@
   --card-hot-foot-rgb: 25, 17, 19;
   --card-ring: #150f11;
 
-  /* Crowds, helmets and silhouettes: the busiest of the four clips, and the
+  /* Crowds, helmets and silhouettes: the busiest of the six clips, and the
      one where a figure would read through anything softer. */
   --bg-blur: 8px;
 
@@ -231,7 +231,7 @@
    Read off every statue close-up on the same tape as night and flare, strung
    together: pale marble, an oxblood relief, and mostly the green-grey of the
    arch's sculpture under sodium light. The ground is that stone; the accent is
-   verdigris, the one cool accent of the five, and old gilt on the gold. */
+   verdigris, the one cool accent of the six, and old gilt on the gold. */
 :root[data-theme="stone"] {
   --bg-0: #0a0c0a;
   --bg-1: #151915;
@@ -265,6 +265,56 @@
   --hard: #d47a6a;
   --soft: #7ec2b0;
   --conj: #d9c08a;
+}
+
+/* ---- Theme: transit ----
+   Read off a phone clip from inside an empty train car: a slate floor, steel
+   doors, a row of orange seats, and yellow grab poles — the nearest of them
+   held dead still in the middle of the frame while the car rocks around it.
+   The ground is the floor and the steel; the accent is the seats' orange, and
+   the poles light the gold. */
+:root[data-theme="transit"] {
+  --bg-0: #0a0b0d;
+  --bg-1: #14161a;
+  --bg-2: #23272c;
+  --bg-3: #1c1f23;
+
+  --ink-rgb: 236, 238, 240;
+  --ink-dim: #b3b8bd;
+  --ink-faint-rgb: 126, 133, 140;
+  --accent-rgb: 228, 120, 62;      /* the seats, lifted to read */
+  --accent-soft-rgb: 240, 162, 116;
+  --gold-rgb: 226, 190, 74;        /* the poles */
+  --gold-soft-rgb: 220, 188, 100;
+  --gold-lit: #f2dc9c;
+  --parch-rgb: 226, 230, 234;      /* the strip lights' white */
+  --shade-rgb: 3, 4, 5;
+
+  --ground-rgb: 10, 11, 13;
+  --well-rgb: 8, 9, 11;
+  --card-rgb: 38, 42, 47;
+  --card-foot-rgb: 15, 17, 20;
+  --card-lit-rgb: 48, 53, 59;
+  --card-lit-foot-rgb: 19, 21, 25;
+  --card-hot-rgb: 50, 55, 62;
+  --card-hot-foot-rgb: 21, 23, 27;
+  --card-ring: #101216;
+
+  /* The poles, grab bars and door edges are hard lines the height of the frame,
+     and the pinned pole stands right behind the text column: at 4px they still
+     read as objects. Same push as the street scenes. */
+  --bg-blur: 7px;
+
+  /* Graded to Y≈75, a shade under morning's 76, and the two sit level side by
+     side on the page — so this is morning's scrim, unchanged. */
+  --scrim-edge: 0.74;
+  --scrim-top: 0.56;
+  --scrim-mid: 0.46;
+  --scrim-foot: 0.88;
+
+  --hard: #de7448;
+  --soft: #7eb6c8;
+  --conj: #e2c264;
 }
 
 * { box-sizing: border-box; }
@@ -374,9 +424,10 @@ body {
 .theme__track {
   position: relative;
   flex: none;
-  /* Five 7px seats at 9px steps from a 2px inset, and the same 2px inset past
-     the last one: 2 + 36 + 7 + 2, inside a 1px border. */
-  width: 49px;
+  /* Six 7px seats at 9px steps from a 2px inset, and the same 2px inset past
+     the last one: 2 + 45 + 7 + 2 = 56 inside, and the 1px border either side
+     makes 58 — box-sizing counts the border in the width. */
+  width: 58px;
   height: 13px;
   border-radius: 999px;
   border: 1px solid rgba(var(--accent-rgb), 0.4);
@@ -389,7 +440,7 @@ body {
 }
 
 /* One seat per theme, left to right in the order the switch cycles through
-   them: ember, night, morning, flare, stone. Every seat is lit: this steps
+   them: ember, night, morning, flare, stone, transit. Every seat is lit: this steps
    between themes rather than turning one on, so none of them is the "off" end. */
 .theme__thumb {
   position: absolute;
@@ -407,6 +458,7 @@ body {
 :root[data-theme="morning"] .theme__thumb { transform: translateX(18px); }
 :root[data-theme="flare"] .theme__thumb { transform: translateX(27px); }
 :root[data-theme="stone"] .theme__thumb { transform: translateX(36px); }
+:root[data-theme="transit"] .theme__thumb { transform: translateX(45px); }
 
 .theme__name {
   font-family: var(--mono);
@@ -418,7 +470,7 @@ body {
      lengths — so without this the whole control grows and shrinks on every
      press. Held at the longest label instead: --theme-name-len is its letter
      count, and each letter is one cell of the mono face plus its tracking. */
-  --theme-name-len: 7;             /* "morning" */
+  --theme-name-len: 7;             /* "morning", "transit" */
   min-width: calc(var(--theme-name-len) * (1ch + 0.13em));
 }
 
