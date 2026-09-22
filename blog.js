@@ -1,10 +1,11 @@
 /* blog.js — the blog device: the posts from dataterminals/blog, read in place.
 
-   It starts folded. At the foot of the page there's only a small glowing pane,
-   drifting like the page's other floating things, with no label and nothing on
-   it that says blog. Clicked, it unfolds: the device grows out of that very box
-   into a floating square, the titles down a sidebar on its left and the chosen
-   post beside them. Its minimize button, or Escape, folds it back. A visitor
+   It starts folded. At the foot of the page there's only a line of light —
+   long, thin, white — floating like the page's other floating things, with no
+   label and nothing on it that says blog. Clicked, it powers up the way a
+   screen does: the line stretches across, then opens into a floating square,
+   the titles down a sidebar on its left and the chosen post beside them. Its
+   minimize button, or Escape, powers it back down into the line. A visitor
    who arrives on #blog — someone handed them the permalink — finds it open.
 
    It renders from the blog's Atom feed — the feed.xml jekyll-feed already
@@ -63,18 +64,35 @@
      take the tarot section's anchor. */
   const ID_PREFIX = 'blog-post-';
 
-  /* The unfold eases out, the way the page's cards rise; the fold eases in and
-     out, so the pane settles back into place rather than slamming into it. The
-     box morphs empty: its contents fade out before a fold and in after an
-     unfold. */
-  const OPEN_MS = 540;
-  const CLOSE_MS = 440;
+  const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+
+  /* Unfolding is a screen coming on, and folding one switching off, in two
+     strokes on one clock. Powering up, the line shoots out to the device's
+     width, then the glass opens out of it into the square, the line fading
+     like a seam as it goes. Powering down, the glass collapses back into the
+     line, which brightens as it narrows, then draws in to its folded length.
+     The strokes overlap, so neither starts from a standstill. `down` is the
+     stroke that changes the page's height, so the scroll rides it; `lit` is
+     how much of the line is showing. The box morphs empty: its contents fade
+     out before a fold and in after an unfold. */
+  const OPEN_MS = 820;
+  const CLOSE_MS = 700;
   const FADE_MS = 140;
   const easeOut = (t) => 1 - (1 - t) ** 3;
   const easeInOut = (t) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2);
 
-  const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+  // A stretch of the clock, eased: 0 until it starts, 1 once it's through.
+  const span = (p, from, to, ease) => ease(clamp((p - from) / (to - from), 0, 1));
+
+  const POWER_ON = (p) => {
+    const across = span(p, 0, 0.4, easeOut);
+    return { across, pose: across, down: span(p, 0.28, 1, easeInOut), lit: 1 - span(p, 0.4, 0.86, easeInOut) };
+  };
+  const POWER_OFF = (p) => {
+    const down = span(p, 0, 0.6, easeInOut);
+    return { down, pose: down, lit: span(p, 0.08, 0.56, easeInOut), across: span(p, 0.5, 1, easeInOut) };
+  };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -359,23 +377,31 @@
 
   /* ---------- fold and unfold ---------- */
 
-  // The folded pane's box, off its computed style — which resolves even while
-  // it's hidden, since every length on it is absolute. A fold lands the device
-  // exactly here.
+  // The folded line's box, corners included, off its computed style — which
+  // resolves even while it's hidden, since every length on it is absolute. A
+  // fold lands the device exactly here.
   function seedBox() {
     const cs = getComputedStyle(seed);
-    const size = parseFloat(cs.width) || 60;
-    return { w: size, h: size, mt: parseFloat(cs.marginTop) || 0, mb: parseFloat(cs.marginBottom) || 0 };
+    return {
+      w: parseFloat(cs.width) || 176,
+      h: parseFloat(cs.height) || 10,
+      mt: parseFloat(cs.marginTop) || 0,
+      mb: parseFloat(cs.marginBottom) || 0,
+      rad: parseFloat(cs.borderTopLeftRadius) || 0,
+    };
   }
 
-  // Where the pane has drifted to this instant — its offset, tilt and hover
+  // The device's own corners, which the morph turns the line's into and back.
+  const deviceRadius = () => parseFloat(getComputedStyle(host).getPropertyValue('--blog-r')) || 13;
+
+  // Where the line has floated to this instant — its offset, roll and hover
   // swell — so the unfold starts from where it is rather than from rest.
   function seedPose() {
     const cs = getComputedStyle(seed);
     const [tx = 0, ty = 0] = cs.translate === 'none' ? [] : cs.translate.split(' ').map(parseFloat);
-    const r = cs.rotate === 'none' ? 0 : parseFloat(cs.rotate) || 0;
+    const deg = cs.rotate === 'none' ? 0 : parseFloat(cs.rotate) || 0;
     const s = cs.scale === 'none' ? 1 : parseFloat(cs.scale) || 1;
-    return { tx, ty, r, s };
+    return { tx, ty, deg, s };
   }
 
   // The device's own drift, which a fold carries on from rather than snapping
@@ -394,28 +420,33 @@
 
   /* One frame loop moves the box and the page together. The box stays in the
      flow the whole way — its width, height and margins, not a transform — so the
-     page grows and shrinks with it, and the scroll runs on the same eased clock:
-     both are straight lines in the same progress, so the scroll never asks for
-     more page than there is yet. Nothing clamps, and nothing jumps. */
-  function morph(from, to, ms, ease, scrollEnd) {
+     page grows and shrinks with it, and the scroll rides the stroke that sets
+     the height: both are straight lines in the same eased progress, so the
+     scroll never asks for more page than there is yet. Nothing clamps, and
+     nothing jumps. `strokes` maps the clock to each stroke's progress
+     (POWER_ON, POWER_OFF). */
+  function morph(from, to, ms, strokes, scrollEnd) {
     return new Promise((resolve) => {
       const s0 = window.scrollY;
       const t0 = performance.now();
-      const set = (e) => {
-        const at = (k) => from[k] + (to[k] - from[k]) * e;
-        host.style.width = `${at('w')}px`;
-        host.style.height = `${at('h')}px`;
-        host.style.marginTop = `${at('mt')}px`;
-        host.style.marginBottom = `${at('mb')}px`;
-        host.style.translate = `${at('tx')}px ${at('ty')}px`;
-        host.style.rotate = `${at('r')}deg`;
-        host.style.scale = String(at('s'));
-        window.scrollTo(0, s0 + (scrollEnd - s0) * e);
+      const set = (p) => {
+        const { across, down, pose, lit } = strokes(p);
+        const at = (k, e) => from[k] + (to[k] - from[k]) * e;
+        host.style.width = `${at('w', across)}px`;
+        host.style.height = `${at('h', down)}px`;
+        host.style.marginTop = `${at('mt', down)}px`;
+        host.style.marginBottom = `${at('mb', down)}px`;
+        host.style.setProperty('--blog-r', `${at('rad', down)}px`);
+        host.style.translate = `${at('tx', pose)}px ${at('ty', pose)}px`;
+        host.style.rotate = `${at('deg', pose)}deg`;
+        host.style.scale = String(at('s', pose));
+        host.style.setProperty('--lit', lit.toFixed(3));
+        window.scrollTo(0, s0 + (scrollEnd - s0) * down);
       };
       set(0);
       const frame = (now) => {
         const p = Math.min(1, (now - t0) / ms);
-        set(ease(p));
+        set(p);
         if (p < 1) requestAnimationFrame(frame);
         else resolve();
       };
@@ -425,6 +456,8 @@
 
   function unpin() {
     for (const k of ['width', 'height', 'marginTop', 'marginBottom', 'translate', 'rotate', 'scale']) host.style[k] = '';
+    host.style.removeProperty('--blog-r');
+    host.style.removeProperty('--lit');
   }
 
   function open(animate, focus) {
@@ -476,7 +509,7 @@
       done();
       return;
     }
-    morph(from, { w, h, mt: 0, mb: 0, tx: 0, ty: 0, r: 0, s: 1 }, OPEN_MS, easeOut, end).then(done);
+    morph(from, { w, h, mt: 0, mb: 0, rad: deviceRadius(), tx: 0, ty: 0, deg: 0, s: 1 }, OPEN_MS, POWER_ON, end).then(done);
   }
 
   function close(animate) {
@@ -492,7 +525,7 @@
     const box = seedBox();
 
     // The page comes out shorter by the difference, so settle the scroll where
-    // it can stay once it is — and where the pane will be on screen.
+    // it can stay once it is — and where the line will be on screen.
     const room = scrollRoom(document.documentElement.scrollHeight - (h - (box.h + box.mt + box.mb)));
     const seedTop = docTop(host) + box.mt;
     let end = Math.min(window.scrollY, room);
@@ -521,8 +554,8 @@
     host.classList.add('is-folding');       // the contents fade first…
     setTimeout(() => {
       host.classList.add('is-morphing');    // …then the empty box folds
-      morph({ w, h, mt: 0, mb: 0, tx: pose.tx, ty: pose.ty, r: 0, s: 1 },
-        { ...box, tx: 0, ty: 0, r: 0, s: 1 }, CLOSE_MS, easeInOut, end).then(done);
+      morph({ w, h, mt: 0, mb: 0, rad: deviceRadius(), tx: pose.tx, ty: pose.ty, deg: 0, s: 1 },
+        { ...box, tx: 0, ty: 0, deg: 0, s: 1 }, CLOSE_MS, POWER_OFF, end).then(done);
     }, FADE_MS);
   }
 
@@ -533,8 +566,9 @@
 
     side = el('div', 'blog__side');
     const head = el('div', 'blog__head');
-    // Folds the device back into the pane it came out of: a window's minimize
-    // bar, top left, where the traffic lights sit.
+    // Powers the device back down into the line it came out of: a window's
+    // minimize bar, top left, where the traffic lights sit — its dash is the
+    // folded line, near enough.
     foldBtn = el('button', 'blog__fold');
     foldBtn.type = 'button';
     foldBtn.setAttribute('aria-label', 'Minimize the blog viewer');
@@ -653,10 +687,10 @@
     if (!posts.length) return;
 
     build();
-    host.hidden = true;       // folded: only the pane shows
+    host.hidden = true;       // folded: only the line shows
     section.hidden = false;
 
-    // The pane arrives the way the tagline's fragments do, rather than popping
+    // The line arrives the way the tagline's fragments do, rather than popping
     // in whenever the fetch happens to land.
     if (!reduce()) {
       seed.animate([

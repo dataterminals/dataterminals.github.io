@@ -780,13 +780,25 @@ main {
    titles down a sidebar on its left and the chosen post beside it. blog.js
    renders it from the blog's Atom feed; the post body is the blog's own HTML,
    set by .prose in house.css, so it reads the same here as on the blog. It
-   starts folded into a small pane (.blog__seed) and unfolds when that's
+   starts folded into a line of light (.blog__seed) and unfolds when that's
    clicked; .is-open on the section marks the unfolded state.
 
    No `display` on .blog itself: blog.js keeps the section behind `hidden` until
    posts land, and a class-level display would outrank the UA sheet's rule for
-   the attribute and show an empty band — the same arrangement as .uscripts. */
+   the attribute and show an empty band — the same arrangement as .uscripts.
+
+   The line is tokens rather than one rule's values, because the device draws
+   it too while it morphs (.blog__device::after), and the line it opens out of
+   and collapses into has to be this one: its thickness and corners; a white
+   core going to the theme's own white at its edges, the wordmark's parchment;
+   a tight bloom around it; and a halo running out through the parchment into
+   the accent. */
 .blog {
+  --seed-h: 10px;
+  --seed-r: 2px;
+  --seed-core: linear-gradient(180deg, rgba(var(--parch-rgb), 0.6), rgba(var(--parch-rgb), 0) 40% 60%, rgba(var(--parch-rgb), 0.6)), #fff;
+  --seed-glow: 0 0 3px rgba(255, 255, 255, 0.95), 0 0 12px 1px rgba(var(--parch-rgb), 0.65);
+  --seed-halo: 0 0 26px 4px rgba(var(--parch-rgb), 0.3), 0 0 64px 10px rgba(var(--accent-rgb), 0.26);
   position: relative;                         /* anchors the permalink handle */
   padding-top: clamp(1.5rem, 4vh, 2rem);      /* the chart's band, for the handle */
   padding-bottom: 7vh;                        /* ends the page, so it carries the tail */
@@ -795,86 +807,84 @@ main {
    drops to the chart's 2vh. Where :has() isn't supported the gap is merely
    generous. */
 .tarot:has(+ .blog:not([hidden])) { padding-bottom: 2vh; }
-/* Folded, the section is scenery, and a chain handle beside a drifting pane
+/* Folded, the section is scenery, and a chain handle beside a drifting line
    would give the game away. It comes back with the device. */
 .blog:not(.is-open) > .permalink { display: none; }
 
 /* ---- Folded ---- */
-/* Until someone opens it, the device is folded into a small pane drifting at
-   the foot of the page — one more floating thing, like the shelf's icons and
-   the tagline's fragments. Nothing on it says blog. It's the device in
-   miniature: the panel's outline and ground, a halo on shelf-flicker's rhythm,
-   and the rule down its sidebar's edge. It wanders slower and wider than the
-   icons do, with a tilt on a period of its own so the two never fall into step,
-   and it steadies and brightens under the pointer, which is all the invitation
-   it gives. blog.js grows the device out of this exact box, and folds it back
-   into it.
+/* Until someone opens it, the device is powered down to a single line of light
+   floating at the foot of the page — a terminal's last scanline: long, thin,
+   white, glowing. One more floating thing, like the shelf's icons and the
+   tagline's fragments, and nothing on it says blog. It floats rather than
+   wanders — a slow rise and settle, with a roll on a period of its own so the
+   two never fall into step — and it steadies and brightens under the pointer,
+   which is all the invitation it gives. blog.js powers the device up out of
+   this exact box, and back down into it. Its measure and light are the tokens
+   on .blog; the halo wavers on shelf-flicker's rhythm, with the icons.
 
-   Both motions' 0% keyframes are the resting pose, on purpose: the pane comes
+   Both motions' 0% keyframes are the resting pose, on purpose: the line comes
    back there after a fold (display:none restarts its animations), and that's
    where the fold lands the device. */
 .blog__seed {
-  --seed: 60px;
+  --seed-w: 176px;
   position: relative;
   display: block;
-  width: var(--seed);
-  height: var(--seed);
-  margin: 1.2rem auto 1.8rem;                 /* blog.js reads these back to land a fold */
+  width: var(--seed-w);
+  height: var(--seed-h);
+  margin: 2.6rem auto 3.3rem;                 /* blog.js reads these back to land a fold, */
   padding: 0;
-  border: 1px solid rgba(var(--accent-rgb), 0.32);
-  border-radius: 12px;
-  background: linear-gradient(165deg, rgba(var(--card-rgb), 0.78), rgba(var(--card-foot-rgb), 0.86));
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38), inset 0 0 14px rgba(var(--accent-rgb), 0.07);
+  border: 0;
+  border-radius: var(--seed-r);               /* and this, to square the corners as it lands */
+  background: var(--seed-core);
+  box-shadow: var(--seed-glow);
   cursor: pointer;
-  animation: blog-seed-wander 19.3s ease-in-out infinite, blog-seed-tilt 12.7s ease-in-out infinite;
-  transition: border-color 0.3s var(--ease), scale 0.3s var(--ease);
+  animation: blog-seed-float 16.9s ease-in-out infinite, blog-seed-roll 11.3s ease-in-out infinite;
+  transition: scale 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 /* The class's display would otherwise outrank the attribute. */
 .blog__seed[hidden] { display: none; }
 .blog__seed::before {                         /* the halo */
   content: "";
   position: absolute;
-  inset: -1px;
+  inset: 0;
   border-radius: inherit;
-  box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.24), 0 0 40px rgba(var(--accent-rgb), 0.13);
+  box-shadow: var(--seed-halo);
   opacity: 0.9;
   pointer-events: none;
   animation: shelf-flicker 8.1s ease-in-out infinite;
   animation-delay: -5.1s;
   transition: box-shadow 0.3s var(--ease);
 }
-.blog__seed::after {                          /* the sidebar's rule, in miniature */
+/* A line this thin is a hard thing to hit, so the button reaches past it: a
+   pseudo-element is the button's own box as far as the pointer's concerned. */
+.blog__seed::after {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 31%;
-  width: 1px;
-  background: var(--hair);
+  inset: -16px -10px;
 }
 .blog__seed:hover,
 .blog__seed:focus-visible {
-  border-color: rgba(var(--accent-rgb), 0.58);
-  scale: 1.06;
+  scale: 1.04;
+  box-shadow: 0 0 4px #fff, 0 0 15px 2px rgba(var(--parch-rgb), 0.8);
   outline: none;
   animation-play-state: paused;
 }
 .blog__seed:hover::before,
 .blog__seed:focus-visible::before {
-  box-shadow: 0 0 20px rgba(var(--accent-soft-rgb), 0.4), 0 0 48px rgba(var(--accent-rgb), 0.22);
+  box-shadow: 0 0 32px 6px rgba(var(--parch-rgb), 0.38), 0 0 78px 14px rgba(var(--accent-rgb), 0.36);
 }
 
-@keyframes blog-seed-wander {
+@keyframes blog-seed-float {
   0%, 100% { translate: 0 0; }
-  22%      { translate: 9px -6px; }
-  47%      { translate: -3px -11px; }
-  71%      { translate: -11px -2px; }
-  88%      { translate: -5px 5px; }
+  23%      { translate: 5px -8px; }
+  48%      { translate: -2px -3px; }
+  74%      { translate: -6px -10px; }
+  90%      { translate: -2px -2px; }
 }
-@keyframes blog-seed-tilt {
+@keyframes blog-seed-roll {
   0%, 100% { rotate: 0deg; }
-  30%      { rotate: 3.5deg; }
-  64%      { rotate: -4deg; }
+  33%      { rotate: 1.6deg; }
+  68%      { rotate: -1.4deg; }
 }
 
 /* The square, and its drift. Translate-only: even the shelf's fraction of a
@@ -912,6 +922,33 @@ main {
 @keyframes blog-reveal {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* While it morphs, the line runs across its middle: the glass opens out of it
+   and collapses back into it, and at either end of the morph the box is the
+   line's own height, so the two are one. --lit, which blog.js sets every frame,
+   is how much of it is showing — 1 at the line, 0 at the square — so it fades
+   like a seam as the device opens and brightens as it closes. The device's own
+   halo (below) trades places with the line's in step, held off its flicker
+   until the morph is done; it picks the rhythm back up within a hair of where
+   it's left. */
+.blog__device.is-morphing::before {
+  animation: none;
+  opacity: calc(0.9 * (1 - var(--lit, 0)));
+}
+.blog__device.is-morphing::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - var(--seed-h) / 2);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: var(--seed-h);
+  border-radius: var(--seed-r);
+  background: var(--seed-core);
+  box-shadow: var(--seed-glow), var(--seed-halo);
+  opacity: var(--lit, 0);
+  pointer-events: none;
 }
 
 /* The glow, on a layer of its own so it can waver on opacity alone: box-shadow
@@ -1273,7 +1310,7 @@ main {
    device grows tall instead of square. The grip turns to resize the list's
    height, from its own --side-h. */
 @media (max-width: 34rem) {
-  .blog__seed { --seed: 52px; }
+  .blog__seed { --seed-w: 148px; }
   .blog__device {
     aspect-ratio: auto;
     height: min(80vh, 40rem);

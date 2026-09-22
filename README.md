@@ -25,7 +25,8 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   choice. See below.
 - **A blog viewer at the foot of the page.** A floating square that reads the blog in place — titles
   down a sidebar, the chosen post beside them — straight from the blog's own build. It starts folded
-  into a small drifting pane that gives nothing away, and unfolds when clicked. See below.
+  down to a thin floating line of light that gives nothing away, and powers up when clicked. See
+  below.
 - **Two stylesheets.** [`house.css`](house.css) is the house style every dataterminals page shares —
   the palettes, the background layers, the theme switch, post prose — and the blog loads it from
   here; [`styles.css`](styles.css) is this page's own. That makes the token *names* in `house.css`
@@ -193,16 +194,20 @@ anything that can't hover gets the same words.
 Below the tarot sits a floating square that reads the [blog](https://dataterminals.github.io/blog/)
 in place: the posts' titles and dates down a sidebar on the left, the chosen post beside them.
 
-It starts **folded**. All the page shows at first is a small glowing pane drifting under the tarot,
-like one more piece of the scenery — no label, no permalink handle, nothing that says blog. It's the
-device in miniature (its outline, its halo, the rule down its sidebar's edge), and it steadies and
-brightens under the pointer, which is all the invitation it gives. Click it and the device grows out
-of that very box into the full square, the page scrolling along so all of it lands on screen; the
-minimize button at its top left, or Escape, folds it back into the pane. The box morphs in the
-flow — its real width, height and margins, driven frame by frame together with the scroll — so the
-page never clamps or jumps, and it morphs empty, its contents fading in after an unfold and out
-before a fold. Nothing is remembered across visits: it's folded again next time. Its accessible
-name says plainly what it is; only the eye gets the riddle.
+It starts **folded**. All the page shows at first is a single line of light floating under the
+tarot — long, thin and white, a terminal switched off down to its last scanline — like one more
+piece of the scenery, with no label, no permalink handle, nothing that says blog. Its core is white,
+going at the edges to the theme's own white (the wordmark's parchment), with a halo running out
+through that into the accent; it rises and settles and rolls a little, and it steadies and brightens
+under the pointer, which is all the invitation it gives. Click it and the device powers up out of it
+the way a screen does: the line shoots out to the device's width, then the glass opens out of it
+into the full square, the line fading like a seam through the middle, and the page scrolls along so
+all of it lands on screen. The minimize button at its top left, or Escape, powers it back down: the
+glass collapses into the line, which brightens as it narrows, then draws back in to its folded
+length. The box morphs in the flow — its real width, height and margins, driven frame by frame
+together with the scroll — so the page never clamps or jumps, and it morphs empty, its contents
+fading in after an unfold and out before a fold. Nothing is remembered across visits: it's folded
+again next time. Its accessible name says plainly what it is; only the eye gets the riddle.
 
 Arriving on `#blog` — someone handed over the permalink — opens it straight away, and the handle
 only appears once it's open. The first post isn't rendered until the device is, so a post's images
@@ -245,7 +250,7 @@ narrower pane.
 The url is absolute (`SOURCE` in `blog.js`): it's same-origin in production, and Pages answers every
 request with `Access-Control-Allow-Origin: *`, so a local preview of this page reads the live blog
 too. There is no inline fallback. Like the userscript rack, the section stays `hidden` until real
-posts land, so a failed fetch leaves nothing behind — not even the folded pane, which would
+posts land, so a failed fetch leaves nothing behind — not even the folded line, which would
 otherwise open onto nothing. Like `#current`, it's in the markup rather than injected whole so its
 permalink handle exists when `permalinks.js` binds. Since the browser can't scroll to a hidden
 section, `blog.js` opens the device and brings it on screen itself for a visitor who arrived on
