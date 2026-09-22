@@ -1,0 +1,687 @@
+/* house.css — the dataterminals house style: what every page of the site
+   shares, so the hub and the blog can't drift apart.
+
+   The blog (dataterminals/blog, served at /blog/) loads this file straight off
+   the hub, along with theme.js and the clips in assets/, instead of keeping
+   copies of them. That makes the token NAMES here an API: rename one and the
+   blog loses it too. Values are free to move — retuning a palette retunes both
+   sites at once, which is the point.
+
+   Six themes ship: `ember` (the oxblood/sepia default, below), `night`,
+   `morning`, `flare`, `stone` and `transit`, further down. Everything that
+   carries a theme's identity is a token here, and most are stated as a bare
+   `r, g, b` triple so a rule can tint with it — `rgba(var(--accent-rgb), 0.4)` —
+   instead of hard-coding the hue a hundred times over. A theme restates the
+   tokens; no component rule knows it exists. theme.js swaps `data-theme` on
+   <html> and the background clip to match.
+
+   Past the palettes: the background layers every page floats over, the theme
+   switch, and .prose — a blog post's body, set the same wherever it is read.
+   Anything that belongs to one page stays in that page's own stylesheet. */
+
+:root {
+  /* ---- Theme: ember (default) ---- */
+  --bg-0: #100804;            /* deepest warm black */
+  --bg-1: #1c0f0a;            /* oxblood base */
+  --bg-2: #2a140d;            /* warmer highlight for the gradient */
+  --bg-3: #241009;            /* …and its warmest corner */
+
+  --ink-rgb: 241, 231, 218;       /* warm bone — primary text */
+  --ink-dim: #c8b3a3;             /* muted taupe — secondary */
+  --ink-faint-rgb: 148, 121, 106; /* faint — meta */
+  --accent-rgb: 216, 121, 76;     /* terracotta ember — links / hover */
+  --accent-soft-rgb: 230, 162, 113;
+  --gold-rgb: 230, 184, 119;      /* the lit edge on the userscript tiles */
+  --gold-soft-rgb: 230, 178, 120;
+  --gold-lit: #f0cb95;            /* text on a gold-lined tile, hovered */
+  --parch-rgb: 233, 210, 181;     /* the wordmark's bloom */
+  --shade-rgb: 8, 4, 2;           /* deepest shadow, under text */
+
+  --ground-rgb: 16, 8, 4;         /* the scrim's black */
+  --well-rgb: 12, 6, 3;           /* chips, tiles, the hover readout */
+  --card-rgb: 44, 21, 14;         /* card ground — head of the 165° gradient */
+  --card-foot-rgb: 18, 10, 6;     /* …and its foot */
+  --card-lit-rgb: 54, 26, 17;     /* hovered */
+  --card-lit-foot-rgb: 22, 12, 7;
+  --card-hot-rgb: 58, 27, 17;     /* the current-project cards */
+  --card-hot-foot-rgb: 24, 13, 8;
+  --card-ring: #17100c;           /* punch-out ring on the presence avatar */
+
+  --bg-blur: 4px;                 /* how far the clip is pushed out of focus */
+  --bg-pos: 50% 50%;              /* which part of the clip survives the crop to the viewport */
+
+  /* How hard the scrim sits on the clip. A darker clip wants a lighter scrim,
+     so this is per-theme rather than baked into .bg__scrim. */
+  --scrim-edge: 0.70;             /* the vignette's outer stop */
+  --scrim-top: 0.50;
+  --scrim-mid: 0.40;
+  --scrim-foot: 0.86;             /* heaviest at the foot, under the tarot row */
+
+  --hard: #e07a4e;   /* square / opposition — warm ember */
+  --soft: #79c2cf;   /* trine / sextile — cool teal */
+  --conj: #e6b877;   /* conjunction — warm gold */
+
+  /* Derived — a theme restates the triple above, never these. */
+  --ink: rgb(var(--ink-rgb));
+  --ink-faint: rgb(var(--ink-faint-rgb));
+  --accent: rgb(var(--accent-rgb));
+  --accent-soft: rgb(var(--accent-soft-rgb));
+  --hair: rgba(var(--ink-rgb), 0.13);
+  --hair-strong: rgba(var(--ink-rgb), 0.26);
+
+  /* astro glyph coverage */
+  --glyph: "Segoe UI Symbol", "Noto Sans Symbols2", "Apple Symbols", "Segoe UI Emoji", var(--serif);
+  --mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+
+  --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --maxw: 660px;
+  --pad: clamp(1.5rem, 5vw, 3rem);
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---- Theme: night ----
+   Read off the clip it rides on: wet asphalt under sodium vapour, the whole
+   frame cast green by a camcorder left on auto white balance. Same structure as
+   ember, only the hues move — so every rule below this point is written once
+   and follows whichever theme is mounted. */
+:root[data-theme="night"] {
+  --bg-0: #050b0a;
+  --bg-1: #0c1614;
+  --bg-2: #172a26;
+  --bg-3: #112220;
+
+  --ink-rgb: 232, 240, 236;
+  --ink-dim: #a8bcb6;
+  --ink-faint-rgb: 116, 138, 132;
+  --accent-rgb: 217, 164, 65;      /* sodium vapour — the streetlights */
+  --accent-soft-rgb: 240, 204, 134;
+  --gold-rgb: 233, 200, 126;
+  --gold-soft-rgb: 230, 197, 132;
+  --gold-lit: #f6e0b0;
+  --parch-rgb: 219, 232, 224;      /* the clip's blown highlights are green-white */
+  --shade-rgb: 2, 7, 6;
+
+  --ground-rgb: 5, 12, 11;
+  --well-rgb: 4, 10, 9;
+  --card-rgb: 22, 38, 34;
+  --card-foot-rgb: 9, 18, 17;
+  --card-lit-rgb: 29, 48, 43;
+  --card-lit-foot-rgb: 12, 23, 21;
+  --card-hot-rgb: 32, 52, 45;
+  --card-hot-foot-rgb: 13, 25, 22;
+  --card-ring: #0b1513;
+
+  /* Street scenes carry far more edge than the ember loop's soft folds — faces
+     and signage stay readable at 4px and start competing with the text. */
+  --bg-blur: 7px;
+
+  /* The night clip runs about a third darker than the ember loop even after the
+     mid-tone lift in the encode, so the scrim eases off to let it read. */
+  --scrim-edge: 0.58;
+  --scrim-top: 0.38;
+  --scrim-mid: 0.30;
+  --scrim-foot: 0.80;
+
+  --hard: #e08a4e;
+  --soft: #7fc4b6;
+  --conj: #e9c87e;
+}
+
+/* ---- Theme: morning ----
+   Read off thirty seconds of phone footage out of a commuter train window on an
+   overcast morning: grey concrete going past, a maroon pillar down the right of
+   the frame, a mustard seat along the foot. The ground is the concrete under
+   the scrim; the accents are the seat and the pillar. */
+:root[data-theme="morning"] {
+  --bg-0: #121110;
+  --bg-1: #1e1b18;
+  --bg-2: #2e2823;
+  --bg-3: #27221d;
+
+  --ink-rgb: 240, 236, 228;
+  --ink-dim: #bfb6aa;
+  --ink-faint-rgb: 140, 132, 122;
+  --accent-rgb: 201, 84, 78;       /* the pillar's leather, lifted to read */
+  --accent-soft-rgb: 222, 128, 116;
+  --gold-rgb: 214, 176, 96;        /* the seat */
+  --gold-soft-rgb: 208, 172, 104;
+  --gold-lit: #ecd2a0;
+  --parch-rgb: 226, 222, 212;      /* flat daylight through the window */
+  --shade-rgb: 6, 5, 5;
+
+  --ground-rgb: 14, 13, 12;
+  --well-rgb: 12, 11, 10;
+  --card-rgb: 46, 38, 34;
+  --card-foot-rgb: 20, 17, 15;
+  --card-lit-rgb: 56, 46, 41;
+  --card-lit-foot-rgb: 24, 20, 18;
+  --card-hot-rgb: 60, 44, 40;
+  --card-hot-foot-rgb: 26, 20, 18;
+  --card-ring: #15120f;
+
+  /* The window sill is a hard line right across the frame, and there is a
+     nameplate on the seat back. Same push as the street scenes. */
+  --bg-blur: 7px;
+
+  /* The pillar runs down the right edge of the clip. A phone's portrait
+     viewport crops the clip to a column, and a centred column loses it, so the
+     crop is weighted to that edge; on a landscape viewport, where the full
+     width shows anyway, this is a no-op. Not all the way: the pillar alone is
+     a wall of maroon, and 85% leaves a strip of window beside it. */
+  --bg-pos: 85% 50%;
+
+  /* Daylight: the lightest of the three loops even after a pull-down in the
+     encode, so the scrim sits a shade harder than on ember. */
+  --scrim-edge: 0.74;
+  --scrim-top: 0.56;
+  --scrim-mid: 0.46;
+  --scrim-foot: 0.88;
+
+  --hard: #d4685e;
+  --soft: #7bb8c4;
+  --conj: #d9b56a;
+}
+
+/* ---- Theme: flare ----
+   Read off fifteen seconds of the same tape as night: pink fireworks, fountains
+   of sparks over riot helmets, a figure against a fire, a statue, a running
+   crowd under a strobe. The ground is the smoke; the accent is the fireworks'
+   pink, and the sparks light the gold tokens. */
+:root[data-theme="flare"] {
+  --bg-0: #0c0a0a;
+  --bg-1: #171314;
+  --bg-2: #29201f;
+  --bg-3: #221a19;
+
+  --ink-rgb: 240, 234, 232;
+  --ink-dim: #c0b4b2;
+  --ink-faint-rgb: 142, 130, 128;
+  --accent-rgb: 222, 118, 138;     /* the fireworks */
+  --accent-soft-rgb: 236, 160, 172;
+  --gold-rgb: 236, 196, 128;       /* the sparks */
+  --gold-soft-rgb: 230, 190, 130;
+  --gold-lit: #f4dcac;
+  --parch-rgb: 236, 224, 222;      /* the burst's pink-white core */
+  --shade-rgb: 5, 3, 4;
+
+  --ground-rgb: 12, 9, 10;
+  --well-rgb: 10, 8, 9;
+  --card-rgb: 46, 34, 36;
+  --card-foot-rgb: 19, 14, 15;
+  --card-lit-rgb: 56, 42, 44;
+  --card-lit-foot-rgb: 23, 17, 18;
+  --card-hot-rgb: 60, 40, 44;
+  --card-hot-foot-rgb: 25, 17, 19;
+  --card-ring: #150f11;
+
+  /* Crowds, helmets and silhouettes: the busiest of the six clips, and the
+     one where a figure would read through anything softer. */
+  --bg-blur: 8px;
+
+  /* Averages beside ember, but the fire shot runs to Y≈120 and the sparks are
+     white — so the scrim sits a shade harder than ember's to hold those. */
+  --scrim-edge: 0.72;
+  --scrim-top: 0.54;
+  --scrim-mid: 0.44;
+  --scrim-foot: 0.88;
+
+  --hard: #de6e7a;
+  --soft: #7fbfc4;
+  --conj: #e8c47e;
+}
+
+/* ---- Theme: stone ----
+   Read off every statue close-up on the same tape as night and flare, strung
+   together: pale marble, an oxblood relief, and mostly the green-grey of the
+   arch's sculpture under sodium light. The ground is that stone; the accent is
+   verdigris, the one cool accent of the six, and old gilt on the gold. */
+:root[data-theme="stone"] {
+  --bg-0: #0a0c0a;
+  --bg-1: #151915;
+  --bg-2: #232a23;
+  --bg-3: #1d231d;
+
+  --ink-rgb: 236, 238, 232;
+  --ink-dim: #b6bcb2;
+  --ink-faint-rgb: 128, 136, 126;
+  --accent-rgb: 122, 186, 164;     /* verdigris */
+  --accent-soft-rgb: 160, 210, 192;
+  --gold-rgb: 210, 186, 132;       /* old gilt */
+  --gold-soft-rgb: 206, 184, 138;
+  --gold-lit: #ecdcb4;
+  --parch-rgb: 226, 228, 220;      /* marble */
+  --shade-rgb: 3, 5, 4;
+
+  --ground-rgb: 10, 12, 10;
+  --well-rgb: 8, 10, 8;
+  --card-rgb: 40, 46, 40;
+  --card-foot-rgb: 16, 19, 16;
+  --card-lit-rgb: 50, 57, 50;
+  --card-lit-foot-rgb: 20, 23, 20;
+  --card-hot-rgb: 52, 60, 50;
+  --card-hot-foot-rgb: 21, 25, 21;
+  --card-ring: #111511;
+
+  /* Carved faces are still faces. Between ember's folds and the street scenes. */
+  --bg-blur: 6px;
+
+  --hard: #d47a6a;
+  --soft: #7ec2b0;
+  --conj: #d9c08a;
+}
+
+/* ---- Theme: transit ----
+   Read off a phone clip from inside an empty train car: a slate floor, steel
+   doors, a row of orange seats, and yellow grab poles — the nearest of them
+   held dead still in the middle of the frame while the car rocks around it.
+   The ground is the floor and the steel; the accent is the seats' orange, and
+   the poles light the gold. */
+:root[data-theme="transit"] {
+  --bg-0: #0a0b0d;
+  --bg-1: #14161a;
+  --bg-2: #23272c;
+  --bg-3: #1c1f23;
+
+  --ink-rgb: 236, 238, 240;
+  --ink-dim: #b3b8bd;
+  --ink-faint-rgb: 126, 133, 140;
+  --accent-rgb: 228, 120, 62;      /* the seats, lifted to read */
+  --accent-soft-rgb: 240, 162, 116;
+  --gold-rgb: 226, 190, 74;        /* the poles */
+  --gold-soft-rgb: 220, 188, 100;
+  --gold-lit: #f2dc9c;
+  --parch-rgb: 226, 230, 234;      /* the strip lights' white */
+  --shade-rgb: 3, 4, 5;
+
+  --ground-rgb: 10, 11, 13;
+  --well-rgb: 8, 9, 11;
+  --card-rgb: 38, 42, 47;
+  --card-foot-rgb: 15, 17, 20;
+  --card-lit-rgb: 48, 53, 59;
+  --card-lit-foot-rgb: 19, 21, 25;
+  --card-hot-rgb: 50, 55, 62;
+  --card-hot-foot-rgb: 21, 23, 27;
+  --card-ring: #101216;
+
+  /* The poles, grab bars and door edges are hard lines the height of the frame,
+     and the pinned pole stands right behind the text column: at 4px they still
+     read as objects. Same push as the street scenes. */
+  --bg-blur: 7px;
+
+  /* Graded to Y≈75, a shade under morning's 76, and the two sit level side by
+     side on the page — so this is morning's scrim, unchanged. */
+  --scrim-edge: 0.74;
+  --scrim-top: 0.56;
+  --scrim-mid: 0.46;
+  --scrim-foot: 0.88;
+
+  --hard: #de7448;
+  --soft: #7eb6c8;
+  --conj: #e2c264;
+}
+
+/* ---- Background: blurred looping video + tinted fallback + scrim ---- */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  /* The theme's gradient — what shows before the clip fades in, behind any frame
+     that is transparent while loading, and for good if the clip can't play. */
+  background:
+    radial-gradient(120% 130% at 72% 8%, var(--bg-2) 0%, transparent 46%),
+    linear-gradient(158deg, var(--bg-3) 0%, var(--bg-1) 52%, var(--bg-0) 100%);
+}
+
+.bg__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--bg-pos);
+  background: transparent;
+  /* Slightly blurred, per the brief; scale hides the soft blur edge. How much is
+     per-theme: the point is an abstract wash, and a busier clip needs more of it
+     to get there. */
+  filter: blur(var(--bg-blur)) saturate(1.06) contrast(1.02);
+  transform: scale(1.09);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+.bg__video.is-ready { opacity: 1; }
+
+.bg__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(115% 95% at 26% 22%, transparent 0%, rgba(var(--ground-rgb), var(--scrim-edge)) 100%),
+    linear-gradient(185deg, rgba(var(--ground-rgb), var(--scrim-top)) 0%, rgba(var(--ground-rgb), var(--scrim-mid)) 40%, rgba(var(--ground-rgb), var(--scrim-foot)) 100%);
+}
+
+/* Faint film grain for the analog/classical feel (self-contained SVG noise). */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Theme switch ----
+   Fixed to the top-right corner, over everything but the hover readout. A
+   hairline capsule: a track whose thumb slides to the seat of the mounted
+   theme, and the theme's name in mono micro-caps beside it. It rides the same
+   tokens as the rest of the page, so it recolours along with what it switches.
+
+   Hidden until theme.js mounts it (`hidden` in the markup, cleared on boot),
+   because with the script absent there is nothing to switch. */
+.theme {
+  position: fixed;
+  top: max(clamp(0.8rem, 2.2vh, 1.35rem), env(safe-area-inset-top));
+  right: max(clamp(0.8rem, 2.2vw, 1.35rem), env(safe-area-inset-right));
+  z-index: 5;
+}
+
+.theme__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.3rem 0.6rem 0.3rem 0.5rem;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  /* The clip runs under this corner, so the capsule carries its own ground. */
+  background: rgba(var(--well-rgb), 0.5);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.theme__switch:hover {
+  color: var(--ink-dim);
+  border-color: var(--hair-strong);
+  background: rgba(var(--well-rgb), 0.66);
+}
+.theme__switch:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+
+.theme__track {
+  position: relative;
+  flex: none;
+  /* Six 7px seats at 9px steps from a 2px inset, and the same 2px inset past
+     the last one: 2 + 45 + 7 + 2 = 56 inside, and the 1px border either side
+     makes 58 — box-sizing counts the border in the width. */
+  width: 58px;
+  height: 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  background: rgba(var(--accent-rgb), 0.12);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.theme__switch:hover .theme__track {
+  border-color: rgba(var(--accent-rgb), 0.6);
+  background: rgba(var(--accent-rgb), 0.2);
+}
+
+/* One seat per theme, left to right in the order the switch cycles through
+   them: ember, night, morning, flare, stone, transit. Every seat is lit: this steps
+   between themes rather than turning one on, so none of them is the "off" end. */
+.theme__thumb {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.75);
+  transition: transform 0.42s var(--ease), background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+:root[data-theme="night"] .theme__thumb { transform: translateX(9px); }
+:root[data-theme="morning"] .theme__thumb { transform: translateX(18px); }
+:root[data-theme="flare"] .theme__thumb { transform: translateX(27px); }
+:root[data-theme="stone"] .theme__thumb { transform: translateX(36px); }
+:root[data-theme="transit"] .theme__thumb { transform: translateX(45px); }
+
+.theme__name {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  line-height: 1;
+  /* The name is what sets the capsule's width, and the labels are different
+     lengths — so without this the whole control grows and shrinks on every
+     press. Held at the longest label instead: --theme-name-len is its letter
+     count, and each letter is one cell of the mono face plus its tracking. */
+  --theme-name-len: 7;             /* "morning", "transit" */
+  min-width: calc(var(--theme-name-len) * (1ch + 0.13em));
+}
+
+/* Phones: the name is the widest part of the capsule and the corner is tight,
+   so the track carries it alone. The accessible name on the button still says
+   which theme is mounted and what the press does. */
+@media (max-width: 480px) {
+  .theme__switch { padding: 0.3rem 0.5rem; }
+  .theme__name { display: none; }
+}
+
+/* Under reduced motion theme.js mounts no clip, so there is nothing to show —
+   the theme's gradient is the whole background. */
+@media (prefers-reduced-motion: reduce) {
+  .bg__video { display: none; }
+}
+
+/* ================= Prose ================= */
+/* A blog post's body, wherever it's read: on the post's own page on the blog,
+   and in the blog device at the foot of the hub, which shows the very same
+   HTML. One ruleset, so a post reads the same in both places.
+
+   Everything is sized in em off --prose-size, so a reader that wants the text
+   smaller sets that one property and the headings, code and tables follow.
+   The rem each size started as, at the blog's 1.02rem, is noted beside it. */
+.prose {
+  font-size: var(--prose-size, 1.02rem);
+  line-height: var(--prose-leading, 1.75);
+  color: var(--ink);
+}
+.prose > :first-child { margin-top: 0; }
+.prose > :last-child { margin-bottom: 0; }
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose dl { margin: 0 0 1.25em; }
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin: 2.1em 0 0.65em;
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.prose h1 { font-size: 1.686em; }   /* 1.72rem */
+.prose h2 { font-size: 1.412em; }   /* 1.44rem */
+.prose h3 { font-size: 1.196em; }   /* 1.22rem */
+.prose h4 { font-size: 1.059em; }   /* 1.08rem */
+/* Below h4 the serif stops reading as a heading; switch to the eyebrow voice. */
+.prose h5,
+.prose h6 {
+  font-family: var(--sans);
+  font-size: 0.706em;               /* 0.72rem */
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* Visible rather than hover-only — a hover underline loses too many links
+   against a moving background. */
+.prose a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.38);
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.prose a:hover,
+.prose a:focus-visible {
+  color: var(--accent-soft);
+  border-bottom-color: var(--accent-soft);
+  outline: none;
+}
+
+.prose strong { font-weight: 600; color: var(--ink); }
+.prose em { font-style: italic; }
+
+.prose ul,
+.prose ol { padding-left: 1.35em; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--ink-faint); }
+
+/* Borrows the sub-tagline's voice: serif italic, dimmed, set apart. */
+.prose blockquote {
+  margin: 1.6em 0;
+  padding: 0.1em 0 0.1em 1.15em;
+  border-left: 2px solid rgba(var(--accent-rgb), 0.42);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.029em;               /* 1.05rem */
+  color: var(--ink-dim);
+}
+.prose blockquote > :last-child { margin-bottom: 0; }
+
+.prose hr {
+  margin: 2.4em 0;
+  border: 0;
+  border-top: 1px solid var(--hair);
+}
+
+.prose img,
+.prose video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.6em auto;
+  border-radius: 9px;
+  border: 1px solid var(--hair);
+}
+
+.prose figure { margin: 1.6em 0; }
+.prose figcaption {
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.686em;               /* 0.7rem */
+  letter-spacing: 0.03em;
+  color: var(--ink-faint);
+  text-align: center;
+  text-shadow: none;
+}
+
+/* ---- Tables ---- */
+
+.prose table {
+  width: 100%;
+  margin: 1.6em 0;
+  border-collapse: collapse;
+  font-size: 0.902em;               /* 0.92rem */
+}
+.prose th,
+.prose td {
+  padding: 0.55em 0.75em;
+  text-align: left;
+  border-bottom: 1px solid var(--hair);
+}
+.prose th {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.761em;               /* 0.7rem, inside the table's own size */
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom-color: var(--hair-strong);
+}
+.prose td { color: var(--ink-dim); }
+
+/* ---- Code ---- */
+
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.87em;
+  text-shadow: none;
+}
+
+/* Inline: a warm tint, enough to separate it without becoming a button. */
+.prose :not(pre) > code {
+  padding: 0.14em 0.4em;
+  border-radius: 4px;
+  background: rgba(var(--accent-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.16);
+  color: var(--accent-soft);
+}
+
+/* Blocks: a recessed panel in the project cards' outline. Long lines scroll
+   inside the block rather than widening whatever it sits in. */
+.prose pre,
+.prose .highlight,
+.prose .highlighter-rouge { margin: 1.6em 0; }
+.prose pre {
+  padding: 0.95rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--mono);         /* a <pre> with no <code> child would fall back to UA monospace */
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+  border-radius: 9px;
+  background: linear-gradient(165deg, rgba(var(--card-foot-rgb), 0.72), rgba(var(--well-rgb), 0.8));
+  font-size: 0.824em;               /* 0.84rem */
+  line-height: 1.6;
+  color: var(--ink);
+  text-shadow: none;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.3) transparent;
+}
+.prose pre > code {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+/* Rouge nests div.highlight inside .highlighter-rouge; flatten the double box.
+   The element names matter: Rouge gives the <pre> the same class, and a bare
+   .highlight here would strip the recess off every highlighted block. */
+.prose div.highlight { background: none; }
+.prose div.highlight pre { margin: 0; }
+
+/* Rouge's token classes, on the theme's own inks, so a code block recolours
+   along with everything around it. */
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs,
+.highlight .cd { color: var(--ink-faint); font-style: italic; }            /* comment */
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp,
+.highlight .kr, .highlight .kt, .highlight .kc { color: var(--accent-soft); }  /* keyword */
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb,
+.highlight .sc, .highlight .sd, .highlight .se, .highlight .sh,
+.highlight .si, .highlight .sx, .highlight .sr { color: var(--soft); }     /* string */
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh,
+.highlight .mo, .highlight .il { color: var(--hard); }                     /* number */
+.highlight .nf, .highlight .nd { color: var(--conj); }                     /* function */
+.highlight .nc, .highlight .nn, .highlight .no { color: var(--gold-lit); } /* class / const */
+.highlight .nt { color: var(--accent); }                                   /* tag */
+.highlight .na { color: var(--ink-dim); }                                  /* attribute */
+.highlight .nv, .highlight .vi, .highlight .vg { color: var(--ink); }      /* variable */
+.highlight .o, .highlight .ow, .highlight .p { color: var(--ink-dim); }    /* operator */
+.highlight .gd { color: var(--hard); }                                     /* diff - */
+.highlight .gi { color: var(--soft); }                                     /* diff + */
+.highlight .gh, .highlight .gu { color: var(--ink-faint); }
+.highlight .err { color: var(--hard); }

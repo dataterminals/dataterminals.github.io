@@ -1,320 +1,21 @@
 /* dataterminals.github.io — warm, identity-forward landing page
    Palette pulled from the background loop. No external assets.
 
-   Six themes ship: `ember` (the oxblood/sepia default, below), `night`,
-   `morning`, `flare`, `stone` and `transit`, further down. Everything that carries a theme's identity is a token here, and
-   most are stated as a bare `r, g, b` triple so a rule can tint with it —
-   `rgba(var(--accent-rgb), 0.4)` — instead of hard-coding the hue a hundred
-   times over. A theme restates the tokens; no component rule knows it exists.
-   theme.js swaps `data-theme` on <html> and the background clip to match. */
+   The palettes, the background layers and the theme switch are in house.css,
+   loaded just before this file, which the blog shares. This file is the hub's
+   own: its layout and every feature on it. Colours come from house.css's
+   tokens throughout — `rgba(var(--accent-rgb), 0.4)` rather than a hue — so
+   every rule here follows whichever theme is mounted without knowing there is
+   more than one. */
 
+/* The hub's own spacing; the shared measure and gutter are in house.css. */
 :root {
-  /* ---- Theme: ember (default) ---- */
-  --bg-0: #100804;            /* deepest warm black */
-  --bg-1: #1c0f0a;            /* oxblood base */
-  --bg-2: #2a140d;            /* warmer highlight for the gradient */
-  --bg-3: #241009;            /* …and its warmest corner */
-
-  --ink-rgb: 241, 231, 218;       /* warm bone — primary text */
-  --ink-dim: #c8b3a3;             /* muted taupe — secondary */
-  --ink-faint-rgb: 148, 121, 106; /* faint — meta */
-  --accent-rgb: 216, 121, 76;     /* terracotta ember — links / hover */
-  --accent-soft-rgb: 230, 162, 113;
-  --gold-rgb: 230, 184, 119;      /* the lit edge on the userscript tiles */
-  --gold-soft-rgb: 230, 178, 120;
-  --gold-lit: #f0cb95;            /* text on a gold-lined tile, hovered */
-  --parch-rgb: 233, 210, 181;     /* the wordmark's bloom */
-  --shade-rgb: 8, 4, 2;           /* deepest shadow, under text */
-
-  --ground-rgb: 16, 8, 4;         /* the scrim's black */
-  --well-rgb: 12, 6, 3;           /* chips, tiles, the hover readout */
-  --card-rgb: 44, 21, 14;         /* card ground — head of the 165° gradient */
-  --card-foot-rgb: 18, 10, 6;     /* …and its foot */
-  --card-lit-rgb: 54, 26, 17;     /* hovered */
-  --card-lit-foot-rgb: 22, 12, 7;
-  --card-hot-rgb: 58, 27, 17;     /* the current-project cards */
-  --card-hot-foot-rgb: 24, 13, 8;
-  --card-ring: #17100c;           /* punch-out ring on the presence avatar */
-
-  --bg-blur: 4px;                 /* how far the clip is pushed out of focus */
-  --bg-pos: 50% 50%;              /* which part of the clip survives the crop to the viewport */
-
-  /* How hard the scrim sits on the clip. A darker clip wants a lighter scrim,
-     so this is per-theme rather than baked into .bg__scrim. */
-  --scrim-edge: 0.70;             /* the vignette's outer stop */
-  --scrim-top: 0.50;
-  --scrim-mid: 0.40;
-  --scrim-foot: 0.86;             /* heaviest at the foot, under the tarot row */
-
-  --hard: #e07a4e;   /* square / opposition — warm ember */
-  --soft: #79c2cf;   /* trine / sextile — cool teal */
-  --conj: #e6b877;   /* conjunction — warm gold */
-
-  /* Derived — a theme restates the triple above, never these. */
-  --ink: rgb(var(--ink-rgb));
-  --ink-faint: rgb(var(--ink-faint-rgb));
-  --accent: rgb(var(--accent-rgb));
-  --accent-soft: rgb(var(--accent-soft-rgb));
-  --hair: rgba(var(--ink-rgb), 0.13);
-  --hair-strong: rgba(var(--ink-rgb), 0.26);
-
-  /* astro glyph coverage */
-  --glyph: "Segoe UI Symbol", "Noto Sans Symbols2", "Apple Symbols", "Segoe UI Emoji", var(--serif);
-  --mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
-
-  --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-
-  --maxw: 660px;
-  --pad: clamp(1.5rem, 5vw, 3rem);
   --main-gap: clamp(3rem, 12vh, 6.5rem);   /* between the page's major sections */
   --screen-gap: clamp(2.2rem, 6vh, 3.6rem); /* between blocks inside .screen */
   /* Breathing room on BOTH sides of the link shelf — above it to the Selected
      Work grid, below it to the Discord card — so it sits centred between them.
      Used by .elsewhere's gap and its margin-top; keep them derived from this. */
   --shelf-gap: clamp(1.5rem, 3.8vh, 2.25rem);
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-/* ---- Theme: night ----
-   Read off the clip it rides on: wet asphalt under sodium vapour, the whole
-   frame cast green by a camcorder left on auto white balance. Same structure as
-   ember, only the hues move — so every rule below this point is written once
-   and follows whichever theme is mounted. */
-:root[data-theme="night"] {
-  --bg-0: #050b0a;
-  --bg-1: #0c1614;
-  --bg-2: #172a26;
-  --bg-3: #112220;
-
-  --ink-rgb: 232, 240, 236;
-  --ink-dim: #a8bcb6;
-  --ink-faint-rgb: 116, 138, 132;
-  --accent-rgb: 217, 164, 65;      /* sodium vapour — the streetlights */
-  --accent-soft-rgb: 240, 204, 134;
-  --gold-rgb: 233, 200, 126;
-  --gold-soft-rgb: 230, 197, 132;
-  --gold-lit: #f6e0b0;
-  --parch-rgb: 219, 232, 224;      /* the clip's blown highlights are green-white */
-  --shade-rgb: 2, 7, 6;
-
-  --ground-rgb: 5, 12, 11;
-  --well-rgb: 4, 10, 9;
-  --card-rgb: 22, 38, 34;
-  --card-foot-rgb: 9, 18, 17;
-  --card-lit-rgb: 29, 48, 43;
-  --card-lit-foot-rgb: 12, 23, 21;
-  --card-hot-rgb: 32, 52, 45;
-  --card-hot-foot-rgb: 13, 25, 22;
-  --card-ring: #0b1513;
-
-  /* Street scenes carry far more edge than the ember loop's soft folds — faces
-     and signage stay readable at 4px and start competing with the text. */
-  --bg-blur: 7px;
-
-  /* The night clip runs about a third darker than the ember loop even after the
-     mid-tone lift in the encode, so the scrim eases off to let it read. */
-  --scrim-edge: 0.58;
-  --scrim-top: 0.38;
-  --scrim-mid: 0.30;
-  --scrim-foot: 0.80;
-
-  --hard: #e08a4e;
-  --soft: #7fc4b6;
-  --conj: #e9c87e;
-}
-
-/* ---- Theme: morning ----
-   Read off thirty seconds of phone footage out of a commuter train window on an
-   overcast morning: grey concrete going past, a maroon pillar down the right of
-   the frame, a mustard seat along the foot. The ground is the concrete under
-   the scrim; the accents are the seat and the pillar. */
-:root[data-theme="morning"] {
-  --bg-0: #121110;
-  --bg-1: #1e1b18;
-  --bg-2: #2e2823;
-  --bg-3: #27221d;
-
-  --ink-rgb: 240, 236, 228;
-  --ink-dim: #bfb6aa;
-  --ink-faint-rgb: 140, 132, 122;
-  --accent-rgb: 201, 84, 78;       /* the pillar's leather, lifted to read */
-  --accent-soft-rgb: 222, 128, 116;
-  --gold-rgb: 214, 176, 96;        /* the seat */
-  --gold-soft-rgb: 208, 172, 104;
-  --gold-lit: #ecd2a0;
-  --parch-rgb: 226, 222, 212;      /* flat daylight through the window */
-  --shade-rgb: 6, 5, 5;
-
-  --ground-rgb: 14, 13, 12;
-  --well-rgb: 12, 11, 10;
-  --card-rgb: 46, 38, 34;
-  --card-foot-rgb: 20, 17, 15;
-  --card-lit-rgb: 56, 46, 41;
-  --card-lit-foot-rgb: 24, 20, 18;
-  --card-hot-rgb: 60, 44, 40;
-  --card-hot-foot-rgb: 26, 20, 18;
-  --card-ring: #15120f;
-
-  /* The window sill is a hard line right across the frame, and there is a
-     nameplate on the seat back. Same push as the street scenes. */
-  --bg-blur: 7px;
-
-  /* The pillar runs down the right edge of the clip. A phone's portrait
-     viewport crops the clip to a column, and a centred column loses it, so the
-     crop is weighted to that edge; on a landscape viewport, where the full
-     width shows anyway, this is a no-op. Not all the way: the pillar alone is
-     a wall of maroon, and 85% leaves a strip of window beside it. */
-  --bg-pos: 85% 50%;
-
-  /* Daylight: the lightest of the three loops even after a pull-down in the
-     encode, so the scrim sits a shade harder than on ember. */
-  --scrim-edge: 0.74;
-  --scrim-top: 0.56;
-  --scrim-mid: 0.46;
-  --scrim-foot: 0.88;
-
-  --hard: #d4685e;
-  --soft: #7bb8c4;
-  --conj: #d9b56a;
-}
-
-/* ---- Theme: flare ----
-   Read off fifteen seconds of the same tape as night: pink fireworks, fountains
-   of sparks over riot helmets, a figure against a fire, a statue, a running
-   crowd under a strobe. The ground is the smoke; the accent is the fireworks'
-   pink, and the sparks light the gold tokens. */
-:root[data-theme="flare"] {
-  --bg-0: #0c0a0a;
-  --bg-1: #171314;
-  --bg-2: #29201f;
-  --bg-3: #221a19;
-
-  --ink-rgb: 240, 234, 232;
-  --ink-dim: #c0b4b2;
-  --ink-faint-rgb: 142, 130, 128;
-  --accent-rgb: 222, 118, 138;     /* the fireworks */
-  --accent-soft-rgb: 236, 160, 172;
-  --gold-rgb: 236, 196, 128;       /* the sparks */
-  --gold-soft-rgb: 230, 190, 130;
-  --gold-lit: #f4dcac;
-  --parch-rgb: 236, 224, 222;      /* the burst's pink-white core */
-  --shade-rgb: 5, 3, 4;
-
-  --ground-rgb: 12, 9, 10;
-  --well-rgb: 10, 8, 9;
-  --card-rgb: 46, 34, 36;
-  --card-foot-rgb: 19, 14, 15;
-  --card-lit-rgb: 56, 42, 44;
-  --card-lit-foot-rgb: 23, 17, 18;
-  --card-hot-rgb: 60, 40, 44;
-  --card-hot-foot-rgb: 25, 17, 19;
-  --card-ring: #150f11;
-
-  /* Crowds, helmets and silhouettes: the busiest of the six clips, and the
-     one where a figure would read through anything softer. */
-  --bg-blur: 8px;
-
-  /* Averages beside ember, but the fire shot runs to Y≈120 and the sparks are
-     white — so the scrim sits a shade harder than ember's to hold those. */
-  --scrim-edge: 0.72;
-  --scrim-top: 0.54;
-  --scrim-mid: 0.44;
-  --scrim-foot: 0.88;
-
-  --hard: #de6e7a;
-  --soft: #7fbfc4;
-  --conj: #e8c47e;
-}
-
-/* ---- Theme: stone ----
-   Read off every statue close-up on the same tape as night and flare, strung
-   together: pale marble, an oxblood relief, and mostly the green-grey of the
-   arch's sculpture under sodium light. The ground is that stone; the accent is
-   verdigris, the one cool accent of the six, and old gilt on the gold. */
-:root[data-theme="stone"] {
-  --bg-0: #0a0c0a;
-  --bg-1: #151915;
-  --bg-2: #232a23;
-  --bg-3: #1d231d;
-
-  --ink-rgb: 236, 238, 232;
-  --ink-dim: #b6bcb2;
-  --ink-faint-rgb: 128, 136, 126;
-  --accent-rgb: 122, 186, 164;     /* verdigris */
-  --accent-soft-rgb: 160, 210, 192;
-  --gold-rgb: 210, 186, 132;       /* old gilt */
-  --gold-soft-rgb: 206, 184, 138;
-  --gold-lit: #ecdcb4;
-  --parch-rgb: 226, 228, 220;      /* marble */
-  --shade-rgb: 3, 5, 4;
-
-  --ground-rgb: 10, 12, 10;
-  --well-rgb: 8, 10, 8;
-  --card-rgb: 40, 46, 40;
-  --card-foot-rgb: 16, 19, 16;
-  --card-lit-rgb: 50, 57, 50;
-  --card-lit-foot-rgb: 20, 23, 20;
-  --card-hot-rgb: 52, 60, 50;
-  --card-hot-foot-rgb: 21, 25, 21;
-  --card-ring: #111511;
-
-  /* Carved faces are still faces. Between ember's folds and the street scenes. */
-  --bg-blur: 6px;
-
-  --hard: #d47a6a;
-  --soft: #7ec2b0;
-  --conj: #d9c08a;
-}
-
-/* ---- Theme: transit ----
-   Read off a phone clip from inside an empty train car: a slate floor, steel
-   doors, a row of orange seats, and yellow grab poles — the nearest of them
-   held dead still in the middle of the frame while the car rocks around it.
-   The ground is the floor and the steel; the accent is the seats' orange, and
-   the poles light the gold. */
-:root[data-theme="transit"] {
-  --bg-0: #0a0b0d;
-  --bg-1: #14161a;
-  --bg-2: #23272c;
-  --bg-3: #1c1f23;
-
-  --ink-rgb: 236, 238, 240;
-  --ink-dim: #b3b8bd;
-  --ink-faint-rgb: 126, 133, 140;
-  --accent-rgb: 228, 120, 62;      /* the seats, lifted to read */
-  --accent-soft-rgb: 240, 162, 116;
-  --gold-rgb: 226, 190, 74;        /* the poles */
-  --gold-soft-rgb: 220, 188, 100;
-  --gold-lit: #f2dc9c;
-  --parch-rgb: 226, 230, 234;      /* the strip lights' white */
-  --shade-rgb: 3, 4, 5;
-
-  --ground-rgb: 10, 11, 13;
-  --well-rgb: 8, 9, 11;
-  --card-rgb: 38, 42, 47;
-  --card-foot-rgb: 15, 17, 20;
-  --card-lit-rgb: 48, 53, 59;
-  --card-lit-foot-rgb: 19, 21, 25;
-  --card-hot-rgb: 50, 55, 62;
-  --card-hot-foot-rgb: 21, 23, 27;
-  --card-ring: #101216;
-
-  /* The poles, grab bars and door edges are hard lines the height of the frame,
-     and the pinned pole stands right behind the text column: at 4px they still
-     read as objects. Same push as the street scenes. */
-  --bg-blur: 7px;
-
-  /* Graded to Y≈75, a shade under morning's 76, and the two sit level side by
-     side on the page — so this is morning's scrim, unchanged. */
-  --scrim-edge: 0.74;
-  --scrim-top: 0.56;
-  --scrim-mid: 0.46;
-  --scrim-foot: 0.88;
-
-  --hard: #de7448;
-  --soft: #7eb6c8;
-  --conj: #e2c264;
 }
 
 * { box-sizing: border-box; }
@@ -331,157 +32,6 @@ body {
   text-rendering: optimizeLegibility;
   line-height: 1.55;
 }
-
-/* ---- Background: blurred looping video + tinted fallback + scrim ---- */
-.bg {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  overflow: hidden;
-  /* The theme's gradient — what shows before the clip fades in, behind any frame
-     that is transparent while loading, and for good if the clip can't play. */
-  background:
-    radial-gradient(120% 130% at 72% 8%, var(--bg-2) 0%, transparent 46%),
-    linear-gradient(158deg, var(--bg-3) 0%, var(--bg-1) 52%, var(--bg-0) 100%);
-}
-
-.bg__video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--bg-pos);
-  background: transparent;
-  /* Slightly blurred, per the brief; scale hides the soft blur edge. How much is
-     per-theme: the point is an abstract wash, and a busier clip needs more of it
-     to get there. */
-  filter: blur(var(--bg-blur)) saturate(1.06) contrast(1.02);
-  transform: scale(1.09);
-  opacity: 0;
-  transition: opacity 1.2s var(--ease);
-}
-.bg__video.is-ready { opacity: 1; }
-
-.bg__scrim {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(115% 95% at 26% 22%, transparent 0%, rgba(var(--ground-rgb), var(--scrim-edge)) 100%),
-    linear-gradient(185deg, rgba(var(--ground-rgb), var(--scrim-top)) 0%, rgba(var(--ground-rgb), var(--scrim-mid)) 40%, rgba(var(--ground-rgb), var(--scrim-foot)) 100%);
-}
-
-/* Faint film grain for the analog/classical feel (self-contained SVG noise). */
-.grain {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.05;
-  mix-blend-mode: soft-light;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ---- Theme switch ----
-   Fixed to the top-right corner, over everything but the hover readout. A
-   hairline capsule: a track whose thumb slides to the seat of the mounted
-   theme, and the theme's name in mono micro-caps beside it. It rides the same
-   tokens as the rest of the page, so it recolours along with what it switches.
-
-   Hidden until theme.js mounts it (`hidden` in the markup, cleared on boot),
-   because with the script absent there is nothing to switch. */
-.theme {
-  position: fixed;
-  top: max(clamp(0.8rem, 2.2vh, 1.35rem), env(safe-area-inset-top));
-  right: max(clamp(0.8rem, 2.2vw, 1.35rem), env(safe-area-inset-right));
-  z-index: 5;
-}
-
-.theme__switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  padding: 0.3rem 0.6rem 0.3rem 0.5rem;
-  border: 1px solid var(--hair);
-  border-radius: 999px;
-  /* The clip runs under this corner, so the capsule carries its own ground. */
-  background: rgba(var(--well-rgb), 0.5);
-  -webkit-backdrop-filter: blur(7px);
-  backdrop-filter: blur(7px);
-  color: var(--ink-faint);
-  cursor: pointer;
-  transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease);
-}
-.theme__switch:hover {
-  color: var(--ink-dim);
-  border-color: var(--hair-strong);
-  background: rgba(var(--well-rgb), 0.66);
-}
-.theme__switch:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
-
-.theme__track {
-  position: relative;
-  flex: none;
-  /* Six 7px seats at 9px steps from a 2px inset, and the same 2px inset past
-     the last one: 2 + 45 + 7 + 2 = 56 inside, and the 1px border either side
-     makes 58 — box-sizing counts the border in the width. */
-  width: 58px;
-  height: 13px;
-  border-radius: 999px;
-  border: 1px solid rgba(var(--accent-rgb), 0.4);
-  background: rgba(var(--accent-rgb), 0.12);
-  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
-}
-.theme__switch:hover .theme__track {
-  border-color: rgba(var(--accent-rgb), 0.6);
-  background: rgba(var(--accent-rgb), 0.2);
-}
-
-/* One seat per theme, left to right in the order the switch cycles through
-   them: ember, night, morning, flare, stone, transit. Every seat is lit: this steps
-   between themes rather than turning one on, so none of them is the "off" end. */
-.theme__thumb {
-  position: absolute;
-  top: 50%;
-  left: 2px;
-  width: 7px;
-  height: 7px;
-  margin-top: -3.5px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.75);
-  transition: transform 0.42s var(--ease), background 0.3s var(--ease), box-shadow 0.3s var(--ease);
-}
-:root[data-theme="night"] .theme__thumb { transform: translateX(9px); }
-:root[data-theme="morning"] .theme__thumb { transform: translateX(18px); }
-:root[data-theme="flare"] .theme__thumb { transform: translateX(27px); }
-:root[data-theme="stone"] .theme__thumb { transform: translateX(36px); }
-:root[data-theme="transit"] .theme__thumb { transform: translateX(45px); }
-
-.theme__name {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  line-height: 1;
-  /* The name is what sets the capsule's width, and the labels are different
-     lengths — so without this the whole control grows and shrinks on every
-     press. Held at the longest label instead: --theme-name-len is its letter
-     count, and each letter is one cell of the mono face plus its tracking. */
-  --theme-name-len: 7;             /* "morning", "transit" */
-  min-width: calc(var(--theme-name-len) * (1ch + 0.13em));
-}
-
-/* Phones: the name is the widest part of the capsule and the corner is tight,
-   so the track carries it alone. The accessible name on the button still says
-   which theme is mounted and what the press does. */
-@media (max-width: 480px) {
-  .theme__switch { padding: 0.3rem 0.5rem; }
-  .theme__name { display: none; }
-}
-
 /* ---- Layout ---- */
 main {
   position: relative;
@@ -497,7 +47,7 @@ main {
 /* A definite width, not shrink-to-fit. .elsewhere is here so the Discord card
    has a width to fill: left to size itself, it resolves to its own min-content
    and a long activity name or display name pushes it past the viewport. */
-.screen, .foot, .chart, .tarot, .elsewhere { width: 100%; max-width: var(--maxw); }
+.screen, .foot, .chart, .tarot, .blog, .elsewhere { width: 100%; max-width: var(--maxw); }
 
 /* First screenful: the identity hero, curated links and the shelf/Discord
    pair, vertically centered. */
@@ -1133,8 +683,9 @@ main {
 }
 
 /* ================= Tarot ================= */
-/* Ends the page, so it carries the tail the shelf used to. The top band matches
-   the chart's: room for the permalink handle without crowding the first card. */
+/* Carries the page's tail, the way the shelf used to, until the blog device
+   lands below it and takes the tail over (see .blog). The top band matches the
+   chart's: room for the permalink handle without crowding the first card. */
 .tarot {
   position: relative;
   padding-top: clamp(1.5rem, 4vh, 2rem);
@@ -1222,6 +773,540 @@ main {
   .tarot__grid { justify-content: center; }
   .tcard--featured { --w: 138px; }
   .tarot__grid .tcard { --w: 84px; }
+}
+
+/* ================= Blog device ================= */
+/* The posts from dataterminals/blog, read in place: a floating square with the
+   titles down a sidebar on its left and the chosen post beside it. blog.js
+   renders it from the blog's posts.json; the post body is the blog's own HTML,
+   set by .prose in house.css, so it reads the same here as on the blog. It
+   starts folded into a small pane (.blog__seed) and unfolds when that's
+   clicked; .is-open on the section marks the unfolded state.
+
+   No `display` on .blog itself: blog.js keeps the section behind `hidden` until
+   posts land, and a class-level display would outrank the UA sheet's rule for
+   the attribute and show an empty band — the same arrangement as .uscripts. */
+.blog {
+  position: relative;                         /* anchors the permalink handle */
+  padding-top: clamp(1.5rem, 4vh, 2rem);      /* the chart's band, for the handle */
+  padding-bottom: 7vh;                        /* ends the page, so it carries the tail */
+}
+/* The tail moves down with it: once the section is showing, the tarot above it
+   drops to the chart's 2vh. Where :has() isn't supported the gap is merely
+   generous. */
+.tarot:has(+ .blog:not([hidden])) { padding-bottom: 2vh; }
+/* Folded, the section is scenery, and a chain handle beside a drifting pane
+   would give the game away. It comes back with the device. */
+.blog:not(.is-open) > .permalink { display: none; }
+
+/* ---- Folded ---- */
+/* Until someone opens it, the device is folded into a small pane drifting at
+   the foot of the page — one more floating thing, like the shelf's icons and
+   the tagline's fragments. Nothing on it says blog. It's the device in
+   miniature: the panel's outline and ground, a halo on shelf-flicker's rhythm,
+   and the rule down its sidebar's edge. It wanders slower and wider than the
+   icons do, with a tilt on a period of its own so the two never fall into step,
+   and it steadies and brightens under the pointer, which is all the invitation
+   it gives. blog.js grows the device out of this exact box, and folds it back
+   into it.
+
+   Both motions' 0% keyframes are the resting pose, on purpose: the pane comes
+   back there after a fold (display:none restarts its animations), and that's
+   where the fold lands the device. */
+.blog__seed {
+  --seed: 60px;
+  position: relative;
+  display: block;
+  width: var(--seed);
+  height: var(--seed);
+  margin: 1.2rem auto 1.8rem;                 /* blog.js reads these back to land a fold */
+  padding: 0;
+  border: 1px solid rgba(var(--accent-rgb), 0.32);
+  border-radius: 12px;
+  background: linear-gradient(165deg, rgba(var(--card-rgb), 0.78), rgba(var(--card-foot-rgb), 0.86));
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38), inset 0 0 14px rgba(var(--accent-rgb), 0.07);
+  cursor: pointer;
+  animation: blog-seed-wander 19.3s ease-in-out infinite, blog-seed-tilt 12.7s ease-in-out infinite;
+  transition: border-color 0.3s var(--ease), scale 0.3s var(--ease);
+}
+/* The class's display would otherwise outrank the attribute. */
+.blog__seed[hidden] { display: none; }
+.blog__seed::before {                         /* the halo */
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.24), 0 0 40px rgba(var(--accent-rgb), 0.13);
+  opacity: 0.9;
+  pointer-events: none;
+  animation: shelf-flicker 8.1s ease-in-out infinite;
+  animation-delay: -5.1s;
+  transition: box-shadow 0.3s var(--ease);
+}
+.blog__seed::after {                          /* the sidebar's rule, in miniature */
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 31%;
+  width: 1px;
+  background: var(--hair);
+}
+.blog__seed:hover,
+.blog__seed:focus-visible {
+  border-color: rgba(var(--accent-rgb), 0.58);
+  scale: 1.06;
+  outline: none;
+  animation-play-state: paused;
+}
+.blog__seed:hover::before,
+.blog__seed:focus-visible::before {
+  box-shadow: 0 0 20px rgba(var(--accent-soft-rgb), 0.4), 0 0 48px rgba(var(--accent-rgb), 0.22);
+}
+
+@keyframes blog-seed-wander {
+  0%, 100% { translate: 0 0; }
+  22%      { translate: 9px -6px; }
+  47%      { translate: -3px -11px; }
+  71%      { translate: -11px -2px; }
+  88%      { translate: -5px 5px; }
+}
+@keyframes blog-seed-tilt {
+  0%, 100% { rotate: 0deg; }
+  30%      { rotate: 3.5deg; }
+  64%      { rotate: -4deg; }
+}
+
+/* The square, and its drift. Translate-only: even the shelf's fraction of a
+   degree would swing the far edge of something this size by pixels and shimmer
+   the text on it. It holds still while it's in use — hovered, focused inside or
+   mid-resize — so nothing moves under a reader or a dragged grip. No delay on
+   the drift: it starts at rest when the device unfolds, where the unfold left
+   it. */
+.blog__device {
+  --blog-r: 13px;
+  position: relative;
+  aspect-ratio: 1;
+  /* A short screen still sees the whole square: the cap carries across the
+     aspect ratio to the width, so it stays square and shrinks — centred. */
+  max-height: 88vh;
+  margin-inline: auto;
+  will-change: transform;
+  animation: blog-float 13.4s ease-in-out infinite;
+}
+.blog__device:hover,
+.blog__device:focus-within,
+.blog__device.is-resizing { animation-play-state: paused; }
+
+/* Folding and unfolding (blog.js drives the box's size frame by frame). The box
+   morphs empty — its contents are out of the flow, so nothing reflows at every
+   frame — and it doesn't drift meanwhile, since the morph carries its position.
+   The contents fade out before a fold and back in once an unfold has its size. */
+.blog__device.is-morphing { animation: none; }
+.blog__device.is-morphing .blog__panel > * { display: none; }
+.blog__device.is-folding .blog__panel > * {
+  opacity: 0;
+  transition: opacity 0.14s var(--ease);
+}
+.blog__device.is-revealing .blog__panel > * { animation: blog-reveal 0.38s var(--ease) both; }
+@keyframes blog-reveal {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The glow, on a layer of its own so it can waver on opacity alone: box-shadow
+   animated on something this size would repaint the whole halo every frame.
+   shelf-flicker's irregular rhythm, so it wavers with the icons rather than
+   pulsing on a beat. It sits outside the panel because the panel clips. */
+.blog__device::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--blog-r);
+  box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.24), 0 0 58px rgba(var(--accent-rgb), 0.13);
+  opacity: 0.9;                               /* the floor under reduced motion */
+  pointer-events: none;
+  animation: shelf-flicker 9.3s ease-in-out infinite;
+  animation-delay: -2.7s;
+}
+
+@keyframes blog-float {
+  0%   { transform: translate3d(0, 0, 0); }
+  27%  { transform: translate3d(1.2px, -4px, 0); }
+  52%  { transform: translate3d(-0.8px, 1.5px, 0); }
+  78%  { transform: translate3d(-1.4px, -2.6px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* The panel proper: the rack's outline and gradient, denser, since a wall of
+   text sits on it rather than a row of labels. */
+.blog__panel {
+  position: relative;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.32);
+  border-radius: var(--blog-r);
+  background: linear-gradient(165deg, rgba(var(--card-rgb), 0.78), rgba(var(--card-foot-rgb), 0.86));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4), inset 0 0 28px rgba(var(--accent-rgb), 0.05);
+  text-shadow: none;                          /* the ground does the legibility work */
+}
+
+/* ---- Sidebar ---- */
+/* Its width is --side-w, a share of the panel set by blog.js from the grip.
+   The floor and ceiling restate the ones in blog.js, so the panes stay readable
+   even before the script has measured anything. */
+.blog__side {
+  flex: 0 0 var(--side-w, 31%);
+  min-width: 8.5rem;
+  max-width: calc(100% - 16rem);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(var(--well-rgb), 0.3);
+}
+
+.blog__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.6rem;
+  padding: 0.8rem 0.7rem 0.72rem 0.75rem;
+  border-bottom: 1px solid var(--hair);
+}
+
+/* The minimize button: a window's bar in the theme capsule's hairline, top left
+   of the device, where a window keeps its controls. */
+.blog__fold {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  border: 1px solid var(--hair);
+  border-radius: 50%;
+  background: rgba(var(--well-rgb), 0.35);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease),
+              background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.blog__fold:hover,
+.blog__fold:focus-visible {
+  color: var(--accent-soft);
+  border-color: rgba(var(--accent-rgb), 0.5);
+  background: rgba(var(--accent-rgb), 0.12);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+  outline: none;
+}
+.blog__fold-icon {
+  width: 0.7rem;
+  height: 0.7rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* The rack's eyebrow voice, with its count chip's mono number. It takes the
+   slack, so the sort chip sits at the far end of the row. */
+.blog__eyebrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6em;
+  margin: 0 auto 0 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.blog__count {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+/* The sort toggle: a chip that names the order on show, the way the theme
+   capsule names the theme. Its arrow turns over with the order. */
+.blog__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.2rem 0.5rem 0.2rem 0.42rem;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: rgba(var(--well-rgb), 0.35);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+.blog__sort:hover {
+  color: var(--ink-dim);
+  border-color: var(--hair-strong);
+  background: rgba(var(--well-rgb), 0.5);
+}
+.blog__sort:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+.blog__sort-icon {
+  flex: none;
+  width: 0.95em;
+  height: 0.95em;
+  fill: none;
+  stroke: var(--accent-soft);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.4s var(--ease);
+}
+.blog__sort.is-asc .blog__sort-icon { transform: rotate(180deg); }
+
+.blog__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.5rem 0.45rem 0.75rem;
+}
+
+.blog__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem 0.52rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: color 0.25s var(--ease), background 0.25s var(--ease),
+              border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.blog__item:hover { color: var(--ink); background: rgba(var(--ink-rgb), 0.05); }
+.blog__item:focus-visible { outline: none; border-color: rgba(var(--accent-rgb), 0.55); }
+/* The open post: lit in the accent, with a little of the panel's glow. */
+.blog__item[aria-selected="true"] {
+  color: var(--ink);
+  border-color: rgba(var(--accent-rgb), 0.36);
+  background: rgba(var(--accent-rgb), 0.11);
+  box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.14), inset 0 0 12px rgba(var(--accent-rgb), 0.06);
+}
+.blog__item-title {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.blog__item-date {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+.blog__item[aria-selected="true"] .blog__item-date { color: rgba(var(--accent-soft-rgb), 0.8); }
+
+/* ---- The grip ---- */
+/* 9px of hit area centred on a 1px rule, pulled back over both panes by
+   negative margins, so the rule is all the room it costs. The nub at its middle
+   is what says it can be taken hold of; both light up in the accent under the
+   pointer, on focus, and for as long as a drag lasts. */
+.blog__grip {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 9px;
+  margin: 0 -4px;
+  cursor: col-resize;
+  touch-action: none;
+  -webkit-user-select: none;                  /* a double-click here would select a word next door */
+  user-select: none;
+}
+.blog__grip::before,
+.blog__grip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transition: background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.blog__grip::before {                         /* the rule */
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--hair);
+}
+.blog__grip::after {                          /* the nub */
+  width: 3px;
+  height: 28px;
+  margin: -14px 0 0 -1.5px;
+  border-radius: 2px;
+  background: rgba(var(--ink-rgb), 0.2);
+}
+.blog__grip:hover::before,
+.blog__grip:focus-visible::before,
+.blog__device.is-resizing .blog__grip::before {
+  background: rgba(var(--accent-rgb), 0.5);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.4);
+}
+.blog__grip:hover::after,
+.blog__grip:focus-visible::after,
+.blog__device.is-resizing .blog__grip::after {
+  background: var(--accent-soft);
+  box-shadow: 0 0 9px rgba(var(--accent-soft-rgb), 0.65);
+}
+.blog__grip:focus-visible { outline: none; }
+/* Mid-drag the pointer can wander off the grip; keep the cursor and stop the
+   panes' text being selected as it goes. */
+.blog__device.is-resizing,
+.blog__device.is-resizing * {
+  cursor: col-resize;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---- Reader ---- */
+.blog__reader {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(1.05rem, 3.4vw, 1.55rem) clamp(1rem, 3.6vw, 1.7rem) 1.8rem;
+}
+.blog__reader:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.45);
+}
+
+/* A post arrives with the page's rise, shortened. */
+.blog__page.is-entering { animation: blog-in 0.45s var(--ease) both; }
+@keyframes blog-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Echoes the blog's own post title, a step down to fit the pane. */
+.blog__title {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 3.8vw, 1.8rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.blog__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  margin: 0.6rem 0 1.35rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--hair);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+.blog__out {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
+  color: var(--ink-dim);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.blog__out:hover,
+.blog__out:focus-visible {
+  color: var(--accent-soft);
+  border-bottom-color: var(--hair-strong);
+  outline: none;
+}
+.blog__out-arrow {
+  color: var(--accent);
+  transition: transform 0.25s var(--ease);
+}
+.blog__out:hover .blog__out-arrow,
+.blog__out:focus-visible .blog__out-arrow { transform: translate(2px, -2px); }
+
+/* The blog sets its posts at 1.02rem on a 660px measure; this pane is about
+   two thirds of that, so the whole of .prose comes down a step with it. */
+.blog__body {
+  --prose-size: 0.92rem;
+  --prose-leading: 1.7;
+}
+
+/* Thin, accent-tinted scrollbars, so the two panes' scrolling doesn't put a
+   pair of grey OS bars into the middle of the page. */
+.blog__list,
+.blog__reader {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.3) transparent;
+}
+.blog__list::-webkit-scrollbar,
+.blog__reader::-webkit-scrollbar { width: 8px; height: 8px; }
+.blog__list::-webkit-scrollbar-thumb,
+.blog__reader::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: rgba(var(--accent-rgb), 0.3) padding-box;
+}
+
+/* Narrow screens: a square this small can't hold a sidebar and a readable
+   measure side by side, so the panes stack — titles over the post — and the
+   device grows tall instead of square. The grip turns to resize the list's
+   height, from its own --side-h. */
+@media (max-width: 34rem) {
+  .blog__seed { --seed: 52px; }
+  .blog__device {
+    aspect-ratio: auto;
+    height: min(80vh, 40rem);
+    height: min(80svh, 40rem);
+    max-height: none;
+  }
+  .blog__panel { flex-direction: column; }
+  .blog__side {
+    flex-basis: var(--side-h, 34%);
+    min-width: 0;
+    max-width: none;
+    min-height: 5.5rem;
+    max-height: calc(100% - 10rem);
+  }
+  .blog__grip {
+    margin: -4px 0;
+    cursor: row-resize;
+  }
+  .blog__grip::before {
+    top: 50%;
+    bottom: auto;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    margin: -0.5px 0 0;
+  }
+  .blog__grip::after {
+    width: 28px;
+    height: 3px;
+    margin: -1.5px 0 0 -14px;
+  }
+  .blog__device.is-resizing,
+  .blog__device.is-resizing * { cursor: row-resize; }
 }
 
 /* ================= Discord presence (Lanyard) ================= */
@@ -1479,8 +1564,8 @@ main {
 
 /* ================= Permalink handles ================= */
 /* One per feature — the work grid, the userscript rack, the natal chart, the
-   tarot spread — so a single feature can be handed to someone as a url instead
-   of "scroll down a bit". permalinks.js turns a click into a copy; the markup
+   tarot spread, the blog device — so a single feature can be handed to someone
+   as a url instead of "scroll down a bit". permalinks.js turns a click into a copy; the markup
    stays a plain in-page link, so it still works with the script gone. The link
    shelf has no handle: every icon on it is already a link out, and a ninth
    glyph among them would read as a destination rather than a control.
@@ -1543,7 +1628,8 @@ main {
 .shelf,
 .uscripts,
 .chart,
-.tarot { scroll-margin-top: clamp(0.75rem, 3vh, 1.75rem); }
+.tarot,
+.blog { scroll-margin-top: clamp(0.75rem, 3vh, 1.75rem); }
 
 /* Per-instance desync — see the note above. */
 .links__eyebrow .permalink { --pf: 9.2s;  --pk: 7.4s; --pd1: -1.6s; --pd2: -5.3s; }
@@ -1551,6 +1637,7 @@ main {
 .uscripts > .permalink     { --pf: 10s;   --pk: 6.8s; --pd1: -4.1s; --pd2: -7.6s; }
 .chart > .permalink        { --pf: 10.5s; --pk: 8.6s; --pd1: -3.7s; --pd2: -2.4s; }
 .tarot > .permalink        { --pf: 12.2s; --pk: 7.9s; --pd1: -8.4s; --pd2: -3.2s; }
+.blog > .permalink         { --pf: 11.3s; --pk: 7.1s; --pd1: -6.2s; --pd2: -4.4s; }
 
 /* The copy outcome, announced for anything that can't see a colour flash or a
    pointer-anchored readout. Injected once by permalinks.js. */
@@ -1821,7 +1908,6 @@ main {
 
 /* ---- Reduced motion: kill the video + all entrance motion ---- */
 @media (prefers-reduced-motion: reduce) {
-  .bg__video { display: none; }
   .bg__video, .reveal, .links .link, .link__arrow, * {
     animation: none !important;
     transition: none !important;

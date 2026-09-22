@@ -18,8 +18,12 @@ CSS gradient stands in and the page still looks finished. Under
 background.
 
 Adding a theme means dropping its two files plus a poster here, then a palette
-block and a seat on the switch in `styles.css`, its name in the `<head>` boot
+block and a seat on the switch in `house.css`, its name in the `<head>` boot
 script in `index.html`, and an entry in `THEMES` in `theme.js`.
+
+The blog plays these same files: it loads `theme.js` from the hub, which
+resolves every path here against its own url. So a clip renamed or removed here
+goes missing there too, and a new one arrives there with no edit.
 
 ## Recommendations
 - Keep it **seamless** and **muted** — it plays muted + inline + autoplay, which

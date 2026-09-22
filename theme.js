@@ -11,9 +11,15 @@
    empty train car, held still on the nearest yellow pole so the car rocks
    around it. All six are blurred and looping behind the same scrim.
 
-   The palette lives entirely in styles.css, keyed off `data-theme` on <html>, so
+   The palette lives entirely in house.css, keyed off `data-theme` on <html>, so
    nothing here knows a colour. This file owns three things: which theme is
    mounted, the <video> that goes with it, and the capsule switch in the corner.
+
+   The blog loads this file straight off the hub too, alongside house.css, so it
+   carries the same six themes and the same switch, and the two share an origin
+   and so one remembered choice. That is why the clips are resolved against this
+   script's own url rather than the page's: from /blog/2026/08/09/some-post/, a
+   bare `assets/bg.webm` would point into the blog.
 
    The clip is mounted from here rather than written into index.html because
    hard-coding one theme's <source>s would make a visitor on the other theme
@@ -70,6 +76,11 @@
   const ORDER = Object.keys(THEMES);
   const after = (id) => ORDER[(ORDER.indexOf(id) + 1) % ORDER.length];
 
+  // The paths above are relative to this file, wherever the page loading it is.
+  // currentScript is only set while the file first runs, so it's read here.
+  const HERE = (document.currentScript && document.currentScript.src) || location.href;
+  const asset = (path) => new URL(path, HERE).href;
+
   // Matches the CSS: under reduced motion .bg__video is display:none, so there
   // is nothing to show and no reason to spend a visitor's bandwidth on it.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -108,10 +119,10 @@
     v.loop = true;
     v.playsInline = true;
     v.preload = 'auto';
-    v.poster = THEMES[id].poster;
+    v.poster = asset(THEMES[id].poster);
     v.replaceChildren(...THEMES[id].sources.map(([src, type]) => {
       const s = document.createElement('source');
-      s.src = src;
+      s.src = asset(src);
       s.type = type;
       return s;
     }));

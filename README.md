@@ -21,7 +21,15 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   which repos are genuinely being worked on and shows the top three in a labelled section of their
   own above Selected work — a full-width beacon plus two runners-up. See below.
 - **Six themes.** The capsule in the top-right corner cycles the background loop and the whole
-  palette with it, and remembers the choice. See below.
+  palette with it, and remembers the choice. The blog carries the same six and follows the same
+  choice. See below.
+- **A blog viewer at the foot of the page.** A floating square that reads the blog in place — titles
+  down a sidebar, the chosen post beside them — straight from the blog's own build. It starts folded
+  into a small drifting pane that gives nothing away, and unfolds when clicked. See below.
+- **Two stylesheets.** [`house.css`](house.css) is the house style every dataterminals page shares —
+  the palettes, the background layers, the theme switch, post prose — and the blog loads it from
+  here; [`styles.css`](styles.css) is this page's own. That makes the token *names* in `house.css`
+  an API: rename one and the blog loses it too.
 
 ## Editing links
 
@@ -180,6 +188,68 @@ It's pure enhancement, and both consumers guard on `window.leaderTip` before bin
 descriptions are also on each tile in a `hidden` span the link points `aria-describedby` at, so
 anything that can't hover gets the same words.
 
+## The blog viewer
+
+Below the tarot sits a floating square that reads the [blog](https://dataterminals.github.io/blog/)
+in place: the posts' titles and dates down a sidebar on the left, the chosen post beside them.
+
+It starts **folded**. All the page shows at first is a small glowing pane drifting under the tarot,
+like one more piece of the scenery — no label, no permalink handle, nothing that says blog. It's the
+device in miniature (its outline, its halo, the rule down its sidebar's edge), and it steadies and
+brightens under the pointer, which is all the invitation it gives. Click it and the device grows out
+of that very box into the full square, the page scrolling along so all of it lands on screen; the
+minimize button at its top left, or Escape, folds it back into the pane. The box morphs in the
+flow — its real width, height and margins, driven frame by frame together with the scroll — so the
+page never clamps or jumps, and it morphs empty, its contents fading in after an unfold and out
+before a fold. Nothing is remembered across visits: it's folded again next time. Its accessible
+name says plainly what it is; only the eye gets the riddle.
+
+Arriving on `#blog` — someone handed over the permalink — opens it straight away, and the handle
+only appears once it's open. The first post isn't rendered until the device is, so a post's images
+cost nothing until someone unfolds it.
+[`blog.js`](blog.js) renders it from the blog's own
+[`posts.json`](https://dataterminals.github.io/blog/posts.json), which Jekyll builds in the
+`dataterminals/blog` repo with every post's body already rendered — kramdown's HTML, Rouge's
+highlighting, every Liquid tag resolved. So nothing here parses markdown, and a post reads exactly
+as it does on its own page. The styling is shared the same way: `.prose` in `house.css` sets the
+post body here and on the blog, and the viewer only brings it down a size (`--prose-size`) for the
+narrower pane.
+
+- **Sorting.** Newest first, the order the blog publishes in. The chip in the sidebar's head flips
+  it to oldest first and back, keeping whichever post is open. Posts dated the same day keep the
+  blog's own order between them, mirrored, so a flip is an exact reversal. The order isn't
+  remembered — like the chart's switches and the rack's filters, it starts fresh.
+- **Resizing.** The grip between the panes drags the sidebar between a fifth and a bit over half of
+  the square, and never so far that either pane drops below a readable width (8.5rem for the list,
+  16rem for the post — `SIZE` in `blog.js`, restated in `styles.css`). It takes the arrow keys too
+  (Shift for bigger steps), Home and End for the limits, and Enter or a double-click to put it back.
+  The size is remembered per viewer in `localStorage` under `dt:blog:w`, as a share of the square so
+  it means the same thing on any screen.
+- **Narrow screens** can't hold a sidebar beside a readable measure, so below 34rem the panes stack
+  — titles over the post — and the square becomes a tall panel. The grip then sets the list's
+  height, remembered separately under `dt:blog:h`.
+- **It floats**, in the page's glow language: a slow translate-only drift (even the shelf's fraction
+  of a degree of rotation would shimmer the text on something this size) and a halo that flickers
+  on `shelf-flicker`'s rhythm. The halo is its own layer animated on opacity, since an animated
+  box-shadow this big repaints every frame. The drift holds still while the device is hovered,
+  focused inside or mid-resize, so nothing moves under a reader.
+- **Links** in a post open in a new tab like every other link out of the hub, bar footnotes and
+  other links to a point in the same post, which scroll the reader instead. Relative urls are
+  resolved against the post's own page so they keep pointing into the blog, and every id in a post
+  gets a `blog-post-` prefix — kramdown gives headings ids, and a post with a heading called "Tarot"
+  would otherwise take the tarot section's anchor.
+
+The url is absolute (`SOURCE` in `blog.js`): it's same-origin in production, and Pages answers every
+request with `Access-Control-Allow-Origin: *`, so a local preview of this page reads the live blog
+too. There is no inline fallback. Like the userscript rack, the section stays `hidden` until real
+posts land, so a failed fetch leaves nothing behind — not even the folded pane, which would
+otherwise open onto nothing. Like `#current`, it's in the markup rather than injected whole so its
+permalink handle exists when `permalinks.js` binds. Since the browser can't scroll to a hidden
+section, `blog.js` opens the device and brings it on screen itself for a visitor who arrived on
+`#blog`.
+
+A new post needs nothing from this repo: it appears here as soon as Pages has rebuilt the blog.
+
 ## Permalink handles
 
 Most features of the page carry a small chain glyph that copies that feature's own url, so one
@@ -191,6 +261,7 @@ piece of the page can be handed to someone instead of "scroll down a bit":
 | Userscripts | `#userscripts` | the panel's top-right corner |
 | Natal chart | `#natalchart` | the top-right of its padding band |
 | Tarot | `#tarot` | the same |
+| Blog viewer | `#blog` | the same, and only once it's unfolded |
 
 The link shelf is the one feature without a handle. It still answers to `#shelf` for anyone holding
 an older link, but there is nowhere on it a handle belongs: no label to hang one off, no corner to
@@ -241,6 +312,10 @@ This does **not** shorten the HTML's own ten-minute window, and nothing served b
 returning visitor still sees the previous page for up to ten minutes — then sees the new one whole.
 A first visit or a hard reload is immediate.
 
+The blog fetches `house.css` and `theme.js` from here without a stamp, since its pages are built in
+another repo that can't know this one's hashes. It gets the plain ten-minute window instead: at
+worst a blog reader sees a theme change that much after this page does.
+
 ## Themes and the background video
 
 Six themes ship, cycled from the capsule in the top-right corner:
@@ -262,7 +337,7 @@ Six themes ship, cycled from the capsule in the top-right corner:
   orange for an accent, the poles' yellow on the gold.
 
 A theme is a palette plus the clip it was pulled from. The palette lives entirely
-in [`styles.css`](styles.css), keyed off `data-theme` on `<html>`: everything that
+in [`house.css`](house.css), keyed off `data-theme` on `<html>`: everything that
 carries a theme's identity is a token in the `:root` block, and the ones written as
 a bare `r, g, b` triple exist so a rule can tint with them —
 `rgba(var(--accent-rgb), 0.4)` — rather than restating the hue. A theme restates
@@ -283,9 +358,18 @@ all leave the default theme's CSS gradient and a page that reads fine. The switc
 is `hidden` in the markup and revealed only once it is wired, so it is never a
 dead control. Under `prefers-reduced-motion` no clip is fetched at all.
 
+**The blog shares all of it.** It loads `house.css` and `theme.js` straight off
+this site, and so the clips in `assets/` too, instead of keeping copies — copies it
+used to keep, which had drifted: one theme to this page's six, and the ember loop
+from before its re-cut. So it has the same six themes, the same switch in the same
+corner, and the same remembered choice, since the two sites share an origin and so
+one `dt:theme`. A theme added here reaches the blog with no edit over there. That's
+why `theme.js` resolves the clips against its own url rather than the page's: from
+a post at `/blog/2026/08/09/…`, a bare `assets/bg.webm` would point into the blog.
+
 **Adding a theme** takes five edits: the media into [`assets/`](assets/) (see
 [`assets/README.md`](assets/README.md) for filenames, size guidance and the
-ffmpeg recipes, including how each loop's seam was hidden), a palette block in `styles.css`, a seat for it on the switch's
+ffmpeg recipes, including how each loop's seam was hidden), a palette block in `house.css`, a seat for it on the switch's
 track (`.theme__thumb`, same file), its name in the `<head>` boot script in
 `index.html`, and an entry in `THEMES` in `theme.js`. Three of those tokens are
 worth knowing about — `--bg-blur`, how far the clip is pushed out of focus; the
@@ -306,3 +390,6 @@ python -m http.server 8080
 (Opening `index.html` directly via `file://` also renders, using a small inline fallback copy of the
 data, but `fetch('links.json')` and the GitHub API are blocked on `file://`, so serve it to see the
 real content and enrichment.)
+
+The blog viewer reads the live blog wherever this page is served from, so a post shows up in a local
+preview once it's deployed, and not before.
