@@ -207,12 +207,15 @@ name says plainly what it is; only the eye gets the riddle.
 Arriving on `#blog` — someone handed over the permalink — opens it straight away, and the handle
 only appears once it's open. The first post isn't rendered until the device is, so a post's images
 cost nothing until someone unfolds it.
-[`blog.js`](blog.js) renders it from the blog's own
-[`posts.json`](https://dataterminals.github.io/blog/posts.json), which Jekyll builds in the
-`dataterminals/blog` repo with every post's body already rendered — kramdown's HTML, Rouge's
-highlighting, every Liquid tag resolved. So nothing here parses markdown, and a post reads exactly
-as it does on its own page. The styling is shared the same way: `.prose` in `house.css` sets the
-post body here and on the blog, and the viewer only brings it down a size (`--prose-size`) for the
+[`blog.js`](blog.js) renders it from the blog's own Atom feed,
+[`feed.xml`](https://dataterminals.github.io/blog/feed.xml), which jekyll-feed already builds in the
+`dataterminals/blog` repo — nothing had to be added over there. Each entry carries its post's body
+already rendered — kramdown's HTML, Rouge's highlighting, every Liquid tag resolved — so nothing
+here parses markdown, and a post reads exactly as it does on its own page. Titles come out of the
+feed decoded, and dates are labelled in UTC, the zone Pages builds the blog in, so a post lands on
+the day the blog itself prints. The feed holds the newest **ten** posts (jekyll-feed's default);
+once the blog outgrows that, `feed: { posts_limit: … }` in its `_config.yml` lifts it. `.prose` in
+`house.css` sets the post body, and the viewer only brings it down a size (`--prose-size`) for the
 narrower pane.
 
 - **Sorting.** Newest first, the order the blog publishes in. The chip in the sidebar's head flips

@@ -778,7 +778,7 @@ main {
 /* ================= Blog device ================= */
 /* The posts from dataterminals/blog, read in place: a floating square with the
    titles down a sidebar on its left and the chosen post beside it. blog.js
-   renders it from the blog's posts.json; the post body is the blog's own HTML,
+   renders it from the blog's Atom feed; the post body is the blog's own HTML,
    set by .prose in house.css, so it reads the same here as on the blog. It
    starts folded into a small pane (.blog__seed) and unfolds when that's
    clicked; .is-open on the section marks the unfolded state.

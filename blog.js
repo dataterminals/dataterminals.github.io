@@ -7,11 +7,14 @@
    post beside them. Its minimize button, or Escape, folds it back. A visitor
    who arrives on #blog — someone handed them the permalink — finds it open.
 
-   It renders from the blog's posts.json, which Jekyll builds with each post's
-   body already turned into HTML — the same kramdown output, Rouge highlighting
-   and resolved Liquid the post's own page carries — so nothing here parses
-   markdown, and a post reads the same in both places. The styling is shared the
-   same way: .prose lives in house.css, which the blog loads from here.
+   It renders from the blog's Atom feed — the feed.xml jekyll-feed already
+   builds, so the blog needs nothing added for this. Every entry carries its
+   post's body already turned into HTML — the same kramdown output, Rouge
+   highlighting and resolved Liquid the post's own page carries — so nothing
+   here parses markdown, and a post reads the same in both places. The feed
+   holds the newest ten posts, jekyll-feed's default; the blog's _config.yml
+   can raise that (`feed: posts_limit:`) the day it matters. The styling is
+   .prose, in house.css.
 
    The blog is its own repo (Pages serves it at /blog/), which makes this the
    one feature whose data lives somewhere else. The url is absolute on purpose:
@@ -32,7 +35,12 @@
 (() => {
   'use strict';
 
-  const SOURCE = 'https://dataterminals.github.io/blog/posts.json';
+  const SOURCE = 'https://dataterminals.github.io/blog/feed.xml';
+
+  // The blog prints dates as "Aug 9, 2026", in the zone Pages builds it in,
+  // which is UTC. Labelling in UTC too keeps a post stamped at midnight from
+  // landing on the day before anywhere west of Greenwich.
+  const LABEL = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' });
 
   const section = document.getElementById('blog');
   const host = document.getElementById('blog-device');
@@ -608,15 +616,39 @@
 
   /* ---------- boot ---------- */
 
+  /* The feed's entries, as { title, date, label, url, html }, newest first.
+     `title` is type="html" in the feed, so after the XML's own escaping comes off
+     it can still hold an HTML entity (smart quotes, an ampersand), and gets
+     decoded once more. `content` is the post body exactly as its page has it. */
+  function fromFeed(xml) {
+    const doc = new DOMParser().parseFromString(xml, 'application/xml');
+    if (doc.getElementsByTagName('parsererror').length) return [];
+    const decode = (html) => new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
+    return Array.from(doc.getElementsByTagName('entry'), (entry) => {
+      const text = (tag) => (entry.getElementsByTagName(tag)[0] || {}).textContent || '';
+      const link = Array.from(entry.getElementsByTagName('link'))
+        .find((l) => (l.getAttribute('rel') || 'alternate') === 'alternate');
+      const date = text('published') || text('updated');
+      const time = Date.parse(date);
+      return {
+        title: decode(text('title')).trim(),
+        date,
+        label: time ? LABEL.format(time) : '',
+        url: link ? link.getAttribute('href') || '' : '',
+        html: text('content'),
+      };
+    });
+  }
+
   async function boot() {
-    let data = null;
+    let entries = [];
     try {
       const res = await fetch(SOURCE, { cache: 'no-cache' });
-      if (res.ok) data = await res.json();
+      if (res.ok) entries = fromFeed(await res.text());
     } catch { /* stay hidden */ }
 
-    posts = (data && Array.isArray(data.posts) ? data.posts : [])
-      .filter((p) => p && typeof p.title === 'string' && p.title)
+    posts = entries
+      .filter((p) => p.title)
       .map((p, index) => ({ ...p, index, time: Date.parse(p.date) || 0 }));
     if (!posts.length) return;
 
