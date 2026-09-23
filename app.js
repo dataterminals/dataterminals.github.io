@@ -195,6 +195,7 @@
     "There's nothing they would do for you, differently,\nthey're not even listening.\nThey don't even glean what we're existing in.",
     "if there is anybody on board who can impersonate a pilot\nit would be of comfort to the other passengers",
     "At the stroke of the century's midnight\nwe emerge from our lairs to take all\nsecurity apart, the integrations of tomorrow.",
+    "society runs by convincing desire that it lacks something\nmust pick a side\nand is a self.",
   ];
 
   const GH_USER = 'dataterminals';
