@@ -427,9 +427,13 @@ since GitHub can't reach the world. Committing and pushing are left to you.
   map anyway, and `--as NAME` publishes the new one beside it. `--label TEXT` titles it; otherwise
   it takes the age the page announces.
 - **The page is published as drawn**, bar three things: a `<title>` naming the age, the hub's tab
-  icon, and a thin strip at the top leading back to the Atlas, set in the page's own palette. The
-  map pages keep the renderer's parchment look rather than the house style. They are the world's
-  own documents; the Atlas around them is the site's.
+  icon, and a thin strip at the top, set in the page's own palette, leading back to the Atlas and
+  on to the ages either side (‹ earlier, later ›, in `snapshots.json` order). The map pages keep
+  the renderer's parchment look rather than the house style. They are the world's own documents;
+  the Atlas around them is the site's.
+- **Every run re-dresses every map.** The additions sit between `atlas:head` and `atlas:strip`
+  markers, so adding an age gives the one before it its link forward without touching a byte the
+  renderer drew. A map with no markers stops the run rather than being dressed twice.
 
 The index loads `house.css` and `theme.js` from one level up, the way the blog does, so it carries
 the same six themes and the same remembered choice. Its `<head>` boot script replays any stored

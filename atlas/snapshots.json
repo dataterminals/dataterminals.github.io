@@ -6,6 +6,13 @@
       "sea": "no sea yet",
       "taken": "2026-09-30T01:50-04:00",
       "render": "1057c37fffe6"
+    },
+    {
+      "slug": "day-5",
+      "label": "After the fifth day",
+      "sea": "sea level 3",
+      "taken": "2026-09-30T03:17-04:00",
+      "render": "4ced1e8b0cd9"
     }
   ]
 }

@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- atlas:head -->
 <title>The Dawn · The Nameless World</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d8794c'/%3E%3C/svg%3E">
+<!-- /atlas:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <style>
@@ -65,7 +67,8 @@ ul.plain li:first-child { border-top: 0; }
 </style>
 </head>
 <body>
-<!-- The strip below is the Atlas's (scripts/atlas.py in dataterminals.github.io);
+<!-- atlas:strip -->
+<!-- This strip is the Atlas's (scripts/atlas.py in dataterminals.github.io);
      everything else on this page is the world's own render. -->
 <style>
 .atlas-strip { max-width: 1240px; margin: 0 auto; padding: 16px 16px 0; display: flex; flex-wrap: wrap;
@@ -73,8 +76,10 @@ ul.plain li:first-child { border-top: 0; }
   letter-spacing: .14em; text-transform: uppercase; color: var(--muted, #6d6556); }
 .atlas-strip a { color: var(--accent, #8a5a2b); text-decoration: none; }
 .atlas-strip a:hover, .atlas-strip a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.atlas-walk { margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px 16px; }
 </style>
-<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span>The Dawn</span></nav>
+<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span aria-current="page">The Dawn</span><span class="atlas-walk"><a href="day-5.html" rel="next" aria-label="Later: After the fifth day">After the fifth day &rsaquo;</a></span></nav>
+<!-- /atlas:strip -->
 <div class="wrap">
   <header>
     <h1>The Nameless World</h1>

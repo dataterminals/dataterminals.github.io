@@ -27,9 +27,13 @@ finished one. If the world has changed since an age's map was taken, the run
 stops and says so, and --replace or --as NAME is the way through.
 
 The page is published as drawn, bar three things: a title naming the age, the
-hub's tab icon, and a thin strip at the top leading back to the Atlas, set in
-the page's own palette. The list of ages lives in atlas/snapshots.json, in the
-order the world reached them. atlas/index.html shows it newest first, written
+hub's tab icon, and a thin strip at the top, set in the page's own palette,
+leading back to the Atlas and on to the ages either side. Each sits between
+`atlas:head` / `atlas:strip` markers, so every run re-dresses every map in
+place: adding an age gives the one before it its link forward, without
+touching a byte of what the renderer drew. The list of ages lives in
+atlas/snapshots.json, in the order the world reached them, and that order is
+the chain the strips walk. atlas/index.html shows it newest first, written
 between its `atlas:maps` markers.
 
 Line endings are written as LF on every platform (the repo's .gitattributes
@@ -66,9 +70,15 @@ MAPS = re.compile(r"(<!-- atlas:maps -->\n)(.*?)(\n\s*<!-- /atlas:maps -->)", re
 ICON = ("<link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' "
         "viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d8794c'/%3E%3C/svg%3E\">")
 
+HEAD = re.compile(r"<!-- atlas:head -->.*?<!-- /atlas:head -->", re.S)
+STRIP = re.compile(r"<!-- atlas:strip -->.*?<!-- /atlas:strip -->\n", re.S)
+
 # Set in the render's own tokens, with its light values as fallbacks, so the
 # strip follows the page into dark mode and still reads if the tokens move.
-STRIP = """<!-- The strip below is the Atlas's (scripts/atlas.py in dataterminals.github.io);
+# The walk to the ages either side takes ‹ › so it can't be mistaken for the
+# way up to the Atlas, and drops to its own line on a phone.
+STRIP_HTML = """<!-- atlas:strip -->
+<!-- This strip is the Atlas's (scripts/atlas.py in dataterminals.github.io);
      everything else on this page is the world's own render. -->
 <style>
 .atlas-strip {{ max-width: 1240px; margin: 0 auto; padding: 16px 16px 0; display: flex; flex-wrap: wrap;
@@ -76,9 +86,22 @@ STRIP = """<!-- The strip below is the Atlas's (scripts/atlas.py in dataterminal
   letter-spacing: .14em; text-transform: uppercase; color: var(--muted, #6d6556); }}
 .atlas-strip a {{ color: var(--accent, #8a5a2b); text-decoration: none; }}
 .atlas-strip a:hover, .atlas-strip a:focus-visible {{ text-decoration: underline; text-underline-offset: 3px; }}
+.atlas-walk {{ margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px 16px; }}
 </style>
-<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span>{label}</span></nav>
+<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span aria-current="page">{label}</span>{walk}</nav>
+<!-- /atlas:strip -->
 """
+
+
+def walk_html(prev, nxt):
+    links = []
+    if prev:
+        label = html.escape(prev["label"])
+        links.append(f'<a href="{prev["slug"]}.html" rel="prev" aria-label="Earlier: {label}">&lsaquo; {label}</a>')
+    if nxt:
+        label = html.escape(nxt["label"])
+        links.append(f'<a href="{nxt["slug"]}.html" rel="next" aria-label="Later: {label}">{label} &rsaquo;</a>')
+    return f'<span class="atlas-walk">{"".join(links)}</span>' if links else ""
 
 
 def fail(msg):
@@ -115,11 +138,18 @@ def slug_for(age):
     return re.sub(r"[^a-z0-9]+", "-", a).strip("-")
 
 
-def dress(page, world_name, label):
-    """The render as drawn, plus a title naming the age, the tab icon, and the strip."""
-    title = f"<title>{html.escape(label)} · {html.escape(world_name)}</title>"
-    page, titled = re.subn(r"<title>.*?</title>", lambda _: f"{title}\n{ICON}", page, count=1, flags=re.S)
-    page, stripped = re.subn(r"<body>\n?", lambda m: m[0] + STRIP.format(label=html.escape(label)), page, count=1)
+def dress(page, world_name, label, prev=None, nxt=None):
+    """The render as drawn, plus a title naming the age, the tab icon, and the
+    strip. Takes a fresh render or a map already published: the second has its
+    marked blocks replaced, the first gets them put in."""
+    head = (f"<!-- atlas:head -->\n<title>{html.escape(label)} · {html.escape(world_name)}</title>\n"
+            f"{ICON}\n<!-- /atlas:head -->")
+    strip = STRIP_HTML.format(label=html.escape(label), walk=walk_html(prev, nxt))
+    if HEAD.search(page) and STRIP.search(page):
+        page = HEAD.sub(lambda _: head, page, count=1)
+        return STRIP.sub(lambda _: strip, page, count=1)
+    page, titled = re.subn(r"<title>.*?</title>", lambda _: head, page, count=1, flags=re.S)
+    page, stripped = re.subn(r"<body>\n?", lambda m: m[0] + strip, page, count=1)
     if not (titled and stripped):
         fail("the render has no <title> or <body> to dress -- has render.py's template changed?")
     return page
@@ -193,11 +223,25 @@ def main():
         fail(f"{INDEX.relative_to(ROOT)} has lost its atlas:maps markers")
     index = MAPS.sub(lambda m: m[1] + maps_html(snapshots) + m[3], index, count=1)
 
-    changed = [p.relative_to(ROOT).as_posix() for p, text in (
-        (ATLAS / f"{slug}.html", dress(page, world_name, label)),
-        (MANIFEST, json.dumps(manifest, indent=2, ensure_ascii=False) + "\n"),
-        (INDEX, index),
-    ) if write(p, text)]
+    # Every map, not just this one: the strips walk the whole chain, so a new
+    # age changes the link forward on the one before it.
+    outputs = []
+    for i, s in enumerate(snapshots):
+        path = ATLAS / f"{s['slug']}.html"
+        if s["slug"] == slug:
+            base = page
+        elif path.is_file():
+            base = path.read_text(encoding="utf-8")
+            if not (HEAD.search(base) and STRIP.search(base)):
+                fail(f"{path.relative_to(ROOT).as_posix()} has no atlas:head/atlas:strip markers to re-dress")
+        else:
+            fail(f"{path.relative_to(ROOT).as_posix()} is in snapshots.json but not on disk")
+        prev = snapshots[i - 1] if i else None
+        nxt = snapshots[i + 1] if i + 1 < len(snapshots) else None
+        outputs.append((path, dress(base, world_name, s["label"], prev, nxt)))
+    outputs += [(MANIFEST, json.dumps(manifest, indent=2, ensure_ascii=False) + "\n"), (INDEX, index)]
+
+    changed = [p.relative_to(ROOT).as_posix() for p, text in outputs if write(p, text)]
 
     print(f"{verb} {slug}: {label}, {sea}")
     print("  wrote " + ", ".join(changed) if changed else "  nothing to write: the Atlas already holds this map")
