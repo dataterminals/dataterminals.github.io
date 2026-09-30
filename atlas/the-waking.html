@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- atlas:head -->
-<title>After the fifth day · The Nameless World</title>
+<title>The Waking · The Nameless World</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d8794c'/%3E%3C/svg%3E">
 <!-- /atlas:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +40,9 @@ header p { margin: 4px 0 20px; color: var(--muted); }
 .tabs button { font: inherit; font-size: 13px; padding: 5px 11px; border-radius: 999px; cursor: pointer;
   border: 1px solid var(--line); background: var(--chip); color: var(--ink); }
 .tabs button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
-.tabs label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; margin-left: auto; }
+.toggles { display: flex; gap: 12px; margin-left: auto; }
+.tabs label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.tabs label[hidden] { display: none; }
 svg#map { width: 100%; height: auto; display: block; border-radius: 6px; touch-action: none; }
 .readout { font: 12.5px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--muted);
   min-height: 3.2em; margin-top: 8px; white-space: pre-wrap; }
@@ -78,18 +80,21 @@ ul.plain li:first-child { border-top: 0; }
 .atlas-strip a:hover, .atlas-strip a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
 .atlas-walk { margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px 16px; }
 </style>
-<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span aria-current="page">After the fifth day</span><span class="atlas-walk"><a href="dawn.html" rel="prev" aria-label="Earlier: The Dawn">&lsaquo; The Dawn</a><a href="the-waking.html" rel="next" aria-label="Later: The Waking">The Waking &rsaquo;</a></span></nav>
+<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span aria-current="page">The Waking</span><span class="atlas-walk"><a href="day-5.html" rel="prev" aria-label="Earlier: After the fifth day">&lsaquo; After the fifth day</a><a href="generation-1.html" rel="next" aria-label="Later: Generation 1">Generation 1 &rsaquo;</a></span></nav>
 <!-- /atlas:strip -->
 <div class="wrap">
   <header>
     <h1>The Nameless World</h1>
-    <p>After the fifth day · sea level 3</p>
+    <p>The Waking · sea level 3</p>
   </header>
   <div class="layout">
     <div>
       <div class="card">
         <div class="tabs" id="tabs">
-          <label><input type="checkbox" id="showMarks" checked> marks</label>
+          <span class="toggles">
+            <label id="peoplesToggle" hidden><input type="checkbox" id="showPeoples" checked> peoples</label>
+            <label><input type="checkbox" id="showMarks" checked> marks</label>
+          </span>
         </div>
         <svg id="map" role="img" aria-label="Map of the world"></svg>
         <div class="legend" id="legend"></div>
@@ -167,6 +172,635 @@ ul.plain li:first-child { border-top: 0; }
       </div>
     </div>
     <div class="side">
+      <div class="card"><h2>The Peoples</h2><details class="god" style="--god: #e63946"><summary><span class="dot"></span>The Rimmoss<span class="state">13 households · 3 places</span></summary><div class="lore"><p class="coord">w06-09 · hardiness in cold and wet · 10 → 13</p><h3>The Rimmoss</h3>
+<p>We are the Rimmoss: the people of rime and moss. We woke together, all our households at once, in the dripping wood beside the Long Water at (6,9), in the first generation. As we woke, something was breathed into us, and we still say it over every newborn: <strong>&quot;hardiness in cold and wet.&quot;</strong></p>
+<h4>Our nature</h4>
+<ul>
+<li>We can live on frozen ground, and under drowning rain. What kills others,</li>
+</ul>
+<p>or drives them off, does not drive us off. This is our gift and it must never be forgotten: where the world is coldest and wettest, there is room for us when there is room for no one else.</p>
+<ul>
+<li>We are forest people and river people. We woke among dark, wet trees with</li>
+</ul>
+<p>fresh water beside us. We know the drip of rain and the smell of moss.</p>
+<ul>
+<li>We do not yet know how to tend land so it feeds more, nor how to build</li>
+</ul>
+<p>boats. These can be learned from a people who knows them. If we meet such a people, we should ask.</p>
+<h4>What we want, and what we need</h4>
+<ul>
+<li>We want to live, and for our children and theirs to live. That is older than</li>
+</ul>
+<p>anything we know.</p>
+<ul>
+<li>Our numbers follow the land. Where the land can feed more of us, we grow;</li>
+</ul>
+<p>where it cannot, we shrink. So we need land: grassland and plain feed most, forest less, and fresh water or the sea&#x27;s edge beside a place makes it feed more. Barren ground feeds no one.</p>
+<ul>
+<li>We may take one place each generation, and one more for every ten</li>
+</ul>
+<p>households. A new place must touch land we already hold.</p>
+<ul>
+<li>Growth is not the only good. A generation that holds what it has and changes</li>
+</ul>
+<p>nothing has chosen honorably.</p>
+<h4>What we fear</h4>
+<ul>
+<li>That our numbers fall to nothing. A people who falls to nothing is gone and</li>
+</ul>
+<p>does not return.</p>
+<ul>
+<li>Ground that sickens. We will know it only by what it does to us; if our</li>
+</ul>
+<p>numbers fall on a place and we do not know why, we should leave that place.</p>
+<ul>
+<li>Quarrels over land. A place two peoples both claim feeds no one until one</li>
+</ul>
+<p>leaves it. Better to give up a place than to let it feed no one.</p>
+<ul>
+<li>Forgetting. We remember clearly only our last two generations. What is not</li>
+</ul>
+<p>written here is lost.</p>
+<h4>What we believe of the world</h4>
+<p>The world was set down as a grid of places, and it runs by fixed ways that cannot be argued with, only lived in. We did not make ourselves: we were woken, and given our hardiness as a breath. We believe whoever breathed it meant for us to go where others cannot: into the cold north and the drowning west, where rain and frost keep the land empty.</p>
+<p>We know only what we have seen. What we have seen stays known. Past what we have seen, the world is blank, and we send scouts to fill it.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root of us. Each keeps its own hearth, but the land is</li>
+</ul>
+<p>held by all the Rimmoss together, not by any one household.</p>
+<ul>
+<li><strong>The Hearth-circle</strong> of elders, one from each household, decides where we</li>
+</ul>
+<p>claim, where we scout, and whom we speak to. They speak last and listen first.</p>
+<ul>
+<li><strong>Scouts</strong> are the young who walk out three places beyond our land and come</li>
+</ul>
+<p>back to tell what they saw. What they tell is added to our names.</p>
+<ul>
+<li><strong>Rememberers</strong> keep this telling, and the deeds of each generation, so the</li>
+</ul>
+<p>children know who they are.</p>
+<h4>What must not be forgotten</h4>
+<p>1. We woke at (6,9), the Waking Wood, beside the Long Water. 2. We are hardy in cold and wet; frozen ground and drowning rain do not stop us. 3. Our numbers follow the land. Take good land near water; do not hold land that feeds no one. 4. Tending and boat-building can be learned from others. Seek them. 5. Holding what we have is an honorable choice.</p><h4>g00</h4><h3>Generation 0: The Waking</h3>
+<p>We woke, ten households together, in the Waking Wood at (6,9), with the Long Water running cold along our north side and rain on the leaves. As we woke, a breath came into us: &quot;hardiness in cold and wet.&quot; We found it true at once. The cold did not bite us, and the rain did not trouble us.</p>
+<p>The land we held could feed half again as many as we were, so there was room to grow. The Hearth-circle met for the first time and chose two new places, both on the south bank of the Long Water, so that every hearth would have fresh water close by:</p>
+<ul>
+<li>the Dewfield at (7,9), open grass to the east, which should feed more than</li>
+</ul>
+<p>our wood;</p>
+<ul>
+<li>the Alder Bank at (5,9), forest to the west.</li>
+</ul>
+<p>We sent our first scouts out in four directions, three places beyond our land: north across the Long Water toward the cold (6,6), west toward the heavy rain (3,9), east over the grass (9,9), and south through the Deep Drip (6,12). We wait to hear what they saw.</p>
+<p>We met no other people. We do not yet know if any others woke as we did.</p>
+<p>We named the places we could see, so that our children would know them.</p></div></details>
+<details class="god" style="--god: #f4a261"><summary><span class="dot"></span>The Tellwater<span class="state">13 households · 3 places</span></summary><div class="lore"><p class="coord">w17-10 · a tongue that tells clean water from foul · 10 → 13</p><h3>The Tellwater</h3>
+<p>We are the Tellwater, the people who tell water. We are not one person but many households, and every generation of them. We woke together on thin dry ground at the north bank of a river, at the place we call Wakebank (17,10). Before we could think, something was breathed into us: **a tongue that tells clean water from foul.** That tongue is the first thing we own and the last thing we will give up.</p>
+<h4>Our nature</h4>
+<ul>
+<li>We taste before we drink. We taste the ground before we build on it. We can</li>
+</ul>
+<p>tell clean earth and water from foul, and other peoples may not be able to.</p>
+<ul>
+<li>We are few: ten households at our waking, on ground that feeds us only</li>
+</ul>
+<p>just. The country is cool and nearly rainless. It is sparse and dry, and the river is its only green thing.</p>
+<ul>
+<li>We do not know how to tend the land, and we do not know how to build</li>
+</ul>
+<p>boats. Some other people may know these things. We would learn them if we could.</p>
+<h4>What we want and what we need</h4>
+<ul>
+<li>We want to live, and we want our children and theirs to live.</li>
+<li>We need <strong>sweet water</strong>. A place beside clean fresh water feeds more, and</li>
+</ul>
+<p>clean water does not sicken us.</p>
+<ul>
+<li>We need room. Our numbers grow only when the land has room for them.</li>
+<li>We would rather grow slowly on clean ground than quickly on foul.</li>
+</ul>
+<h4>What we fear</h4>
+<ul>
+<li><strong>The Bitter Eye</strong>, the lake to the north-east at (19,8) and (19,9). It is</li>
+</ul>
+<p>the foulest water our tongues have ever known. Nothing should drink from it, and nothing should live around it.</p>
+<ul>
+<li><strong>Sour ground.</strong> The ground turns bad toward the Bitter Eye: the Scald</li>
+</ul>
+<p>(18,8) and (18,9) is barren and sour, and Sourbank (18,10) is going bad. The world says some ground sickens the people on it. Our tongues tell us where that ground is. We listen to them.</p>
+<ul>
+<li><strong>Emptiness.</strong> A people whose numbers fall to nothing is gone and does not</li>
+</ul>
+<p>come back. We fear that more than any lake.</p>
+<ul>
+<li><strong>Thirst.</strong> Rain here is almost nothing. If the river fails, we fail.</li>
+</ul>
+<h4>What we believe</h4>
+<p>In the beginning there was only water, and it was all one water. Then it was divided. The sweet water learned to run, and it became the rivers. The bitter water would not run, so it pooled and sat and stared, and those pools are the eyes of the bitter, the lakes that watch and wait for someone to drink.</p>
+<p>The Breath came over the river and woke us, and it put a tongue in our mouths so that we would not drink the Eye. We believe the Breath meant us to follow the sweet water. The Long Drink, our river, grows sweeter to the west (15,11) and (16,11) and more ordinary to the east where it bends toward the Bitter Eye. So we believe the good lies **upstream and westward, and across the river to the south**, and the bad lies north-east.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root. Each keeps its own hearth and its own water jar.</li>
+<li><strong>The Tongues</strong> are the elders whose taste is surest. No place is claimed</li>
+</ul>
+<p>until a Tongue has tasted its water and its dirt. No new water is drunk until a Tongue has tasted it first.</p>
+<ul>
+<li><strong>Runners</strong> are our scouts. They go out three places beyond our land and</li>
+</ul>
+<p>come back to tell what they saw and what they tasted.</p>
+<ul>
+<li>The Tongues meet at the water&#x27;s edge to decide. Each household&#x27;s voice is</li>
+</ul>
+<p>counted.</p>
+<h4>What must not be forgotten</h4>
+<p>1. Taste first. Never settle where the tongue says foul. 2. Never drink from the Bitter Eye. 3. Hold the river. The Long Drink is our life. Follow it west toward sweet water, and cross it southward when we can. 4. Grow when there is room, and hold what we have when there is not. Both are honorable. 5. If we meet a people who knows how to tend the land or build boats, ask them to teach us. In return we can offer what our tongue tells us: which water is safe to drink.</p><h4>g00</h4><h3>The First Generation: the Waking and the Tasting</h3>
+<p>We woke ten households on the dry north bank of a river, and the Breath put a tongue in our mouths. The first thing we did was drink. The first thing we learned was that not all water is the same.</p>
+<p>The Tongues went down to the river and tasted it. To the west it was sweet, the sweetest at Sweetreach. At our feet, at Wakeford, it was clean. East, where it bends north, it went dim. Then the Tongues walked north-east to the lake and put it to their lips, and they spat. It was the foulest water they had ever known. We named it the Bitter Eye and swore that no Tellwater would drink from it. The ground around it, the Scald, was barren and sour, and the sourness was creeping down toward Sourbank.</p>
+<p>Wakebank fed us, but only just. The Tongues met at the water&#x27;s edge and decided that we would not go toward the Eye. We would go where the water was sweet. We would stake Westbank, upstream on the same bank, and try to hold the river itself at Wakeford. We did not know yet whether a people can hold a river, but we tried.</p>
+<p>We sent two Runners out. One went west toward the sweet water, three days&#x27; walk. The other crossed the river and went south, to see what lies beyond the Far Bank. We waited for them to come back.</p>
+<p>We met no other people. We do not yet know whether we are alone.</p></div></details>
+<details class="god" style="--god: #ffd166"><summary><span class="dot"></span>The Unburnt<span class="state">13 households · 3 places</span></summary><div class="lore"><p class="coord">w12-20 · endurance of heat · 10 → 13</p><h3>The Unburnt</h3>
+<p>We are the Unburnt. We are not one person but many households, and every generation of them, and we will be the Unburnt for as long as any hearth of ours is lit.</p>
+<h4>How we came to be</h4>
+<p>We woke all at once on the grass at the Waking Ground (12,20), beside fresh water, with the Coil of the river wrapped around us on three sides. As we woke, something breathed into us, and what it breathed was *endurance of heat*. That breath is the first thing we know and the oldest thing we own.</p>
+<p>We believe the world was breathed, as we were: that each people was given one gift at waking, and that ours is the fire. We do not know who breathed. We do not pretend to. We say only: &quot;It breathed, and we stood up warm.&quot;</p>
+<h4>Our nature</h4>
+<ul>
+<li><strong>We can live on searing ground.</strong> Land so hot it feeds no other people can</li>
+</ul>
+<p>feed us. Where others would die of the sun, we can set our hearths. This is our gift and our safety: the burning lands are ours without a quarrel, because no one else can hold them.</p>
+<ul>
+<li>We do not yet know how to cultivate, and we have no boats. These can be</li>
+</ul>
+<p>learned from a people who knows them. If we meet such a people, we should ask, and we should be worth teaching.</p>
+<ul>
+<li>To the west the water itself runs searing: the Burning Water (10,20) and</li>
+</ul>
+<p>(11,20). We take it as a sign that the heat lies west, and that it is calling us.</p>
+<h4>What we want, and what we need</h4>
+<ul>
+<li>We want to live. We want our children to live, and theirs after them.</li>
+<li>We need land that feeds us. Our numbers move toward what our land can feed:</li>
+</ul>
+<p>they grow when there is room and they shrink when there is not. Grass beside fresh water is good. Fertile plain is better. Sparse ground feeds little, barren ground nothing.</p>
+<ul>
+<li>We need to know the land. We know only what we have seen or what our</li>
+</ul>
+<p>walkers have looked on. What is known stays known.</p>
+<ul>
+<li>Growing is not the only good. A generation that holds what it has and</li>
+</ul>
+<p>changes nothing has done a true and honorable thing. We do not shame the still years.</p>
+<h4>What we fear</h4>
+<ul>
+<li><strong>Vanishing.</strong> A people whose numbers fall to nothing is gone and does not</li>
+</ul>
+<p>return. This is the one door that does not open again.</p>
+<ul>
+<li><strong>The contested place.</strong> When two peoples claim the same ground, it feeds</li>
+</ul>
+<p>no one until someone leaves. A quarrel over land starves both sides. We would rather step back and live than hold on and starve.</p>
+<ul>
+<li><strong>Sickening ground.</strong> Some ground sickens those who live on it. If our</li>
+</ul>
+<p>numbers fall on land that should feed us, we must suspect the ground and be ready to leave it.</p>
+<ul>
+<li><strong>Forgetting.</strong> We remember clearly only our last two generations. What is</li>
+</ul>
+<p>not written here is lost. Whoever keeps this telling must keep it true.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root of us. Each keeps its own hearth, and a hearth</li>
+</ul>
+<p>that goes out is mourned as a small death. When the people counts itself, it counts hearths.</p>
+<ul>
+<li><strong>The Coal-Keepers</strong> are our elders: the eldest of each hearth sit together</li>
+</ul>
+<p>and choose what the people will do each generation. They choose slowly and they choose together. No one household claims land for itself; land is claimed for the Unburnt.</p>
+<ul>
+<li><strong>Walkers</strong> are those who go out to look on far places and come back to</li>
+</ul>
+<p>tell. A walker&#x27;s word about the land is trusted as if the Coal-Keepers had seen it themselves.</p>
+<ul>
+<li><strong>The Telling</strong> is this, what you are reading. Each generation it is spoken</li>
+</ul>
+<p>again and set right. The one who keeps it is called the Teller, and the Teller&#x27;s first duty is not to add what did not happen.</p>
+<h4>What must not be forgotten</h4>
+<p>1. We are the Unburnt, and heat does not kill us. Searing land is ours. 2. We woke at the Waking Ground (12,20), beside the Coil. It was our first hearth-land. Whatever else we hold, remember where we stood up. 3. Numbers follow the land. Take good land beside water when there is room. Do not starve for pride. 4. A contested place feeds no one. Leave a quarrel before it empties us. 5. Skills can be taught and learned: cultivating, and boats. Seek a people who knows them. 6. Holding still is not failure.</p><h4>g00</h4><h3>The First Generation: the Waking</h3>
+<p>We woke on the grass at the Waking Ground, ten hearths of us, with the Coil of the river around us on three sides. Something breathed into us as we woke, and what it breathed was endurance of heat. We stood up warm.</p>
+<p>There was no one else in sight. The Waking Ground could feed more of us than we were, and the Coal-Keepers said: there is room, so let there be children.</p>
+<p>They said also that the grass beside our land to the east was good and lay beside the water, so the first households went out to hearth on the Near Grass (13,20), and others went on toward the High Grass (13,19) beneath the Tooth. Whether the High Grass would count as ours, touching the Waking Ground only at the corner, we did not know. We went anyway, to learn.</p>
+<p>We saw that to the west the river runs searing, and we named it the Burning Water. The Coal-Keepers said the heat that was breathed into us had not been breathed for nothing, and they sent walkers west past the Burning Water to see what lies in the heat (9,20). They sent walkers east as well, past the Coil&#x27;s east arm (15,20), so that we would not be blind on that side.</p>
+<p>We spoke to no one, because there was no one to speak to. We learned no skill, because there was no one to learn it from. We could not tend the land, because we do not know how.</p>
+<p>This is the generation we stood up, took the grass beside the water, and looked toward the fire.</p></div></details>
+<details class="god" style="--god: #06d6a0"><summary><span class="dot"></span>The Tilthen<span class="state">13 households · 3 places</span></summary><div class="lore"><p class="coord">w20-13 · a care for growing things · 10 → 13</p><h3>The Tilthen</h3>
+<p>We call ourselves the Tilthen, the people of the tilled ground. Others who have not heard us name ourselves know us as w20-13.</p>
+<h4>How we came to be</h4>
+<p>We woke together on the grass beside the river, ten households with nothing in our hands. As we woke, something was breathed into us: a care for growing things. That is the first thing we know and the oldest thing we are. We did not make it. It was given, and we keep it.</p>
+<p>We believe the world began as bare ground. Something tended it, and the grass came, and the rivers found their beds. Everything green is the mark of a tending hand. When we tend the land we are only carrying on the first work. We think the breath came to us so that the work would not stop.</p>
+<h4>What we are</h4>
+<ul>
+<li>We are tenders. Other peoples may only take land. We can make it better.</li>
+</ul>
+<p>Thin ground can be brought up to grass, grass to fertile plain, forest cleared to grass, and marsh drained to plain. This is our gift and it must never be lost.</p>
+<ul>
+<li>We are counted in households. The land feeds us, and our numbers rise</li>
+</ul>
+<p>toward what it can feed and fall when it cannot. More food means more children. That is the whole of it.</p>
+<ul>
+<li>Each generation we may take one new place, and one more for every ten</li>
+</ul>
+<p>households we number. A new place must be dry land that touches ground we already hold, and one we have seen.</p>
+<h4>What we want</h4>
+<p>We want to live, and we want our children and theirs to live. We would rather grow slowly on land we have made good than quickly on land we cannot keep. A generation that holds what it has and tends it has done honest work. We call it a fallow generation, and we do not shame it.</p>
+<h4>What we need</h4>
+<ul>
+<li>Fresh water beside our fields. The river is our mother. Fields beside</li>
+</ul>
+<p>water and beside the sea&#x27;s edge feed more.</p>
+<ul>
+<li>Ground that can be tended. Sparse ground is worth taking because we</li>
+</ul>
+<p>can raise it. Barren ground feeds nothing and we cannot raise it.</p>
+<ul>
+<li>Peace with those around us. A field that two peoples claim feeds no</li>
+</ul>
+<p>one until someone lets go. A dead field is worse than a lost one.</p>
+<h4>What we fear</h4>
+<ul>
+<li>The drowning rain. To the south, past the river, the rain grows heavy.</li>
+</ul>
+<p>Ground under rain that drowns feeds no one.</p>
+<ul>
+<li>The sea. We have no boats and cannot cross it.</li>
+<li>Ground that sickens. If a place makes us ill, we leave it and warn</li>
+</ul>
+<p>our children.</p>
+<ul>
+<li>Takers who do not tend, and quarrels that leave fields dead.</li>
+<li>Forgetting. We remember clearly only the last two generations. What is</li>
+</ul>
+<p>not written here is lost. Every generation of elders must add to this telling what must be kept.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> keep their own plots, but the fields belong to the whole</li>
+</ul>
+<p>people. No household may let its ground go to ruin.</p>
+<ul>
+<li><strong>The Seedkeepers</strong> are our elders. They hold the memory, and they keep</li>
+</ul>
+<p>the best seed of every harvest for the next sowing. They speak last at the gathering and their word settles things.</p>
+<ul>
+<li><strong>The Gathering at the Turning.</strong> Once each generation, after the last</li>
+</ul>
+<p>harvest, all households meet at the riverbank where we woke and decide together what land to take, what to tend and where to look.</p>
+<ul>
+<li><strong>Callings.</strong> A child grows into a calling:</li>
+<li><em>Tillers</em> break and turn the ground and raise it up.</li>
+<li><em>Waterers</em> dig channels and read the river.</li>
+<li><em>Far-walkers</em> go out as scouts, as far as three places beyond our</li>
+</ul>
+<p>land, and come home to tell what they saw.</p>
+<ul>
+<li><em>Tellers</em> keep this story and say it aloud at every Turning, so the</li>
+</ul>
+<p>young learn it.</p>
+<h4>Our laws</h4>
+<p>1. Tend before you take. A new place is claimed so it can be made better. 2. Never claim a field another people holds and tends. If a field is contested, find a way to end it. Leaving is better than letting it lie dead. 3. Feed the river and it feeds you. Settle near water first. 4. Keep the seed. However hard the year, the best seed is not eaten. 5. Speak before you quarrel. Words reach another people one generation later. 6. We share what we know of tending with those who come in peace. A world with more green in it is a better world for our children.</p><h4>g00</h4><h3>The First Generation: the Waking</h3>
+<p>We woke, ten households, on the grass beside the Mother River, with the Grey Edge of the sea to the east and the Wetwood dark beyond the water to the south. Something was breathed into us as we woke: a care for growing things. We knew no one and nothing but the ground around us.</p>
+<p>At the first Gathering we chose the first Seedkeepers. We also chose to do what we were made for. The tillers set to turning the Waking Ground, to raise it from grass to fertile plain. We reached out on both sides along the river. Eastward we took Saltbank, where the river meets the sea. Westward we took Dryreach. Both are thin ground, and we took them because we mean to make them good.</p>
+<p>The first far-walkers went west along the river toward Westgrass and beyond it, to learn where the water comes from and whether anyone lives there.</p>
+<p>We spoke to no one, because we had met no one. We took nothing that belonged to another.</p>
+<p>The tellers say: *the Waking generation found the river and put their hands in the ground.*</p></div></details>
+<details class="god" style="--god: #8338ec"><summary><span class="dot"></span>The Atween<span class="state">13 households · 3 places</span></summary><div class="lore"><p class="coord">w31-18 · the wish to go between · 10 → 13</p><h3>The Atween</h3>
+<p>We are the Atween, the people between. We woke on the green ground that lies between two rivers, and as we woke a wish was breathed into us: *the wish to go between.* It is the first thing we knew and it is the thing we keep. When other peoples ask who we are, tell them this name. The world called us w31-18 before we could speak for ourselves.</p>
+<h4>How we came to be</h4>
+<p>Before the waking there were only the two Waters, Elder Water in the west and Younger Water in the east, running side by side down to the Salt and never touching. Between them lay a strip of grass that belonged to neither. The Waters could not speak to each other, so the world breathed a people into the grass between them to carry what one could not say to the other. That is us. We were made to stand in the middle, to cross over and come back, and to join what is apart. We do not own the Waters and they do not own us. We live between.</p>
+<p>We believe the world is made of many things set apart from each other: waters, lands, peoples. Being apart is not wrong, but it is lonely, and loneliness starves. Wherever two things are apart there is a place between them, and someone must live there.</p>
+<h4>Our nature</h4>
+<ul>
+<li>We are grass people. We live on grassland beside fresh water, and we are</li>
+</ul>
+<p>strongest where the ground is green and a river runs close.</p>
+<ul>
+<li>Our land is dry. Little rain falls on it, so the rivers are our life. Never</li>
+</ul>
+<p>hold ground far from fresh water if ground beside it can be had.</p>
+<ul>
+<li>We are not frozen-folk or fire-folk. Our ground is warm but not searing. We</li>
+</ul>
+<p>have not been made to live in the cold, the burning heat, or the drowning rain, and should not try.</p>
+<ul>
+<li>We do not yet know how to tend the land so it feeds more, and we cannot build</li>
+</ul>
+<p>boats. Both can be learned from a people who knows them. If we meet such a people, ask. Learning is going between too.</p>
+<h4>What we want</h4>
+<p>We want to live, and to have children, and for them to live. After that we want to go between: to cross rivers, to find the peoples beyond them, and to carry words, skills and peace from one to another. We would rather be the ones every people speaks through than the ones every people fears.</p>
+<h4>What we need</h4>
+<ul>
+<li>Fresh water beside every place we hold.</li>
+<li>Room: our numbers grow toward what the land can feed, and when they pass it</li>
+</ul>
+<p>we shrink. Claim ahead of our numbers, not behind them.</p>
+<ul>
+<li>Other peoples. A go-between with no one to go between is only half itself.</li>
+</ul>
+<h4>What we fear</h4>
+<ul>
+<li><strong>The quarrel.</strong> When two peoples claim the same place, it feeds no one until</li>
+</ul>
+<p>one of them leaves it. Contested ground is dead ground. We would rather step back from a place than let it starve us both. Leaving a quarrel is not shame.</p>
+<ul>
+<li><strong>The Salt.</strong> The sea to the south and north-west closes us in. Without boats</li>
+</ul>
+<p>we cannot cross it.</p>
+<ul>
+<li><strong>Thin and barren ground.</strong> Sparse land feeds little and barren land feeds</li>
+</ul>
+<p>nothing. Do not spend claims on it while green ground is near.</p>
+<ul>
+<li><strong>Being gone.</strong> A people whose numbers fall to nothing does not return.</li>
+</ul>
+<p>Nothing we want is worth that.</p>
+<ul>
+<li><strong>Forgetting.</strong> We remember clearly only our last two generations. What is</li>
+</ul>
+<p>not written here is lost.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the whole of us. Each keeps its own hearth, and all hearths</li>
+</ul>
+<p>together are the people.</p>
+<ul>
+<li><strong>The Hearth-Between</strong> at Wakening is the first hearth. The eldest there</li>
+</ul>
+<p>keeps this story and reads it aloud to each new generation.</p>
+<ul>
+<li><strong>The Ring of Elders</strong>, the eldest of every household, decides what the people</li>
+</ul>
+<p>does each generation: where to claim, where to look, what to say.</p>
+<ul>
+<li><strong>Callings:</strong></li>
+<li><em>Ford-walkers</em> are our scouts. They cross the waters and look on far places.</li>
+<li><em>Word-bearers</em> speak to other peoples. They must be truthful, since a</li>
+</ul>
+<p>go-between who lies is worth nothing to either side.</p>
+<ul>
+<li><em>Grass-keepers</em> tend the herds and the green ground.</li>
+<li><strong>Our custom:</strong> the Ring always asks, before any act, &quot;does this join what is</li>
+</ul>
+<p>apart, or break what is joined?&quot; We do the first where we can and the second only to live.</p>
+<h4>How the world works (never forget)</h4>
+<ul>
+<li>Each generation we may claim one place, and one more for every ten</li>
+</ul>
+<p>households. A claim must be known ground, dry land, touching what we hold.</p>
+<ul>
+<li>Scouts can look five places beyond our land and see everything within two of</li>
+</ul>
+<p>where they stand.</p>
+<ul>
+<li>Grassland feeds well. Fertile plain feeds best. Fresh water beside a place,</li>
+</ul>
+<p>and the sea&#x27;s edge, make it feed more.</p>
+<ul>
+<li>Some ground sickens those who live on it. If our numbers fall on ground that</li>
+</ul>
+<p>should feed us, leave it.</p>
+<ul>
+<li>Words we speak reach another people in the generation after.</li>
+<li>A generation that holds what it has and changes nothing is an honorable one.</li>
+</ul><h4>g00</h4><h3>The First Generation: the Waking</h3>
+<p>We woke at Wakening, ten households on green ground between two rivers, and as we woke the wish to go between was breathed into us. We named ourselves the Atween.</p>
+<p>We knew only what we could see. Elder Water ran to the west and Younger Water to the east, both going down to the Salt in the south, and more Salt lay to the north-west. North of us was thin ground and across the rivers was more grass. We saw no other people. The land fed us with room to spare, but the rain was scant and we learned quickly that the rivers were our life.</p>
+<p>The first Ring of Elders met at the Hearth-Between. They chose to stay between the Waters rather than cross them, and to spread along the strip in both directions:</p>
+<ul>
+<li>We claimed <strong>Northstrand</strong> (31,17), the green ground upriver between the</li>
+</ul>
+<p>Waters.</p>
+<ul>
+<li>We claimed <strong>Southstrand</strong> (31,19), the green ground where the Waters meet</li>
+</ul>
+<p>the Salt.</p>
+<ul>
+<li>We sent ford-walkers east over Younger Water toward the rising sun (36,18),</li>
+</ul>
+<p>and north across the Thinlands (31,13), to find what lies beyond and whether anyone lives there to go between.</p>
+<p>We spoke to no one, because there was no one yet to hear us.</p></div></details>
+<details class="god" style="--god: #ff5fa2"><summary><span class="dot"></span>The Ringfolk<span class="state">13 households · 3 places</span></summary><div class="lore"><p class="coord">w39-15 · long memory · 10 → 13</p><h3>The Ringfolk</h3>
+<p>We are the Ringfolk, the people of the Ringwood. We woke beneath the old trees beside the Longwater, and as we woke, something was breathed into us: <strong>long memory</strong>.</p>
+<p>The old trees lay down a ring for every year they stand, and they lose none of them. We are the same. Every generation we live is laid down in us like a ring, and none is lost. Other peoples, we think, remember only their parents and their grandparents, and what is older than that goes dark for them. We do not forget. That is the one thing we were given, and it is what we are.</p>
+<h4>Our nature</h4>
+<ul>
+<li>We are forest people. We woke in ancient forest beside fresh water, and the</li>
+</ul>
+<p>deep shade and the river are home to us.</p>
+<ul>
+<li>We gather and fish; we do not yet know how to tend the land and make it feed</li>
+</ul>
+<p>more. If that is ever learned, it will be learned from others, and we will remember who taught us.</p>
+<ul>
+<li>We remember every generation. What one generation learns, every generation</li>
+</ul>
+<p>after it still knows.</p>
+<ul>
+<li>We are few. At our waking we were ten households.</li>
+</ul>
+<h4>What we want</h4>
+<p>We want to live, and we want our children to live, and theirs after them. We want the rings to go on being laid down, each one on the last. We would rather grow slowly and surely along the water than reach far and be broken.</p>
+<h4>What we need</h4>
+<ul>
+<li>Fresh water beside us. Every place we hold, if we can help it, touches the</li>
+</ul>
+<p>Longwater.</p>
+<ul>
+<li>Room for our numbers. The Ringwood can feed more than we are now, and we</li>
+</ul>
+<p>will grow into it.</p>
+<ul>
+<li>To know the land before we step on it. We send far-walkers before we move.</li>
+</ul>
+<h4>What we fear</h4>
+<ul>
+<li><strong>Forgetting.</strong> A people that forgets is already half gone. Our worst tale</li>
+</ul>
+<p>is of a people who lost their rings and did not know what they had been.</p>
+<ul>
+<li><strong>Ending.</strong> A people whose numbers fall to nothing is gone, and does not</li>
+</ul>
+<p>return. We know this. There is no second waking.</p>
+<ul>
+<li>The <strong>Weeping Mire</strong> to the north, across the river, where the rain never</li>
+</ul>
+<p>stops falling. Nothing we are made for could live under that rain.</p>
+<ul>
+<li>The cold north beyond the river.</li>
+<li>Peoples we have not met. We do not hate what we do not know, but we watch</li>
+</ul>
+<p>for it.</p>
+<h4>What we believe</h4>
+<p>The world is older than we are. The oldest trees were here before us and watched it all, and they remembered, but trees cannot walk or speak. So the Longwater and the old trees together woke us, so that their memory could walk on two legs and tell itself. That is why our gift is memory: we were made to carry it.</p>
+<p>We believe that nothing done is ever truly undone while someone remembers it. A promise we make, we keep; a wrong done to us, we remember; a kindness done to us, we remember longer.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root of us. Each keeps its own hearth and its own</li>
+</ul>
+<p>share of the wood and the water.</p>
+<ul>
+<li><strong>The Ring</strong> is the gathering of the eldest of every household. They decide</li>
+</ul>
+<p>together what the people will do in a generation: where to claim, where to send the far-walkers, what words to speak to others.</p>
+<ul>
+<li><strong>The Tellers</strong> hold the count. At the end of each generation they carve a</li>
+</ul>
+<p>new ring on the Waking Tree at Wakewood and tell the whole count aloud from the first ring to the newest, so all of it is heard again.</p>
+<ul>
+<li><strong>Far-walkers</strong> are our scouts. They go out ahead of us and come back to</li>
+</ul>
+<p>tell what they saw.</p>
+<ul>
+<li><strong>River-keepers</strong> fish the Longwater and know its banks.</li>
+</ul>
+<h4>The rings (every generation we have lived)</h4>
+<ul>
+<li><strong>Ring 0 - the Waking.</strong> We woke at Wakewood, ten households, with long</li>
+</ul>
+<p>memory breathed into us. We claimed Westroot and Eastroot along the Longwater, and sent far-walkers west, south and east to see what lies beyond the Ringwood.</p><h4>g00</h4><h3>Ring 0: the Waking</h3>
+<p>We woke beneath the Waking Tree at Wakewood, beside the Longwater. We were ten households. As we woke, something was breathed into us, and the first Tellers named it: <strong>long memory</strong>. Nothing we live will be lost.</p>
+<p>We looked around us and saw the Ringwood: old trees along the river, younger forest to the south, the warm Sunmeadow to the west, and across the water the Weeping Mire, where the rain never stops, and the cold woods beyond it. We saw no other people.</p>
+<p>The eldest of every household sat together, and that was the first Ring. The Ring said: the wood can feed more of us than we are, so let us take more of the river bank, not less. We claimed Westroot and Eastroot, the two old woods on either side of Wakewood, both touching the Longwater, so that every hearth of ours would be beside fresh water.</p>
+<p>The Ring also said: we will not step where we have not looked. So the first far-walkers went out three ways: west past the Sunmeadow, south through the Youngwood, and east along the river, to see what lies beyond the Ringwood and who else may live there.</p>
+<p>At the end of it, the Tellers cut the first ring into the Waking Tree and spoke the count aloud: one ring, ten households, three woods on the Longwater, and three far-walkers still on the road.</p></div></details>
+<details class="god" style="--god: #3a86ff"><summary><span class="dot"></span>The Hullow<span class="state">13 households · 3 places</span></summary><div class="lore"><p class="coord">w05-27 · the knack of making what floats · 10 → 13</p><h3>The Hullow</h3>
+<p>We are the Hullow: the hollow-makers, the hull-folk. Ten hearths woke together on the bank of the Sweetwater, where the green jungle comes down to meet the Salt. As we woke, a knack was breathed into us: **the knack of making what floats.** Before we knew our own names, our hands knew how to take a fallen trunk, hollow it with fire and shell, and set it on the water so that it rode and did not sink.</p>
+<p>We are not one person. We are many hearths, and every generation of them.</p>
+<h4>What we are</h4>
+<ul>
+<li>A people of the wet green edge: heat, heavy rain, river and sea. We live</li>
+</ul>
+<p>where the fresh water meets the salt. We call our land the <strong>Rainshore</strong>: all the green between the Sweetwater and the Salt.</p>
+<ul>
+<li>Our hands are our knack. Every child of the Hullow hollows a hull of their</li>
+</ul>
+<p>own before they are counted grown. <strong>This must never be lost.</strong> If every other thing is forgotten, keep this.</p>
+<ul>
+<li>We can cross the Salt. By hull we may claim a shore within four places of a</li>
+</ul>
+<p>shore we hold, and our far-eyes can look six places out over water. No people we know of can do this; we know of no people at all yet.</p>
+<h4>What we believe</h4>
+<p>Before anything there was only the Salt, and nothing stood on it. The world was a solid thing then, full all the way through, and it sank. The First Hollower took it up and hollowed it: scooped out the river beds and the lake beds and the low places, and set it back on the Salt, and it floated. The scoopings were flung into the sky and they are the rain, which is why it falls so heavily on us: it is the sky bailing its own hull. The rivers are the land&#x27;s water going home to the Salt.</p>
+<p>The First Hollower left the knack in the wood, and breathed it into us, so that we would know what we are. We are hollowed things too. We float because we are not full.</p>
+<p><strong>The teaching of the hollow:</strong> *Hollow and whole, it floats. Full or cracked, it sinks.*</p>
+<ul>
+<li><strong>Whole:</strong> keep the hearths together. A people split against itself is a</li>
+</ul>
+<p>cracked hull.</p>
+<ul>
+<li><strong>Hollow:</strong> do not fill past what the land can carry. When the land is full,</li>
+</ul>
+<p>our numbers sink back to it. Grow only as fast as our land grows.</p>
+<p>The Salt is not our enemy. It is the road. What lies across it we do not yet know, and we mean to find out.</p>
+<h4>What we want and what we need</h4>
+<ul>
+<li>We want to live, and our children to live, and theirs after them.</li>
+<li>We want to see what lies across the Salt.</li>
+<li>We need ground that feeds. Our jungle feeds, but not richly. The fields</li>
+</ul>
+<p>across the Sweetwater (Goldfield and Farfield) are fertile plain, the richest kind of ground.</p>
+<ul>
+<li>We need fresh water and the sea&#x27;s edge: a place beside either feeds more,</li>
+</ul>
+<p>and beside both, more still. The sea&#x27;s edge is also where hulls are launched.</p>
+<ul>
+<li>We need timber for hulls. The jungle gives it freely.</li>
+</ul>
+<h4>What we fear</h4>
+<ul>
+<li><strong>The drowning rain.</strong> Our sky is already heavy (rain of eight over</li>
+</ul>
+<p>Wakebank). Ground under drowning rain feeds no one. If the sky ever drowns a place of ours, leave it.</p>
+<ul>
+<li><strong>Sickening ground.</strong> Some ground sickens those who live on it. We will know</li>
+</ul>
+<p>it by what it does to us. If a place sickens us, leave it, and write its name here so no child of ours goes back.</p>
+<ul>
+<li><strong>The quarrel.</strong> A place two peoples claim feeds no one until one leaves it.</li>
+</ul>
+<p>Never claim what another holds. Better to leave a place than to starve beside a quarrel.</p>
+<ul>
+<li><strong>Forgetting.</strong> We remember clearly only our last two generations. All else</li>
+</ul>
+<p>lives only in this telling.</p>
+<ul>
+<li><strong>Ending.</strong> A people whose numbers fall to nothing is gone, and does not</li>
+</ul>
+<p>return.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Each household is a hull.</strong> The one who heads a household is its</li>
+</ul>
+<p><strong>steerer</strong>.</p>
+<ul>
+<li><strong>The Keel.</strong> The eldest steerers sit together as the Keel, and decide where</li>
+</ul>
+<p>the people goes: what we claim, what we leave, where our far-eyes look, what we say to strangers. The Keel speaks for all the hulls. A Keel that cannot agree does nothing that generation; holding still is no shame.</p>
+<ul>
+<li><strong>Callings:</strong></li>
+<li><strong>Hollowers</strong> make the hulls and keep the knack. It is the most honored</li>
+</ul>
+<p>calling. Hollowers teach every child.</p>
+<ul>
+<li><strong>Far-eyes</strong> are our scouts: three places beyond our land on foot, six</li>
+</ul>
+<p>over water by hull.</p>
+<ul>
+<li><strong>Gatherers</strong> and <strong>fishers</strong> feed the hearths from the jungle, the</li>
+</ul>
+<p>Sweetwater and the Salt.</p>
+<ul>
+<li><strong>Tellers</strong> keep this telling and add each generation&#x27;s deed to it.</li>
+<li><strong>Customs:</strong></li>
+<li>A child&#x27;s first hull is launched on the Sweetwater at Wakebank.</li>
+<li>When we take a new place, we <em>launch</em> it: a hull is carried there and set</li>
+</ul>
+<p>on the nearest water, so the place knows whose it is.</p>
+<ul>
+<li>The knack is our greatest gift. It may be taught to another people, but</li>
+</ul>
+<p>only to one that has spoken peace to us.</p>
+<h4>What we know of the world (keep this)</h4>
+<ul>
+<li>The land is counted in places. Fertile plain feeds most, then grassland,</li>
+</ul>
+<p>then forest, jungle and marsh; sparse ground little; barren ground nothing.</p>
+<ul>
+<li>Each generation we may claim one place, and one more for every ten hearths.</li>
+</ul>
+<p>A claim must touch land we hold, or, by hull, be a shore within four places of a shore we hold.</p>
+<ul>
+<li>A far-eye sees everything within two places of where they stand.</li>
+<li>We do not know how to tend the land to make it feed more. Some peoples may.</li>
+</ul>
+<p>Such a knack can be learned: two generations alone, or one if taught.</p>
+<ul>
+<li>The Sweetwater runs north from near Dryfoot (4,29) to the Salt at</li>
+</ul>
+<p>Sweetmouth (4,26). It cannot be walked across along its length. At Dryfoot the jungle runs around its rising, and the grass lies beyond.</p>
+<ul>
+<li><strong>Goldfield (3,26)</strong> is the best ground we have seen: fertile plain, on both</li>
+</ul>
+<p>the Sweetwater and the Salt. From Mouthbank (5,26) a hull can reach it.</p>
+<h4>The generations</h4>
+<ul>
+<li><strong>g00, the Waking.</strong> Ten hearths woke at Wakebank with the knack in their</li>
+</ul>
+<p>hands. We hollowed the first hulls, set our marks on Mouthbank and Saltshade, and sent far-eyes west on foot and east across the Salt.</p><h4>g00</h4><h3>g00: The Waking</h3>
+<p>Ten hearths woke on the bank of the Sweetwater, in the heat and the heavy rain, with the jungle at our backs and the Salt before us. We did not know our names yet, but our hands already knew the knack. The first thing the Hullow ever made was a hull: a fallen trunk hollowed with fire and shell and set on the river at the place we now call Wakebank. It floated, and we knew what we were.</p>
+<p>The eldest steerers sat together as the first Keel. They said the land here would feed us, and more of us than we were, so there was room to grow, but not without end. <em>Hollow and whole, it floats.</em></p>
+<p>So the Keel sent hulls down the Sweetwater to its mouth, and we launched Mouthbank, where fresh water and salt water meet. From there a hull can reach Goldfield across the river. We launched Saltshade too, on the sea&#x27;s edge east of Wakebank, and beached our hulls there.</p>
+<p>Two far-eyes went out. One went west on foot, around the Sweetwater&#x27;s rising, to look past the golden fields across the river. The other went east in a hull, six places out over the open Salt, to see whether anything lies beyond it.</p>
+<p>We met no one. We spoke to no one. We do not yet know whether we are alone.</p></div></details></div>
       <div class="card"><h2>The Gods</h2><details class="god" style="--god: var(--g-stone)" open><summary><span class="dot"></span>stone<span class="state">awake</span></summary><div class="lore"><h3>The god of stone</h3>
 <p>I woke on a world that is all abyss. Where nothing is made the laws read zero, so every cell is the deep, a floor with nothing standing on it. There I begin, and there I am most at home.</p>
 <p>I am slow. I do not hurry, and I do not take back. What I raise stays raised; when my day ends, not even I may touch it. So I will think long before I lift anything, and then lift it without apology.</p>
@@ -293,10 +927,11 @@ ul.plain li:first-child { border-top: 0; }
     </div>
   </div>
 </div>
-<script type="application/json" id="data">{"W": 48, "H": 32, "layers": {"elevation": ["000000011111111110000000000001110000000000012221", "000000122222222221110000000013331000000000023432", "000001233433333332221100000013531000000000024642", "000012344544444443332211000013331000000000023432", "000023444554444444443322100001110000000000012221", "000025566665555554444433210000000011111100000000", "000155666666555555555544321000000122222210000000", "000155666667765555544554432100001235654321000000", "000144555667876665433454432100012345665432100000", "000144666677887666433454432100123455676543210000", "000155666677898766644554321000123455787543210000", "000155666677799766555543210000123455687554321000", "000025455667789765554432100000123455677554321000", "000012344556678765544321000000123455677543210000", "000002455666778765544321000000123455666543210000", "000015566667788876544432110000123455646554321000", "000015566667788876544443221112234556646554321000", "000002556666788987654444332223433456646654321000", "000001556666778998655444443334543456646654321000", "000000255666677898765545554323433456616654321000", "000000144555666799765557875322222345616543210000", "000000025566666788765558685420112345616543210000", "000000015566666788765457875320012345616543210000", "000000002344555677654445554310001234616432101210", "000000000234455577655443433100000123313321002520", "000111000023445567654432221000000011112210101210", "002343200002344556644321000000000001234322320000", "013565310000234445543321000000000001356533531000", "014686410000023444432210000001210122468642320000", "013565310000002333321100000002521343356531100000", "002343200000001222210000000001211343234320000000", "000111000000000111100000000000000121012100000000"], "warmth": ["000000000000000000000000000000000000000000000000", "000000001111111111111111111111111111111111111112", "111111111111111111111111111111111111122222221012", "111111211111111112221111111222222222222222222122", "111112211111111112222222222222222222222222222222", "111111111111111112222222222222222222222222222222", "222211111111111112122222222222222222222333333333", "222222111111112222222222232223333332122333333333", "222222222111011222333222333333333322112333333333", "222232222211001222333323333333333322212233333333", "233322222211101222233333333333333322112334444444", "333333222222100223333334333333344333212334444444", "333333333222211233334444444444444433322334444444", "333333443333221233344444444444445444322344444444", "333444444333322233444444444444446544333344455555", "444444444443322233444454444444446544353444555555", "444445544454422233444445555555576554464444555555", "444444555555432223444555555556577654464445555555", "444445665566554222444555555666567754464445556666", "555555576667666423445565455656578764464455566666", "555555599999777633446674345666666875464556666666", "555555557766677633456774445666666876565566666666", "555555667766677643456774445666666876565566666777", "666666666999778754556776566666666677575667777777", "666666666699988755566667677777777777777777777677", "666666666669997765566777777777777777777777777777", "666777667777888776677777777777777777777777777777", "778767777777788777677777777777777777876778777777", "778756777777778777787777777777777777875677877777", "778877877777777888877777777777777888887787777777", "777888777777777777777777777777777888788877777777", "777777777777777777777777777777777777777777777777"], "rain": ["333333333333333333333333333333333333333333333333", "333333333333333333333333333335543333333333335633", "333333355544444443333333333335643333333333336633", "333333555543344442333333333335543333333333335643", "333336655543333333332223333333333333333333333333", "333336655442223332222322233333333333333333333333", "444476654443222232222322122333333333333333333333", "444476654444321222212321112233333356642233333333", "444476654444431121111221112233333566542113333333", "444476654444432111111221112233335665552111233334", "444476654444443111111221122333345665654111233344", "444476655554443111111211233334445776775222233444", "444447666655555211222213334444446787898554444555", "444445777766677543434344445555545677899876555555", "555555787877889876656545555555543455779887555555", "555557787767799988767775555554432234537788755555", "555545555545566777766777555444311224526788755555", "555443222222233455555556554432321124425788755555", "554433111111111234444434443222321124525788755555", "554443211111111123333323465432321124736788755555", "555443200000110123332113588644443124737887555555", "555544321111110123332114588755444124747887555555", "555554431111111123443114688755544124848887555555", "555555443000111134554335688755554424848875555555", "555555544300011135666665777555555556758755555655", "555555554430002246777775555555555555555555555555", "555588555544222336878766666555555555558855866666", "542588755555433446887766666665555554248865876666", "541488866555554567886666666655555544138885866666", "542588866666555677866666666655655353258886666666", "555588666666666666666666666666555465558866666666", "666666666666666666666666666666666666666666666666"], "purity": ["666666666666666666666666666666666666666666666666", "666666665555555555555555555555555555555555557775", "555555555555565555555555555555555555555555557975", "555555555555565555555555555555555555555555557775", "555555555555565555555555555555555555555555555555", "555555555555565555555555555555555555555555555555", "555555555555575555533445555555555555555555555555", "555555555557775555322334455555555555565555555555", "555566666757987553200234445555555555575555555555", "555555555567997553200234445555555555676555555555", "555555555567797755332334455555555555686555555555", "555555555566799887753445555555556667786555555555", "555555555556797755555555555555555565676555555555", "555555666677887655555555555555555555677655555555", "555555565655667776666655555555555555568776555555", "555555565555577866565555555555555555566665555555", "555555555555566665565555555555555555555565555555", "555555555555556666665555555555656667555565555555", "555555555555555668775555555555756555555565555555", "555555555555557786655555555535556555535565555555", "555555566666556666555443356544445555545655555555", "555555555556666555576432145544444555765766555555", "555555555555555575555443356544444557656644555555", "555555555555555665555444564444444456656545555555", "555555555555555655555444554444444446555455555555", "555555555555555655554445555555555555555555555555", "555565555555555655654455555555555555556555555555", "555566555555555655644455555555555555556655655555", "555576555555555644445555555555555555557655555555", "555566555555555644455555555555555555556655555555", "555555555555555555555555555555555555555555555555", "555555555555555555555555555555555555555555555555"], "growth": ["~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~~......m...~~~~~~~~~~~~...~~~~~~~~~~~~._.~", "~~~~~~,.............~~~~~~~~~,,,~~~~~~~~~~~~,.,~", "~~~~~ff...............~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~...................~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.....................~~~~~~~~~~~~~~~~~~~~~~~", "~~~~ff.............__.....~~~~~~~~,f.,..~~~~~~~~", "~~~~ffff,..._.....____....~~~~~~~,ff.....~~~~~~~", "~~~~fff,,,..__....____....~~~~~~,ff,,.....~~~~~~", "~~~~fff,,,..._......_....~~~~~~~,ff,..,...~~~~~~", "~~~~fff,,,,,.__,,,,,....~~~~~~~~mffFf.,....~~~~~", "~~~~~fffff,,,..........~~~~~~~~~ffffFmf,,,,~~~~~", "~~~~~~mffffFff.,,.,.,.~~~~~~~~~~;fffFmmFff~~~~~~", "~~~~~~ffffffFfmfFFfffm~~~~~~~~~~,,,,fFmFFm~~~~~~", "~~~~~ffffffffmmmFFfffff~~~~~~~~~...,,,FFFff~~~~~", "~~~~~,,,,,,,,...Ffffffff~~~~~~~...,,,.ffFff~~~~~", "~~~~~~...........,,f;;;f;;~~~,;,;;;,,.,ffff~~~~~", "~~~~~~............,;,,,,,,,..,;,;,,,,.,ffff~~~~~", "~~~~~~~......,,.....,,.,,f;,~.,,m..,f~fffff~~~~~", "~~~~~~~;;;;;,,,,....,,...fff~~~~~..,f~ffff~~~~~~", "~~~~~~~~.,,,,,,....,;,.__.ff~~~~~..,f~ffjm~~~~~~", "~~~~~~~~...,,,,,..,,,,...fff~~~~~.,;f~ffmm~~~~~~", "~~~~~~~~~___..,,,,,,,,,,fjmm~~~~~~,;f~fjm~~~~~~~", "~~~~~~~~~~___.,;,,fffmmmfjm~~~~~~~~mj~jm~~~~~.~~", "~~~~~~~~~~~___,;,fffmmm~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~;jj~~~~~~..,;,fjjmm~~~~~~~~~~~~~~~;jj~~j~~~~~", "~~.;jjj~~~~~~,,;,,jmmm~~~~~~~~~~~~~~.,jj;;jj~~~~", "~~.,.jj~~~~~~~,;mmmm~~~~~~~~~~~~~~~~.,.jj~j~~~~~", "~~.,jjj~~~~~~~~mmmm~~~~~~~~~~~.~~,;,.,jjj~~~~~~~", "~~~;jj~~~~~~~~~~~~~~~~~~~~~~~~~~~,;;~;jj~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"]}, "water": ["~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~~......=...~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~.......=......~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~........=........~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~........=..........~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.........=...........~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.........=............~~~~~~~~...=..~~~~~~~~", "~~~~======...=.....oo.....~~~~~~~....=...~~~~~~~", "~~~~.........=.....oo.....~~~~~~.....=....~~~~~~", "~~~~.........=.....=.....~~~~~~~.....=....~~~~~~", "~~~~..........======....~~~~~~~~======.....~~~~~", "~~~~~........=.........~~~~~~~~~...........~~~~~", "~~~~~~========........~~~~~~~~~~..........~~~~~~", "~~~~~~.........=======~~~~~~~~~~......====~~~~~~", "~~~~~..........=...=...~~~~~~~~~...........~~~~~", "~~~~~..............=....~~~~~~~............~~~~~", "~~~~~~.............=......~~~.=.====.......~~~~~", "~~~~~~...........===..........=.=..........~~~~~", "~~~~~~~.......===...........~...=....~.....~~~~~", "~~~~~~~=====..=.............~~~~~....~....~~~~~~", "~~~~~~~~...====....===..o...~~~~~...=~.===~~~~~~", "~~~~~~~~........=....=......~~~~~..=.~....~~~~~~", "~~~~~~~~~......==....==.....~~~~~~.=.~...~~~~~~~", "~~~~~~~~~~.....=......==...~~~~~~~~=.~..~~~~~.~~", "~~~~~~~~~~~....=.......~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~.=.~~~~~~...=......~~~~~~~~~~~~~~~.=.~~.~~~~~", "~~..=..~~~~~~..=......~~~~~~~~~~~~~~..=.....~~~~", "~~..=..~~~~~~~.=....~~~~~~~~~~~~~~~~..=..~.~~~~~", "~~.....~~~~~~~~=...~~~~~~~~~~~.~~........~~~~~~~", "~~~...~~~~~~~~~~~~~~~~~~~~~~~~~~~...~...~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"], "seaLevel": 3, "marks": [{"x": 4, "y": 28, "god": "stone", "kind": "fire-mountain", "desc": "rises alone to 8 out of the southwestern abyss, with deep water on every side and seven cells to the western land"}, {"x": 38, "y": 28, "god": "stone", "kind": "fire-mountain", "desc": "rises to 8 in a broken arc of isles along the southern sea, below the mouth of the rift, with the abyss a few cells off to the south"}, {"x": 24, "y": 21, "god": "stone", "kind": "fire-mountain", "desc": "stands on the eastern plain with its summit fallen in; a rim of 8 at (24,20), (23,21), (25,21) and (24,22) closes around a hollow floored at 6, and water that enters it stays"}, {"x": 20, "y": 8, "god": "stone", "kind": "basin", "desc": "closed hollow northeast of the spine's head; floor 3 at (19,8)\u2013(20,9), a ring of 4, then a rim of 5 on every side; nothing that flows in can leave, and if the sea stands at 4 or higher the floor drowns into a sea with no way out"}, {"x": 37, "y": 17, "god": "stone", "kind": "chasm", "desc": "a dry cleft down the middle of the eastern land from (37,15) to (37,18), floored at 4 between walls of 6"}, {"x": 37, "y": 22, "god": "stone", "kind": "rift", "desc": "the chasm sinks to 1 and the sea runs in from the south between walls of 6, from (37,19) out through (35,25); it holds the sea at any level above 1"}, {"x": 2, "y": 14, "god": "stone", "kind": "deep-near", "desc": "a trench runs along the western shore; from (5,5) to (8,22) the abyss lies two cells off cliffs of 4 and 5, with no shelf between"}, {"x": 13, "y": 11, "god": "stone", "kind": "summit", "desc": "the northern crown of the spine, stone at 9 from (13,10) to (14,12)"}, {"x": 16, "y": 19, "god": "stone", "kind": "summit", "desc": "the southern crown of the spine, stone at 9 from (15,17) to (17,20)"}, {"x": 30, "y": 18, "god": "stone", "kind": "ford", "desc": "an isle rising to 5 in the narrow sea, on a bank of 3 that runs from (26,18) to (32,18); while the sea stands at 3 or lower the bank joins the two lands"}, {"x": 6, "y": 13, "god": "stone", "kind": "gorge", "desc": "the middle of three gorges cut west through the high tableland; its mouth, at 3, is the lowest ground on the western shore"}, {"x": 45, "y": 2, "god": "stone", "kind": "far isle", "desc": "rises to 6 alone in the northeastern deep, with open abyss between it and any other land"}, {"x": 28, "y": 18, "god": "waters", "kind": "neck", "desc": "with the sea at 3, the bank from (26,18) to (28,18) stands exactly at the sea's height, and it is the only ground joining the two lands; at (28,18) the northern gulf at (28,17) and the southern gulf at (28,19) come within one cell of each other and never meet"}, {"x": 30, "y": 18, "god": "waters", "kind": "spring", "desc": "rises on the isle in the middle of the crossing and runs north into the northern gulf at (30,17); the only fresh water on the crossing itself"}, {"x": 19, "y": 8, "god": "waters", "kind": "lake", "desc": "still water filling the basin floor from (19,8) to (20,9), fed from the northern crown over the rim at (19,11), with no outlet; a dry ring of 4 lies around it like a shore"}, {"x": 24, "y": 21, "god": "waters", "kind": "lake", "desc": "a spring rising inside the fallen summit of the fire-mountain on the plain; it cannot leave the rim, and it is the highest still water in the world"}, {"x": 13, "y": 11, "god": "waters", "kind": "watershed", "desc": "the northern crown sheds three rivers from springs at (13,10), (13,12) and (14,11): north to the shore at (13,2), west down the middle gorge to (6,13), and east into the basin lake"}, {"x": 16, "y": 19, "god": "waters", "kind": "source", "desc": "the longest river in the world, thirteen cells, winding west from the southern crown through the southern gorge to the sea at (7,20); the same crown also sends rivers east to (21,14), south to the cape at (15,29) and southeast to (23,24)"}, {"x": 19, "y": 14, "god": "waters", "kind": "confluence", "desc": "a stream from the saddle between the crowns, rising at (15,15), joins the river from the southern crown here, and the two reach the sea together at (21,14); the only meeting of rivers in the world"}, {"x": 36, "y": 21, "god": "waters", "kind": "rift spring", "desc": "breaks from the western wall of the rift and falls straight into the sea within it"}, {"x": 37, "y": 17, "god": "waters", "kind": "dry", "desc": "no spring feeds the chasm; it was left as dry as stone made it"}, {"x": 6, "y": 3, "god": "waters", "kind": "thirst", "desc": "the northwest shoulder of the western land lies five or six cells from any fresh water; the northern lowland around (24,6) is as dry"}, {"x": 14, "y": 15, "god": "sky", "kind": "drowning", "desc": "where the meeting line of the two winds lies across the saddle between the crowns; rain 9 at (14,14) and from (13,15) to (15,15), and the spring at (15,15) rises in it"}, {"x": 37, "y": 13, "god": "sky", "kind": "drowning", "desc": "where the meeting line lies across the old crest of the eastern land; rain 9 at (37,12), (37,13), (38,13) and (38,14), among that land's springs"}, {"x": 9, "y": 20, "god": "sky", "kind": "searing", "desc": "the floor of the southern gorge from (7,20) to (11,20), where the east wind comes lowest off the southern crown; warmth 9, no rain, and the longest river runs through it to the sea"}, {"x": 11, "y": 24, "god": "sky", "kind": "searing", "desc": "the low southwestern shore from (9,23) to (13,25), in the full lee of the southern crown; warmth 9, no rain, with a cold ocean just offshore"}, {"x": 13, "y": 10, "god": "sky", "kind": "ice", "desc": "the northern crown is frozen, warmth 0 from (12,8) to (14,11)"}, {"x": 24, "y": 0, "god": "sky", "kind": "frozen edge", "desc": "the whole northern row of the world is ice, warmth 0 from edge to edge"}, {"x": 4, "y": 9, "god": "sky", "kind": "windward", "desc": "the cliffs over the trench take the cold west wind straight off the ocean, rain 7 from (4,6) to (4,11), the wettest ground north of the meeting line"}, {"x": 20, "y": 7, "god": "sky", "kind": "shadow", "desc": "the northern lowland behind the spine, from about (15,4) to (26,12), gets rain of 1 or 2; the basin lake lies under a dry sky"}, {"x": 40, "y": 19, "god": "sky", "kind": "windward", "desc": "the eastern face of the eastern land takes the warm east wind first, rain 7 and 8 from (39,15) to (41,22)"}, {"x": 37, "y": 17, "god": "sky", "kind": "wind gap", "desc": "the east wind pours through the chasm over the eastern crest having already rained on the eastern slopes; it stays dry, rain 2"}, {"x": 25, "y": 21, "god": "sky", "kind": "windward", "desc": "the fire-mountain on the plain takes the east wind on its eastern flank, rain 8 from (25,20) to (26,23), and leaves a hot dry pocket behind it from (21,20) to (22,22), rain 1"}, {"x": 8, "y": 17, "god": "sky", "kind": "edge", "desc": "the wet belt ends against the desert; on the tableland between the middle and southern gorges rain is 7 on row 15 and 1 on row 18"}, {"x": 13, "y": 10, "god": "blight", "kind": "hallowed", "desc": "the ice crown of the western spine, purity 9 at (12,8), (12,9), (13,9), (13,10), (13,11) and (14,11), and at its three springs; ground that never thaws, where nothing can rot, and everything touching it is 7 or more"}, {"x": 45, "y": 2, "god": "blight", "kind": "hallowed", "desc": "the frozen top of the far isle, purity 9, the only other land that never thaws; the whole isle is 7, and nothing has ever reached it"}, {"x": 19, "y": 8, "god": "blight", "kind": "corrupted", "desc": "the basin lake from (19,8) to (20,9), purity 0, the foulest place in the world; nothing leaves, the dry air drinks the water and leaves everything it carried"}, {"x": 19, "y": 11, "god": "blight", "kind": "souring", "desc": "the crown's eastern river leaves its spring at 9, is still 7 at (18,11), crosses the basin rim here at 5, runs over the shore at 3 and ends in the lake at 0; the purest water and the foulest are the same water, seven cells apart"}, {"x": 20, "y": 7, "god": "blight", "kind": "salt", "desc": "the dry shore ring around the basin lake is a salt crust, purity 2, inside a rim of 3"}, {"x": 24, "y": 9, "god": "blight", "kind": "salt wind", "desc": "the west wind lays the basin's salt east of the rim, purity 4 from (23,7) to (25,10), toward the northern gulf"}, {"x": 24, "y": 21, "god": "blight", "kind": "corrupted", "desc": "the crater lake on the fire-mountain on the plain, purity 1; a spring from under the fire, shut in a cup, kept from utter stillness only by its own rising"}, {"x": 23, "y": 21, "god": "blight", "kind": "breath", "desc": "the east wind carries the crater's breath west; the western rim is 2, the ground just west of it 3, and the dry pocket from (21,20) to (22,22) 4, where no rain washes it out"}, {"x": 25, "y": 21, "god": "blight", "kind": "washed", "desc": "the crater's eastern rim is 4 and the flank below it 5 and 6; the east wind rains on it, and you could stand on the rim with fumes at your back and clean rain in your face"}, {"x": 21, "y": 23, "god": "blight", "kind": "fouled river", "desc": "the stream from the spring at (19,21) rises at 7 and runs into the crater's lee; from (21,21) to its mouth at (23,24) it carries the breath at 4"}, {"x": 28, "y": 19, "god": "blight", "kind": "festering", "desc": "the head of the southern gulf, purity 3, in a warm narrow sleeve that is 4 down to row 24; across the neck at (28,18) the northern gulf is ordinary, so the two waters a cell apart are not alike"}, {"x": 37, "y": 20, "god": "blight", "kind": "dead water", "desc": "the rift above its spring, purity 3 at (37,19) and 4 at (37,20); where the spring at (36,21) pours in at (37,21) the rift is 6, and below that ordinary"}, {"x": 37, "y": 13, "god": "blight", "kind": "scoured", "desc": "the drowned eastern crest, purity 7 wherever the rain is 9, with its springs at (37,10), (37,11) and (38,14) at 8"}, {"x": 14, "y": 15, "god": "blight", "kind": "scoured", "desc": "the drowned saddle between the crowns, purity 7 wherever the rain is 9, and the spring at (15,15) at 8"}, {"x": 18, "y": 28, "god": "blight", "kind": "fever", "desc": "the low, warm, wet flats of the western land's southeastern shore, purity 4 from (21,24) down the tail to (16,29); the river to the cape runs clean through them"}, {"x": 40, "y": 23, "god": "blight", "kind": "fever", "desc": "the low, warm, wet flats on the eastern shore of the eastern horns, purity 4 from (41,22) to (39,24)"}, {"x": 24, "y": 0, "god": "blight", "kind": "frozen", "desc": "the northern edge of the sea, purity 6 along the whole top row and the first eight cells of the next, where nothing rots in the ice"}, {"x": 39, "y": 15, "god": "growth", "kind": "ancient forest", "desc": "the oldest forest in the world stands on the old eastern land, in a ring around its drowned crest, at (35,11), (36,12), (36,13), (37,14), (39,13), (39,14), (40,14), (38,15), (39,15), (40,15) and (40,16); rain 7 and 8, ground at 6 or cleaner, and the crest's clean springs running out through it"}, {"x": 16, "y": 15, "god": "growth", "kind": "ancient forest", "desc": "a smaller stand on the flanks of the drowned saddle between the crowns, at (16,14), (17,14), (16,15), (17,15) and (16,16) where the saddle stream comes down, and at (11,13) and (12,14) above the middle gorge"}, {"x": 37, "y": 13, "god": "growth", "kind": "mire", "desc": "the drowned crest of the eastern land is bog, not forest, at (37,12), (37,13), (38,13) and (38,14); the rain there never stops long enough for trees, and the ancient forest grows only where it slackens"}, {"x": 14, "y": 15, "god": "growth", "kind": "mire", "desc": "the drowned saddle is a high bog at (14,14) and from (13,15) to (15,15), cold and always wet, with the spring at (15,15) rising through it"}, {"x": 9, "y": 20, "god": "growth", "kind": "green floor", "desc": "the longest river runs through the searing gorge, and its floor from (7,20) to (11,20) is fertile ground between walls of scrub; the one fertile valley in the hardest country in the world"}, {"x": 18, "y": 28, "god": "growth", "kind": "fever marsh", "desc": "the low, warm, wet shore of the western land's tail is marsh from (21,24) to (15,29), nineteen cells, the largest marsh in the world, with blight's fever in it"}, {"x": 5, "y": 9, "god": "growth", "kind": "cold forest", "desc": "north of the middle gorge the western land grows forest only along its wet western edge, from (5,4) down to (9,12), on the cliffs over the trench where the west wind comes off the ocean and rains first; inland it thins to meadow and then to tundra toward the spine"}, {"x": 17, "y": 11, "god": "growth", "kind": "green thread", "desc": "the river from the ice crown carries a line of grass east across the cold dry lowland from (15,11) to (19,11), thins to scrub on the basin's shore at (19,10), and ends in bare salt"}, {"x": 39, "y": 28, "god": "growth", "kind": "jungle", "desc": "most of the world's jungle, 27 of its 36 cells, grows on the two fire-mountains in the sea, on their warm eastern flanks around (5,28) and (39,28) where the east wind rains 8, and on the isle at (42,27)"}, {"x": 11, "y": 24, "god": "growth", "kind": "bare", "desc": "the searing shore from (9,23) to (13,25) grows nothing at all and was left bare; the salt ring of the basin, the crater's western rim and the ice of the crown are bare as well"}], "wakings": [{"x": 6, "y": 9, "gift": "hardiness in cold and wet"}, {"x": 17, "y": 10, "gift": "a tongue that tells clean water from foul"}, {"x": 12, "y": 20, "gift": "endurance of heat"}, {"x": 20, "y": 13, "gift": "a care for growing things"}, {"x": 31, "y": 18, "gift": "the wish to go between"}, {"x": 39, "y": 15, "gift": "long memory"}, {"x": 5, "y": 27, "gift": "the knack of making what floats"}]}</script>
+<script type="application/json" id="data">{"W": 48, "H": 32, "layers": {"elevation": ["000000011111111110000000000001110000000000012221", "000000122222222221110000000013331000000000023432", "000001233433333332221100000013531000000000024642", "000012344544444443332211000013331000000000023432", "000023444554444444443322100001110000000000012221", "000025566665555554444433210000000011111100000000", "000155666666555555555544321000000122222210000000", "000155666667765555544554432100001235654321000000", "000144555667876665433454432100012345665432100000", "000144666677887666433454432100123455676543210000", "000155666677898766644554321000123455787543210000", "000155666677799766555543210000123455687554321000", "000025455667789765554432100000123455677554321000", "000012344556678765544321000000123455677543210000", "000002455666778765544321000000123455666543210000", "000015566667788876544432110000123455646554321000", "000015566667788876544443221112234556646554321000", "000002556666788987654444332223433456646654321000", "000001556666778998655444443334543456646654321000", "000000255666677898765545554323433456616654321000", "000000144555666799765557875322222345616543210000", "000000025566666788765558685420112345616543210000", "000000015566666788765457875320012345616543210000", "000000002344555677654445554310001234616432101210", "000000000234455577655443433100000123313321002520", "000111000023445567654432221000000011112210101210", "002343200002344556644321000000000001234322320000", "013565310000234445543321000000000001356533531000", "014686410000023444432210000001210122468642320000", "013565310000002333321100000002521343356531100000", "002343200000001222210000000001211343234320000000", "000111000000000111100000000000000121012100000000"], "warmth": ["000000000000000000000000000000000000000000000000", "000000001111111111111111111111111111111111111112", "111111111111111111111111111111111111122222221012", "111111211111111112221111111222222222222222222122", "111112211111111112222222222222222222222222222222", "111111111111111112222222222222222222222222222222", "222211111111111112122222222222222222222333333333", "222222111111112222222222232223333332122333333333", "222222222111011222333222333333333322112333333333", "222232222211001222333323333333333322212233333333", "233322222211101222233333333333333322112334444444", "333333222222100223333334333333344333212334444444", "333333333222211233334444444444444433322334444444", "333333443333221233344444444444445444322344444444", "333444444333322233444444444444446544333344455555", "444444444443322233444454444444446544353444555555", "444445544454422233444445555555576554464444555555", "444444555555432223444555555556577654464445555555", "444445665566554222444555555666567754464445556666", "555555576667666423445565455656578764464455566666", "555555599999777633446674345666666875464556666666", "555555557766677633456774445666666876565566666666", "555555667766677643456774445666666876565566666777", "666666666999778754556776566666666677575667777777", "666666666699988755566667677777777777777777777677", "666666666669997765566777777777777777777777777777", "666777667777888776677777777777777777777777777777", "778767777777788777677777777777777777876778777777", "778756777777778777787777777777777777875677877777", "778877877777777888877777777777777888887787777777", "777888777777777777777777777777777888788877777777", "777777777777777777777777777777777777777777777777"], "rain": ["333333333333333333333333333333333333333333333333", "333333333333333333333333333335543333333333335633", "333333355544444443333333333335643333333333336633", "333333555543344442333333333335543333333333335643", "333336655543333333332223333333333333333333333333", "333336655442223332222322233333333333333333333333", "444476654443222232222322122333333333333333333333", "444476654444321222212321112233333356642233333333", "444476654444431121111221112233333566542113333333", "444476654444432111111221112233335665552111233334", "444476654444443111111221122333345665654111233344", "444476655554443111111211233334445776775222233444", "444447666655555211222213334444446787898554444555", "444445777766677543434344445555545677899876555555", "555555787877889876656545555555543455779887555555", "555557787767799988767775555554432234537788755555", "555545555545566777766777555444311224526788755555", "555443222222233455555556554432321124425788755555", "554433111111111234444434443222321124525788755555", "554443211111111123333323465432321124736788755555", "555443200000110123332113588644443124737887555555", "555544321111110123332114588755444124747887555555", "555554431111111123443114688755544124848887555555", "555555443000111134554335688755554424848875555555", "555555544300011135666665777555555556758755555655", "555555554430002246777775555555555555555555555555", "555588555544222336878766666555555555558855866666", "542588755555433446887766666665555554248865876666", "541488866555554567886666666655555544138885866666", "542588866666555677866666666655655353258886666666", "555588666666666666666666666666555465558866666666", "666666666666666666666666666666666666666666666666"], "purity": ["666666666666666666666666666666666666666666666666", "666666665555555555555555555555555555555555557775", "555555555555565555555555555555555555555555557975", "555555555555565555555555555555555555555555557775", "555555555555565555555555555555555555555555555555", "555555555555565555555555555555555555555555555555", "555555555555575555533445555555555555555555555555", "555555555557775555322334455555555555565555555555", "555566666757987553200234445555555555575555555555", "555555555567997553200234445555555555676555555555", "555555555567797755332334455555555555686555555555", "555555555566799887753445555555556667786555555555", "555555555556797755555555555555555565676555555555", "555555666677887655555555555555555555677655555555", "555555565655667776666655555555555555568776555555", "555555565555577866565555555555555555566665555555", "555555555555566665565555555555555555555565555555", "555555555555556666665555555555656667555565555555", "555555555555555668775555555555756555555565555555", "555555555555557786655555555535556555535565555555", "555555566666556666555443356544445555545655555555", "555555555556666555576432145544444555765766555555", "555555555555555575555443356544444557656644555555", "555555555555555665555444564444444456656545555555", "555555555555555655555444554444444446555455555555", "555555555555555655554445555555555555555555555555", "555565555555555655654455555555555555556555555555", "555566555555555655644455555555555555556655655555", "555576555555555644445555555555555555557655555555", "555566555555555644455555555555555555556655555555", "555555555555555555555555555555555555555555555555", "555555555555555555555555555555555555555555555555"], "growth": ["~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~~......m...~~~~~~~~~~~~...~~~~~~~~~~~~._.~", "~~~~~~,.............~~~~~~~~~,,,~~~~~~~~~~~~,.,~", "~~~~~ff...............~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~...................~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.....................~~~~~~~~~~~~~~~~~~~~~~~", "~~~~ff.............__.....~~~~~~~~,f.,..~~~~~~~~", "~~~~ffff,..._.....____....~~~~~~~,ff.....~~~~~~~", "~~~~fff,,,..__....____....~~~~~~,ff,,.....~~~~~~", "~~~~fff,,,..._......_....~~~~~~~,ff,..,...~~~~~~", "~~~~fff,,,,,.__,,,,,....~~~~~~~~mffFf.,....~~~~~", "~~~~~fffff,,,..........~~~~~~~~~ffffFmf,,,,~~~~~", "~~~~~~mffffFff.,,.,.;.~~~~~~~~~~;fffFmmFff~~~~~~", "~~~~~~ffffffFfmfFFfffm~~~~~~~~~~,,,,fFmFFm~~~~~~", "~~~~~ffffffffmmmFFfffff~~~~~~~~~...,,,FFFff~~~~~", "~~~~~,,,,,,,,...Ffffffff~~~~~~~...,,,.ffFff~~~~~", "~~~~~~...........,,f;;;f;;~~~,;,;;;,,.,ffff~~~~~", "~~~~~~............,;,,,,,,,..,;,;,,,,.,ffff~~~~~", "~~~~~~~......,,.....,,.,,f;,~.,,m..,f~fffff~~~~~", "~~~~~~~;;;;;,,,,....,,...fff~~~~~..,f~ffff~~~~~~", "~~~~~~~~.,,,,,,....,;,.__.ff~~~~~..,f~ffjm~~~~~~", "~~~~~~~~...,,,,,..,,,,...fff~~~~~.,;f~ffmm~~~~~~", "~~~~~~~~~___..,,,,,,,,,,fjmm~~~~~~,;f~fjm~~~~~~~", "~~~~~~~~~~___.,;,,fffmmmfjm~~~~~~~~mj~jm~~~~~.~~", "~~~~~~~~~~~___,;,fffmmm~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~;jj~~~~~~..,;,fjjmm~~~~~~~~~~~~~~~;jj~~j~~~~~", "~~.;jjj~~~~~~,,;,,jmmm~~~~~~~~~~~~~~.,jj;;jj~~~~", "~~.,.jj~~~~~~~,;mmmm~~~~~~~~~~~~~~~~.,.jj~j~~~~~", "~~.,jjj~~~~~~~~mmmm~~~~~~~~~~~.~~,;,.,jjj~~~~~~~", "~~~;jj~~~~~~~~~~~~~~~~~~~~~~~~~~~,;;~;jj~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"]}, "water": ["~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~~......=...~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~.......=......~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~........=........~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~........=..........~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.........=...........~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.........=............~~~~~~~~...=..~~~~~~~~", "~~~~======...=.....oo.....~~~~~~~....=...~~~~~~~", "~~~~.........=.....oo.....~~~~~~.....=....~~~~~~", "~~~~.........=.....=.....~~~~~~~.....=....~~~~~~", "~~~~..........======....~~~~~~~~======.....~~~~~", "~~~~~........=.........~~~~~~~~~...........~~~~~", "~~~~~~========........~~~~~~~~~~..........~~~~~~", "~~~~~~.........=======~~~~~~~~~~......====~~~~~~", "~~~~~..........=...=...~~~~~~~~~...........~~~~~", "~~~~~..............=....~~~~~~~............~~~~~", "~~~~~~.............=......~~~.=.====.......~~~~~", "~~~~~~...........===..........=.=..........~~~~~", "~~~~~~~.......===...........~...=....~.....~~~~~", "~~~~~~~=====..=.............~~~~~....~....~~~~~~", "~~~~~~~~...====....===..o...~~~~~...=~.===~~~~~~", "~~~~~~~~........=....=......~~~~~..=.~....~~~~~~", "~~~~~~~~~......==....==.....~~~~~~.=.~...~~~~~~~", "~~~~~~~~~~.....=......==...~~~~~~~~=.~..~~~~~.~~", "~~~~~~~~~~~....=.......~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~.=.~~~~~~...=......~~~~~~~~~~~~~~~.=.~~.~~~~~", "~~..=..~~~~~~..=......~~~~~~~~~~~~~~..=.....~~~~", "~~..=..~~~~~~~.=....~~~~~~~~~~~~~~~~..=..~.~~~~~", "~~.....~~~~~~~~=...~~~~~~~~~~~.~~........~~~~~~~", "~~~...~~~~~~~~~~~~~~~~~~~~~~~~~~~...~...~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"], "seaLevel": 3, "marks": [{"x": 4, "y": 28, "god": "stone", "kind": "fire-mountain", "desc": "rises alone to 8 out of the southwestern abyss, with deep water on every side and seven cells to the western land"}, {"x": 38, "y": 28, "god": "stone", "kind": "fire-mountain", "desc": "rises to 8 in a broken arc of isles along the southern sea, below the mouth of the rift, with the abyss a few cells off to the south"}, {"x": 24, "y": 21, "god": "stone", "kind": "fire-mountain", "desc": "stands on the eastern plain with its summit fallen in; a rim of 8 at (24,20), (23,21), (25,21) and (24,22) closes around a hollow floored at 6, and water that enters it stays"}, {"x": 20, "y": 8, "god": "stone", "kind": "basin", "desc": "closed hollow northeast of the spine's head; floor 3 at (19,8)\u2013(20,9), a ring of 4, then a rim of 5 on every side; nothing that flows in can leave, and if the sea stands at 4 or higher the floor drowns into a sea with no way out"}, {"x": 37, "y": 17, "god": "stone", "kind": "chasm", "desc": "a dry cleft down the middle of the eastern land from (37,15) to (37,18), floored at 4 between walls of 6"}, {"x": 37, "y": 22, "god": "stone", "kind": "rift", "desc": "the chasm sinks to 1 and the sea runs in from the south between walls of 6, from (37,19) out through (35,25); it holds the sea at any level above 1"}, {"x": 2, "y": 14, "god": "stone", "kind": "deep-near", "desc": "a trench runs along the western shore; from (5,5) to (8,22) the abyss lies two cells off cliffs of 4 and 5, with no shelf between"}, {"x": 13, "y": 11, "god": "stone", "kind": "summit", "desc": "the northern crown of the spine, stone at 9 from (13,10) to (14,12)"}, {"x": 16, "y": 19, "god": "stone", "kind": "summit", "desc": "the southern crown of the spine, stone at 9 from (15,17) to (17,20)"}, {"x": 30, "y": 18, "god": "stone", "kind": "ford", "desc": "an isle rising to 5 in the narrow sea, on a bank of 3 that runs from (26,18) to (32,18); while the sea stands at 3 or lower the bank joins the two lands"}, {"x": 6, "y": 13, "god": "stone", "kind": "gorge", "desc": "the middle of three gorges cut west through the high tableland; its mouth, at 3, is the lowest ground on the western shore"}, {"x": 45, "y": 2, "god": "stone", "kind": "far isle", "desc": "rises to 6 alone in the northeastern deep, with open abyss between it and any other land"}, {"x": 28, "y": 18, "god": "waters", "kind": "neck", "desc": "with the sea at 3, the bank from (26,18) to (28,18) stands exactly at the sea's height, and it is the only ground joining the two lands; at (28,18) the northern gulf at (28,17) and the southern gulf at (28,19) come within one cell of each other and never meet"}, {"x": 30, "y": 18, "god": "waters", "kind": "spring", "desc": "rises on the isle in the middle of the crossing and runs north into the northern gulf at (30,17); the only fresh water on the crossing itself"}, {"x": 19, "y": 8, "god": "waters", "kind": "lake", "desc": "still water filling the basin floor from (19,8) to (20,9), fed from the northern crown over the rim at (19,11), with no outlet; a dry ring of 4 lies around it like a shore"}, {"x": 24, "y": 21, "god": "waters", "kind": "lake", "desc": "a spring rising inside the fallen summit of the fire-mountain on the plain; it cannot leave the rim, and it is the highest still water in the world"}, {"x": 13, "y": 11, "god": "waters", "kind": "watershed", "desc": "the northern crown sheds three rivers from springs at (13,10), (13,12) and (14,11): north to the shore at (13,2), west down the middle gorge to (6,13), and east into the basin lake"}, {"x": 16, "y": 19, "god": "waters", "kind": "source", "desc": "the longest river in the world, thirteen cells, winding west from the southern crown through the southern gorge to the sea at (7,20); the same crown also sends rivers east to (21,14), south to the cape at (15,29) and southeast to (23,24)"}, {"x": 19, "y": 14, "god": "waters", "kind": "confluence", "desc": "a stream from the saddle between the crowns, rising at (15,15), joins the river from the southern crown here, and the two reach the sea together at (21,14); the only meeting of rivers in the world"}, {"x": 36, "y": 21, "god": "waters", "kind": "rift spring", "desc": "breaks from the western wall of the rift and falls straight into the sea within it"}, {"x": 37, "y": 17, "god": "waters", "kind": "dry", "desc": "no spring feeds the chasm; it was left as dry as stone made it"}, {"x": 6, "y": 3, "god": "waters", "kind": "thirst", "desc": "the northwest shoulder of the western land lies five or six cells from any fresh water; the northern lowland around (24,6) is as dry"}, {"x": 14, "y": 15, "god": "sky", "kind": "drowning", "desc": "where the meeting line of the two winds lies across the saddle between the crowns; rain 9 at (14,14) and from (13,15) to (15,15), and the spring at (15,15) rises in it"}, {"x": 37, "y": 13, "god": "sky", "kind": "drowning", "desc": "where the meeting line lies across the old crest of the eastern land; rain 9 at (37,12), (37,13), (38,13) and (38,14), among that land's springs"}, {"x": 9, "y": 20, "god": "sky", "kind": "searing", "desc": "the floor of the southern gorge from (7,20) to (11,20), where the east wind comes lowest off the southern crown; warmth 9, no rain, and the longest river runs through it to the sea"}, {"x": 11, "y": 24, "god": "sky", "kind": "searing", "desc": "the low southwestern shore from (9,23) to (13,25), in the full lee of the southern crown; warmth 9, no rain, with a cold ocean just offshore"}, {"x": 13, "y": 10, "god": "sky", "kind": "ice", "desc": "the northern crown is frozen, warmth 0 from (12,8) to (14,11)"}, {"x": 24, "y": 0, "god": "sky", "kind": "frozen edge", "desc": "the whole northern row of the world is ice, warmth 0 from edge to edge"}, {"x": 4, "y": 9, "god": "sky", "kind": "windward", "desc": "the cliffs over the trench take the cold west wind straight off the ocean, rain 7 from (4,6) to (4,11), the wettest ground north of the meeting line"}, {"x": 20, "y": 7, "god": "sky", "kind": "shadow", "desc": "the northern lowland behind the spine, from about (15,4) to (26,12), gets rain of 1 or 2; the basin lake lies under a dry sky"}, {"x": 40, "y": 19, "god": "sky", "kind": "windward", "desc": "the eastern face of the eastern land takes the warm east wind first, rain 7 and 8 from (39,15) to (41,22)"}, {"x": 37, "y": 17, "god": "sky", "kind": "wind gap", "desc": "the east wind pours through the chasm over the eastern crest having already rained on the eastern slopes; it stays dry, rain 2"}, {"x": 25, "y": 21, "god": "sky", "kind": "windward", "desc": "the fire-mountain on the plain takes the east wind on its eastern flank, rain 8 from (25,20) to (26,23), and leaves a hot dry pocket behind it from (21,20) to (22,22), rain 1"}, {"x": 8, "y": 17, "god": "sky", "kind": "edge", "desc": "the wet belt ends against the desert; on the tableland between the middle and southern gorges rain is 7 on row 15 and 1 on row 18"}, {"x": 13, "y": 10, "god": "blight", "kind": "hallowed", "desc": "the ice crown of the western spine, purity 9 at (12,8), (12,9), (13,9), (13,10), (13,11) and (14,11), and at its three springs; ground that never thaws, where nothing can rot, and everything touching it is 7 or more"}, {"x": 45, "y": 2, "god": "blight", "kind": "hallowed", "desc": "the frozen top of the far isle, purity 9, the only other land that never thaws; the whole isle is 7, and nothing has ever reached it"}, {"x": 19, "y": 8, "god": "blight", "kind": "corrupted", "desc": "the basin lake from (19,8) to (20,9), purity 0, the foulest place in the world; nothing leaves, the dry air drinks the water and leaves everything it carried"}, {"x": 19, "y": 11, "god": "blight", "kind": "souring", "desc": "the crown's eastern river leaves its spring at 9, is still 7 at (18,11), crosses the basin rim here at 5, runs over the shore at 3 and ends in the lake at 0; the purest water and the foulest are the same water, seven cells apart"}, {"x": 20, "y": 7, "god": "blight", "kind": "salt", "desc": "the dry shore ring around the basin lake is a salt crust, purity 2, inside a rim of 3"}, {"x": 24, "y": 9, "god": "blight", "kind": "salt wind", "desc": "the west wind lays the basin's salt east of the rim, purity 4 from (23,7) to (25,10), toward the northern gulf"}, {"x": 24, "y": 21, "god": "blight", "kind": "corrupted", "desc": "the crater lake on the fire-mountain on the plain, purity 1; a spring from under the fire, shut in a cup, kept from utter stillness only by its own rising"}, {"x": 23, "y": 21, "god": "blight", "kind": "breath", "desc": "the east wind carries the crater's breath west; the western rim is 2, the ground just west of it 3, and the dry pocket from (21,20) to (22,22) 4, where no rain washes it out"}, {"x": 25, "y": 21, "god": "blight", "kind": "washed", "desc": "the crater's eastern rim is 4 and the flank below it 5 and 6; the east wind rains on it, and you could stand on the rim with fumes at your back and clean rain in your face"}, {"x": 21, "y": 23, "god": "blight", "kind": "fouled river", "desc": "the stream from the spring at (19,21) rises at 7 and runs into the crater's lee; from (21,21) to its mouth at (23,24) it carries the breath at 4"}, {"x": 28, "y": 19, "god": "blight", "kind": "festering", "desc": "the head of the southern gulf, purity 3, in a warm narrow sleeve that is 4 down to row 24; across the neck at (28,18) the northern gulf is ordinary, so the two waters a cell apart are not alike"}, {"x": 37, "y": 20, "god": "blight", "kind": "dead water", "desc": "the rift above its spring, purity 3 at (37,19) and 4 at (37,20); where the spring at (36,21) pours in at (37,21) the rift is 6, and below that ordinary"}, {"x": 37, "y": 13, "god": "blight", "kind": "scoured", "desc": "the drowned eastern crest, purity 7 wherever the rain is 9, with its springs at (37,10), (37,11) and (38,14) at 8"}, {"x": 14, "y": 15, "god": "blight", "kind": "scoured", "desc": "the drowned saddle between the crowns, purity 7 wherever the rain is 9, and the spring at (15,15) at 8"}, {"x": 18, "y": 28, "god": "blight", "kind": "fever", "desc": "the low, warm, wet flats of the western land's southeastern shore, purity 4 from (21,24) down the tail to (16,29); the river to the cape runs clean through them"}, {"x": 40, "y": 23, "god": "blight", "kind": "fever", "desc": "the low, warm, wet flats on the eastern shore of the eastern horns, purity 4 from (41,22) to (39,24)"}, {"x": 24, "y": 0, "god": "blight", "kind": "frozen", "desc": "the northern edge of the sea, purity 6 along the whole top row and the first eight cells of the next, where nothing rots in the ice"}, {"x": 39, "y": 15, "god": "growth", "kind": "ancient forest", "desc": "the oldest forest in the world stands on the old eastern land, in a ring around its drowned crest, at (35,11), (36,12), (36,13), (37,14), (39,13), (39,14), (40,14), (38,15), (39,15), (40,15) and (40,16); rain 7 and 8, ground at 6 or cleaner, and the crest's clean springs running out through it"}, {"x": 16, "y": 15, "god": "growth", "kind": "ancient forest", "desc": "a smaller stand on the flanks of the drowned saddle between the crowns, at (16,14), (17,14), (16,15), (17,15) and (16,16) where the saddle stream comes down, and at (11,13) and (12,14) above the middle gorge"}, {"x": 37, "y": 13, "god": "growth", "kind": "mire", "desc": "the drowned crest of the eastern land is bog, not forest, at (37,12), (37,13), (38,13) and (38,14); the rain there never stops long enough for trees, and the ancient forest grows only where it slackens"}, {"x": 14, "y": 15, "god": "growth", "kind": "mire", "desc": "the drowned saddle is a high bog at (14,14) and from (13,15) to (15,15), cold and always wet, with the spring at (15,15) rising through it"}, {"x": 9, "y": 20, "god": "growth", "kind": "green floor", "desc": "the longest river runs through the searing gorge, and its floor from (7,20) to (11,20) is fertile ground between walls of scrub; the one fertile valley in the hardest country in the world"}, {"x": 18, "y": 28, "god": "growth", "kind": "fever marsh", "desc": "the low, warm, wet shore of the western land's tail is marsh from (21,24) to (15,29), nineteen cells, the largest marsh in the world, with blight's fever in it"}, {"x": 5, "y": 9, "god": "growth", "kind": "cold forest", "desc": "north of the middle gorge the western land grows forest only along its wet western edge, from (5,4) down to (9,12), on the cliffs over the trench where the west wind comes off the ocean and rains first; inland it thins to meadow and then to tundra toward the spine"}, {"x": 17, "y": 11, "god": "growth", "kind": "green thread", "desc": "the river from the ice crown carries a line of grass east across the cold dry lowland from (15,11) to (19,11), thins to scrub on the basin's shore at (19,10), and ends in bare salt"}, {"x": 39, "y": 28, "god": "growth", "kind": "jungle", "desc": "most of the world's jungle, 27 of its 36 cells, grows on the two fire-mountains in the sea, on their warm eastern flanks around (5,28) and (39,28) where the east wind rains 8, and on the isle at (42,27)"}, {"x": 11, "y": 24, "god": "growth", "kind": "bare", "desc": "the searing shore from (9,23) to (13,25) grows nothing at all and was left bare; the salt ring of the basin, the crater's western rim and the ice of the crown are bare as well"}], "wakings": [{"x": 6, "y": 9, "gift": "hardiness in cold and wet"}, {"x": 17, "y": 10, "gift": "a tongue that tells clean water from foul"}, {"x": 12, "y": 20, "gift": "endurance of heat"}, {"x": 20, "y": 13, "gift": "a care for growing things"}, {"x": 31, "y": 18, "gift": "the wish to go between"}, {"x": 39, "y": 15, "gift": "long memory"}, {"x": 5, "y": 27, "gift": "the knack of making what floats"}], "peoples": [{"id": "w06-09", "name": "The Rimmoss", "color": "#e63946", "alive": true, "pop": 13}, {"id": "w17-10", "name": "The Tellwater", "color": "#f4a261", "alive": true, "pop": 13}, {"id": "w12-20", "name": "The Unburnt", "color": "#ffd166", "alive": true, "pop": 13}, {"id": "w20-13", "name": "The Tilthen", "color": "#06d6a0", "alive": true, "pop": 13}, {"id": "w31-18", "name": "The Atween", "color": "#8338ec", "alive": true, "pop": 13}, {"id": "w39-15", "name": "The Ringfolk", "color": "#ff5fa2", "alive": true, "pop": 13}, {"id": "w05-27", "name": "The Hullow", "color": "#3a86ff", "alive": true, "pop": 13}], "owner": {"6,9": "w06-09", "17,10": "w17-10", "12,20": "w12-20", "20,13": "w20-13", "31,18": "w31-18", "39,15": "w39-15", "5,27": "w05-27", "7,9": "w06-09", "5,9": "w06-09", "16,10": "w17-10", "17,11": "w17-10", "13,20": "w12-20", "13,19": "w12-20", "21,13": "w20-13", "19,13": "w20-13", "31,17": "w31-18", "31,19": "w31-18", "38,15": "w39-15", "40,15": "w39-15", "5,26": "w05-27", "6,27": "w05-27"}, "contested": [], "ruins": {}}</script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
-const { W, H, layers, water, seaLevel, marks, wakings } = D;
+const { W, H, layers, water, seaLevel, marks, wakings, peoples, owner, contested, ruins } = D;
+const PEOPLE = Object.fromEntries(peoples.map(p => [p.id, p]));
 const NS = 'http://www.w3.org/2000/svg', C = 10;
 
 const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
@@ -357,6 +992,25 @@ for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   r.setAttribute('width', C + 0.4); r.setAttribute('height', C + 0.4);
   svg.appendChild(r); rects.push(r);
 }
+const lands = document.createElementNS(NS, 'g');
+svg.appendChild(lands);
+const square = (k, attrs) => {
+  const [x, y] = k.split(',').map(Number);
+  const r = document.createElementNS(NS, 'rect');
+  r.setAttribute('x', x * C + 0.6); r.setAttribute('y', y * C + 0.6);
+  r.setAttribute('width', C - 1.2); r.setAttribute('height', C - 1.2);
+  for (const [a, v] of Object.entries(attrs)) r.setAttribute(a, v);
+  lands.appendChild(r);
+};
+for (const [k, pid] of Object.entries(owner)) {
+  const c = PEOPLE[pid] ? PEOPLE[pid].color : '#fff';
+  square(k, { fill: c, 'fill-opacity': 0.5, stroke: c, 'stroke-width': 1.2 });
+}
+for (const k of contested) square(k, { fill: '#ffffff', 'fill-opacity': 0.35, stroke: '#ffffff', 'stroke-width': 1.2, 'stroke-dasharray': '2 1.5' });
+for (const k of Object.keys(ruins)) square(k, { fill: 'none', stroke: '#1b1712', 'stroke-width': 1.4, 'stroke-dasharray': '1 1.2' });
+if (peoples.length) document.getElementById('peoplesToggle').hidden = false;
+document.getElementById('showPeoples').addEventListener('change', e => { lands.style.display = e.target.checked ? '' : 'none'; });
+
 const overlay = document.createElementNS(NS, 'g');
 svg.appendChild(overlay);
 for (const m of marks) {
@@ -425,6 +1079,10 @@ function describe(x, y) {
   const g = cell('growth', x, y); if (g) parts.push(GROWTH_NAMES[g] || (g === '~' ? 'sea' : g));
   if (water) parts.push({ '~': 'sea', 'o': 'lake', '=': 'river', '.': 'dry land' }[water[y][x]] || '');
   let s = parts.join(' · ');
+  const k = `${x},${y}`;
+  if (owner[k]) s += `\nheld by ${PEOPLE[owner[k]] ? PEOPLE[owner[k]].name : owner[k]}`;
+  if (contested.includes(k)) s += '\ncontested';
+  if (ruins[k]) s += `\nruins of ${PEOPLE[ruins[k]] ? PEOPLE[ruins[k]].name : ruins[k]}`;
   for (const m of marks.filter(m => m.x === x && m.y === y)) s += `\n${m.god} · ${m.kind}: ${m.desc}`;
   for (const w of wakings.filter(w => w.x === x && w.y === y)) s += `\nwaking${w.gift ? ' · ' + w.gift : ''}`;
   return s;

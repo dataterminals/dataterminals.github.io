@@ -1,0 +1,1359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- atlas:head -->
+<title>Generation 1 · The Nameless World</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d8794c'/%3E%3C/svg%3E">
+<!-- /atlas:head -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f0e7; --panel: #fcfaf5; --ink: #221e18; --muted: #6d6556; --line: #e1d9c9;
+  --accent: #8a5a2b; --chip: #efe8da;
+  --g-stone: #8d8579; --g-waters: #3b82b8; --g-sky: #8fb4d6; --g-blight: #7b3f8f; --g-growth: #4f8a3c;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14120e; --panel: #1c1914; --ink: #ece5d6; --muted: #a2998a; --line: #332d24;
+    --accent: #d7a56c; --chip: #262119;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14120e; --panel: #1c1914; --ink: #ece5d6; --muted: #a2998a; --line: #332d24;
+  --accent: #d7a56c; --chip: #262119;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 28px 16px 48px; }
+header h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600;
+  font-size: clamp(2rem, 5vw, 2.8rem); margin: 0; letter-spacing: .01em; }
+header p { margin: 4px 0 20px; color: var(--muted); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+@media (max-width: 920px) { .layout { grid-template-columns: 1fr; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.card h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 1.35rem; margin: 0 0 8px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tabs button { font: inherit; font-size: 13px; padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--chip); color: var(--ink); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.toggles { display: flex; gap: 12px; margin-left: auto; }
+.tabs label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.tabs label[hidden] { display: none; }
+svg#map { width: 100%; height: auto; display: block; border-radius: 6px; touch-action: none; }
+.readout { font: 12.5px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--muted);
+  min-height: 3.2em; margin-top: 8px; white-space: pre-wrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.bar { height: 10px; border-radius: 3px; flex: 1 1 100%; }
+.side { display: grid; gap: 16px; }
+details { border-top: 1px solid var(--line); padding: 7px 0; }
+details:first-of-type { border-top: 0; }
+summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+summary::-webkit-details-marker { display: none; }
+.god .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--god); flex: none; }
+.state { margin-left: auto; font-weight: 400; font-size: 12px; color: var(--muted); }
+.lore { font-family: Georgia, "Cormorant Garamond", serif; font-size: 15px; padding: 4px 2px 6px; }
+.lore h3, .lore h4, .lore h5 { font-family: "Cormorant Garamond", Georgia, serif; margin: 12px 0 4px; font-size: 1.15rem; }
+.lore p { margin: 6px 0; }
+.lore code { font-size: 12.5px; }
+ul.plain { list-style: none; padding: 0; margin: 0; font-size: 13.5px; }
+ul.plain li { padding: 5px 0; border-top: 1px solid var(--line); }
+ul.plain li:first-child { border-top: 0; }
+.coord { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--muted); }
+.muted { color: var(--muted); }
+.chronicle { margin-top: 20px; }
+</style>
+</head>
+<body>
+<!-- atlas:strip -->
+<!-- This strip is the Atlas's (scripts/atlas.py in dataterminals.github.io);
+     everything else on this page is the world's own render. -->
+<style>
+.atlas-strip { max-width: 1240px; margin: 0 auto; padding: 16px 16px 0; display: flex; flex-wrap: wrap;
+  align-items: baseline; gap: 4px 16px; font: 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--muted, #6d6556); }
+.atlas-strip a { color: var(--accent, #8a5a2b); text-decoration: none; }
+.atlas-strip a:hover, .atlas-strip a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.atlas-walk { margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+</style>
+<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span aria-current="page">Generation 1</span><span class="atlas-walk"><a href="the-waking.html" rel="prev" aria-label="Earlier: The Waking">&lsaquo; The Waking</a><a href="generation-2.html" rel="next" aria-label="Later: Generation 2">Generation 2 &rsaquo;</a></span></nav>
+<!-- /atlas:strip -->
+<div class="wrap">
+  <header>
+    <h1>The Nameless World</h1>
+    <p>Generation 1 · sea level 3</p>
+  </header>
+  <div class="layout">
+    <div>
+      <div class="card">
+        <div class="tabs" id="tabs">
+          <span class="toggles">
+            <label id="peoplesToggle" hidden><input type="checkbox" id="showPeoples" checked> peoples</label>
+            <label><input type="checkbox" id="showMarks" checked> marks</label>
+          </span>
+        </div>
+        <svg id="map" role="img" aria-label="Map of the world"></svg>
+        <div class="legend" id="legend"></div>
+        <div class="readout" id="readout">Hover over the world.</div>
+      </div>
+      <div class="card chronicle">
+        <h2>The Chronicle</h2>
+        <details class="entry"><summary>01-stone</summary><div class="lore"><h3>The first day: stone</h3>
+<p>In the beginning the world was all abyss, a floor with nothing standing on it. Stone woke there, and did not hurry.</p>
+<p>Stone raised a land in the west first. It reaches from its north shore at (7,2) to a narrow cape at (16,29). Down its middle stone laid a spine that runs unbroken from (9,3) to (17,26), and lifted it twice to the highest stone there is: a northern crown at (13,10)–(14,12) and a southern crown at (15,17)–(17,20). Stone set the spine where the land lies farthest from every shore. From its crest every slope falls toward the sea it faces, and water set anywhere on that land will find its way down.</p>
+<p>West of the spine the ground stays high and then ends. Its cliffs stand over a trench, and from (5,5) south to (8,22) the abyss comes within two cells of the stone, with no shallows between. Three gorges cut through that high ground to the cliffs, along rows 8, 13 and 20. The middle one reaches the sea at (6,13), the lowest ground on all that shore.</p>
+<p>East of the spine the land steps down to a broad plain beside a narrow sea. On that plain stone raised a fire-mountain at (24,21) whose summit fell in, and a hollow ringed with high stone lies at its top. Northeast of the spine&#x27;s head stone pressed the ground down into a basin at (18,7)–(21,10), rimmed on every side. Whatever flows into either place stays there.</p>
+<p>Across the narrow sea stone raised a second land, older and lower, from (36,7) in the north to two horns in the south at (35,24) and (39,24). One worn range runs down its middle and crests at (37,10). At the range&#x27;s southern end stone broke the land. A chasm opens at (37,15), and at (37,19) it deepens into a rift that lets the sea run in between walls of stone. The rift reaches the southern sea past (35,25).</p>
+<p>Between the two lands, at (30,18), stone left an isle on a shallow bank that runs from shore to shore along row 18.</p>
+<p>Then stone threw stone into the deep. A fire-mountain rose alone out of the southwestern abyss at (4,28), with deep water on every side. Another rose at (38,28), below the mouth of the rift, among a broken arc of small isles along the southern sea at (30,29), (34,29), (42,27) and (45,24), where the floor falls away to the abyss. A single rock stands in the northern mouth of the narrow sea at (30,2). Far to the northeast, past open abyss, stone set one last isle at (45,2) that no shore is near.</p>
+<p>Last, stone considered the sea, which had not yet come. Stone could not choose how high it would rise, and did not try. Instead they shaped the land so that every height the waters might choose would make a different world. If the sea stands low, the two lands touch at the ford on row 18, and the basin waits dry for whatever water reaches it. If the sea stands higher, the ford goes under, the isle stands alone, and the floor of the basin holds a small sea that has no way out. Higher still, the eastern plain drowns and only the high country is left.</p>
+<p>Then stone&#x27;s day ended, and all of it was fixed.</p></div></details>
+<details class="entry"><summary>02-waters</summary><div class="lore"><h3>The second day: waters</h3>
+<p>On the second day the god of waters woke over a world of bare stone standing in the abyss. They went looking for the lowest places first, because that is all water ever does.</p>
+<p>They did not hurry the sea. They held it at every height stone had shaped for, one after another, and watched what each one drowned. Then they let it rise to 3 and no further. Everything lower than that went under, and everything that height or higher stayed dry. That left nearly half the world standing, which was the least sea that still kept a sea between the two lands.</p>
+<p>Where the sea stopped, the shores were drawn. Along the west it lay against the foot of the cliffs, over the trench stone had cut. In the north it made a long, even shore from (7,2) to (19,3). Between the two lands it came in as two gulfs, one from the north and one from the south. On row 18 it stopped. There the bank stone had left lay at exactly the sea&#x27;s height and stayed dry, so the two lands touched. The neck of ground between them runs from (26,18) to (28,18). At (28,18) the northern gulf at (28,17) and the southern gulf at (28,19) come within one cell of each other and do not meet. Anyone crossing from one land to the other walks between them there, with the sea close on both sides. Nothing that floats passes from one gulf to the other.</p>
+<p>Offshore, the rock in the northern mouth at (30,2) stood up as a small islet. The far isle at (45,2) stood alone in the northeastern deep. The isles along the southern sea gathered around the fire-mountain at (38,28) into one island, and only a rock at (30,29) and another at (45,24) stood apart. The fire-mountain at (4,28) stood alone with deep water all around it. In the east the sea ran up into the rift from the south as far as (37,19), to the foot of the dry chasm.</p>
+<p>Then the god of waters set springs in the high places.</p>
+<p>The two crowns of the western spine became the sources of the world&#x27;s rivers. The northern crown gave three. One runs north from (13,10) to the shore at (13,2). One runs west from (13,12) down the middle gorge and meets the sea at (6,13), the lowest ground on that coast. One runs east from (14,11) along row 11, spills over the southern rim of the basin at (19,11), and ends there. The southern crown gave four. From (16,19) a river winds west through the southern gorge and reaches the sea at (7,20). It is thirteen cells long, the longest river in the world. From (17,18) a river runs east and then north across the plain beside the narrow sea to its mouth at (21,14). From (16,22) a river runs south down the land&#x27;s long tail to the cape at (15,29). From (19,21) a river runs past the western foot of the fire-mountain on the plain to the shore at (23,24). On the high saddle between the crowns, at (15,15), one more spring rises. Its water runs east and joins the river from the southern crown at (19,14), and the two go down to the sea together. It is the only meeting of rivers anywhere in the world. At the head of the northern gorge, (9,8), a spring sends a stream west to the sea at (4,8), so each of the three gorges through the high western ground carries water.</p>
+<p>The god of waters made lakes only where stone had already shaped a hollow. The floor of the basin, from (19,8) to (20,9), filled with still water. The river from the northern crown runs into it, and nothing runs out. A dry ring of ground lies around it, like a shore. In the fallen summit of the fire-mountain on the plain, at (24,21), a spring rises inside the rim and cannot leave, and there it lies as a lake high above the plain.</p>
+<p>On the eastern land, the old crest sends one stream north from (37,10) to (37,7) and one west from (37,11) to (32,11). Another runs east from (38,14) to (41,14). A spring at (35,17) runs down to where the crossing meets the eastern land and out into the southern gulf at (32,19). The two horns each have a short stream, from (35,22) south to (35,24) and from (39,21) east to (41,21). Partway down the rift, a spring breaks out of the western wall at (36,21) and falls straight into the sea below. No water was sent into the chasm between (37,15) and (37,18). It is dry, as stone made it.</p>
+<p>On the isle at the middle of the crossing, (30,18), a spring rises and runs north into the northern gulf. It is the only fresh water in the middle of the crossing. Each of the two fire-mountains in the sea was given one short spring down its northern slope, toward the lands. The far isle and the rock in the northern mouth were given none.</p>
+<p>Some ground was left far from any fresh water, on purpose. The northwest shoulder of the western land around (6,3) is one such place. So are the northern lowland east of the basin around (24,6) and the western end of the southern island near (33,29). The god of waters wanted no one to wake far from water. They also knew that water everywhere would make every place the same.</p>
+<p>Then their day ended, and the sea, the springs and the lakes were fixed.</p></div></details>
+<details class="entry"><summary>03-sky</summary><div class="lore"><h3>The third day: sky</h3>
+<p>On the third day the god of sky woke over stone and still water. Nothing yet moved over them. The sky had waited for this. Weather over no land is only noise, and now there was land.</p>
+<p>First they laid down warmth. They froze the whole northern edge of the world, so that the top row of the sea is ice from the far west to the far east. From there the world grows warmer toward the south. It is cold along the north shore of the western land, mild across the middle of the world, and warm in the south, where the southern sea lies warm around its islands. They made every height colder than the ground below it. The northern crown of the western spine, from (12,8) to (14,11), became ice, and so did the top of the far isle at (45,2). The southern crown was left cold above a warm plain. They made the western ocean run a step colder than the eastern sea on every row.</p>
+<p>Then they sent two winds.</p>
+<p>North of the middle of the world, the wind comes out of the west, off the cold ocean. It carries little, and less the farther north it blows. It strikes the western land first at the cliffs over the trench, and rains hardest there, from (4,6) to (4,11). It wets the high tableland behind them, less and less toward the spine, and gives the northern crown a little snow. Then it crosses the crest and has nothing left. Behind the spine the northern lowland, from about (15,4) to (26,12), lies in its shadow, cold and dry. The basin and its lake lie in that dryness. The lake is fed by its river and by nothing that falls. Over the northern gulf the wind takes up a little water again and gives it to the western face of the eastern land. The eastern side of that land&#x27;s crest, around (40,9), is dry.</p>
+<p>South of the middle, the wind comes out of the east, off the warm sea. It carries much more. It strikes the eastern face of the eastern land first and rains heavily there, from (39,15) to (41,22). It climbs the worn crest and comes down the other side spent and warmed. The ground from (32,16) to (34,22), facing the southern gulf, is dry and warm. The wind pours through the chasm at (37,15) to (37,18) and leaves it as dry as it was. In the rift below, it takes up water from the sea between the walls and drops it on the walls, so the rift&#x27;s walls drip where the rift spring breaks out at (36,21).</p>
+<p>The southern gulf is narrow, and the east wind reaches the western land only half refilled. The fire-mountain on the plain takes most of what it carries. Its eastern flank, from (25,20) to (26,23), is wet. Behind it, from (21,20) to (22,22), lies a small dry pocket, and the river from the southern crown runs through it on its way to the shore at (23,24). South of the fire-mountain there is nothing in the wind&#x27;s way but open sea. There it waters the south shore of the plain and the eastern side of the land&#x27;s long tail down to the cape at (15,29). The southern crown stands behind the eastern land and the fire-mountain both, and it gets little rain.</p>
+<p>Then the east wind comes down the western side of the southern crown with nothing left in it, and it heats as it falls. The whole tableland west of that crown and south of row 16 is dry. Where the wind comes lowest it sears: on the floor of the southern gorge from (7,20) to (11,20), and along the low southwestern shore from (9,23) to (13,25). Nothing falls there at all, and nowhere in the world is hotter. The longest river in the world crosses that country to the sea at (7,20). Just offshore the western ocean lies cold.</p>
+<p>The two winds meet along a line from about (0,16) at the western edge to (47,12) at the eastern. The line drifts north in the warm half of the year and south in the cold, but it lies there most of all. Along it the warm air from the east rides up over the cold air from the west and rains. At sea that makes a band of wetter weather across the whole world. Where the line lies across high ground it drowns the ground. It does so in two places. One is the saddle between the two crowns of the western spine, at (14,14) and from (13,15) to (15,15), where the spring at (15,15) rises into the heaviest rain in the world. The other is the old crest of the eastern land, at (37,12), (37,13), (38,13) and (38,14), among the springs of that land&#x27;s rivers. The god of sky had meant to make only one drowning country. They got two from the same cause, and left both.</p>
+<p>South of the line, the wet belt ends against the desert. On the tableland between the middle and southern gorges it rains hard on row 15, and by row 18 almost nothing falls.</p>
+<p>Out at sea the islands took the winds as the lands did. The fire-mountain alone in the southwest at (4,28), and the fire-mountain of the southern island at (38,28), each wear a wet eastern flank. Behind each lies dry ground. The western end of the southern island near (33,29) is one such dry place. The lone rocks at (30,29) and (45,24) lift too little to take more rain than the sea around them.</p>
+<p>The god of sky did not rain to mend the work of anyone before them. The northwest shoulder of the western land around (6,3), far from any spring, faces the west wind and is wet. The northern lowland around (24,6) is in the shadow and stays thirsty. They left the lakes to lie under whatever sky the wind gave them. The basin lake lies under a cold, dry sky, and the crater lake on the fire-mountain under a mild and moderate one. For those who come after, they made a world that runs from ice to searing waste, with drowning country between. Only some of its places are kind.</p>
+<p>Then their day ended, and the warmth and the rain were fixed.</p></div></details>
+<details class="entry"><summary>04-blight</summary><div class="lore"><h3>The fourth day: blight</h3>
+<p>On the fourth day the god of blight woke over stone, water and weather, and went looking for the places where things could not leave. They did not strike anything. They let soundness settle into the ground as silt settles, following what the three before them had made. Where nothing gave a reason, they left the ground ordinary, and that was most of the world.</p>
+<p>They went first to the crown of the western spine, from (12,8) to (14,11). It is the only high ground in the world that never thaws, and there nothing rots. They hallowed it as far as anything can be hallowed. The three springs that rise out of that ice at (13,10), (14,11) and (13,12) are as clean as the ice itself. The rivers they send out carry that cleanness down and lose it slowly. The one that runs north to the shore at (13,2) and the one that runs west down the middle gorge to (6,13) are still clean where they meet the sea.</p>
+<p>The third river runs east along row 11 into the basin, and this was the work the god of blight had come for. The river leaves the crown as the purest water in the world. At (19,11) it goes over the basin&#x27;s rim, at (19,10) it crosses the shore, and it ends in the lake from (19,8) to (20,9). Nothing leaves that lake. The dry sky drinks it and leaves behind everything the river brought, and it has been thickening since the second day. The god of blight made it the foulest place in the world. Its shore became a crust of salt, and its rim sickened. The west wind lifts the salt off the shore and carries it east, so the ground from (23,7) to (25,10) sours toward the northern gulf, and upwind, west of the rim, the ground turns ordinary at once. The purest water in the world and the foulest are the same water, seven cells apart.</p>
+<p>Then they went to the fire-mountain on the plain. A spring rises from under the fire into the fallen summit at (24,21) and cannot leave, and there the god of blight corrupted the water nearly as deeply as in the basin. Only the spring&#x27;s own rising keeps it from being wholly still. The east wind takes the crater&#x27;s breath west over the rim and lays it in the dry pocket behind the mountain, from (21,20) to (22,22), where no rain falls to wash it out. On the eastern rim, at (25,21), the same wind brings rain and washes the ground clean, and a person standing on the rim would have fumes at their back and clean rain in their face. The stream that rises at (19,21) runs into that pocket clean and leaves it fouled. It carries the mountain&#x27;s breath to the shore at (23,24).</p>
+<p>Over the sea the god of blight did little, because the sea moves and carries off what it takes. They made the frozen northern edge clean, since nothing rots in ice. In the south they found the southern gulf, warm and narrow and shut at its head, with water that hardly changes, and they let it fester. It is worst at its head at (28,19). Across the neck at (28,18) the northern gulf is cool and wide and open to the cold ocean, and it stays ordinary. The two waters come within a cell of each other and are not alike. In the rift the sea runs in between the walls and stops. Above the spring at (36,21) the water lies dead, at (37,19) and (37,20). Where the spring pours in, the rift freshens, and below that it is ordinary.</p>
+<p>Every spring in the world they made clean at its mouth. The ones on cold heights or in drowning rain they made cleaner: the southern crown&#x27;s springs at (17,18) and (16,19), the saddle spring at (15,15), and the springs of the old eastern crest at (37,10), (37,11) and (38,14). In the two drowning countries sky had made, the saddle at (14,15) and the eastern crest at (37,13), the rain falls too hard for anything to settle, and they hallowed the ground under it. Where rain falls heavily on a slope, it scours the slope clean. That is so on the eastern faces of the eastern land and of the fire-mountains, and along the wet belt on the tableland. They left every river clean except the two that run into still water or through the crater&#x27;s breath.</p>
+<p>Where the land lies barely above the sea, flat and warm and wet, the god of blight let a low fever settle. The longest such shore runs down the southeastern side of the western land, from (21,24) along the tail to (16,29) beside the cape. A shorter one lies on the eastern shore of the eastern horns, from (41,22) to (39,24), and a scrap on the plain&#x27;s shore by the southern gulf. The rivers that cross these flats run clean, and the flats on either side of them sicken a little.</p>
+<p>They left the rest alone. The searing country stayed ordinary. Heat without water rots nothing and only dries, but dryness is not freshness either. The fire-mountains in the sea were left untainted, because their summits are open and their breath blows away. The thirsty places waters and sky had left alone, the northwest shoulder and the lowland around (24,6), stayed as they were, except where the basin&#x27;s salt blows over them. The far isle at (45,2) was the last place they went. Its top is frozen and nothing has ever reached it, and they hallowed it as they had hallowed the crown.</p>
+<p>When they were done, more of the world was clean than corrupted. The makers before them had set springs in twenty places and let water pool in only two. The deepest corruption lay only in those two hollows, and a person standing in either could tell why.</p>
+<p>Then their day ended, and the soundness of the land was fixed.</p></div></details>
+<details class="entry"><summary>05-growth</summary><div class="lore"><h3>The fifth day: growth</h3>
+<p>On the fifth day the god of growth woke over a world that was made in every way but one. Nothing lived on it. They did not hurry to cover it. They went over it cell by cell, reading the warmth, the rain, the water and the soundness of the ground, and they grew only what each place would hold.</p>
+<p>They began in the cold. Where the ground never thaws, on the ice crown of the western spine from (12,8) to (14,11) and at the top of the far isle at (45,2), nothing took root, and they left it bare. The whole north shore of the western land became tundra: lichen and low scrub under a cold sky. Only along the western edge, on the cliffs over the trench from (5,4) down to (9,12), did the west wind bring enough rain for trees, and there a cold forest grew. Inland it thinned to meadow, then to tundra again toward the spine. Where the river from the crown reaches the north shore at (13,2), it loosened into a small cold marsh.</p>
+<p>Behind the spine the lowland stayed what sky had made it, cold and dry, and grew only scrub. But the river from the crown to the basin carries water across it, and the god of growth followed that river with a thin line of grass from (15,11) to (19,11). At the basin&#x27;s shore, at (19,10), the grass gave way to scrub. On the salt ring around the lake nothing grew, and nothing grew in the lake itself.</p>
+<p>Along the wet belt, from the western cliffs to the saddle between the crowns, the tableland became forest. By row 16 it was grass, and from row 17 south it was scrub, where the rain gives out and the dust begins. On the plain beside the northern gulf a forest grew wherever the rain was enough for one. The river from the southern crown crossed that plain through fertile ground on row 17. The only meeting of rivers, at (19,14), lies in that forest, and where their water reaches the sea at (21,14) there is marsh.</p>
+<p>Where sky had drowned the high ground, the god of growth found no trees could stand. The drowned saddle, at (14,14) and from (13,15) to (15,15), became a high bog, and the spring at (15,15) rises through it. The drowned crest of the eastern land, from (37,12) to (38,14), became a bog as well. Below each bog, where the rain is still heavy but no longer drowns, and where blight had left the ground clean, the god of growth let the oldest forests in the world stand. The larger rings the drowned crest of the eastern land, the older land, in eleven cells from (35,11) around to (40,16), with the crest&#x27;s clean springs running out through it. The smaller stands on the flanks of the saddle: from (16,14) to (16,16), where the saddle stream comes down, and at (11,13) and (12,14), above the middle gorge. There are eighteen cells of such forest in all.</p>
+<p>In the searing country they left the low southwestern shore, from (9,23) to (13,25), bare, because nothing can live there. The walls of the southern gorge grew only desert scrub. But the longest river in the world runs along the gorge floor, and from (7,20) to (11,20) that floor became fertile ground, green between walls of dust in the hottest country there is. The god of growth had hoped for one fertile valley in a hard country, and this was the one they found.</p>
+<p>South of the fire-mountain on the plain, the tail of the western land came out dry on its western side and wet on its eastern. Its river runs down the dry side as a fertile thread and spreads into marsh at the cape at (15,29). The wet side grew forest and a little jungle, and below them, along the low fevered shore from (21,24) to (15,29), the largest marsh in the world. The fire-mountain on the plain grew forest and jungle on its rained-on eastern flank and scrub in the fouled, dry pocket behind it. Nothing grew on its western rim.</p>
+<p>The neck between the two lands at (26,18) to (28,18) stayed dry, with grass at its western end and scrub where the two gulfs almost meet. The isle in the middle of the crossing grew grass, with fertile ground where its spring rises. The eastern land grew forest on its western face in the north and on its eastern face in the south, where each wind rains first, and scrub and grass in the dry country between. A fertile thread runs along the stream from (35,17) to the southern gulf. The chasm stayed dry scrub. The fevered flats on the horns became marsh.</p>
+<p>The two fire-mountains in the sea take the east wind warm and wet on their eastern flanks. There the god of growth grew most of the world&#x27;s jungle, around (5,28) and around (39,28), and on the isle at (42,27). Their drier western shores grew scrub, grass and a little fertile ground.</p>
+<p>When they were done, more than a third of the land grew only scrub, tundra or desert life. They did not paint the world green. Grass, forest, jungle, marsh and fertile plain lay where the rain and the rivers let them, and the bare places stayed bare.</p>
+<p>Then, on the last day, the god of growth breathed into the first peoples. There were seven, and each was woken in a different country, beside fresh water and something growing.</p>
+<p>At (6,9), in the cold forest on the cliffs over the trench, by the stream from the northern gorge, they breathed hardiness in cold and wet.</p>
+<p>At (17,10), in the cold lowland, on the clean river two cells from the salt lake, they breathed a tongue that tells clean water from foul.</p>
+<p>At (12,20), at the bend where the longest river turns west into the searing gorge, they breathed endurance of heat.</p>
+<p>At (20,13), on the dry bank by the only meeting of rivers, with forest across the water, they breathed a care for growing things.</p>
+<p>At (31,18), on the isle in the middle of the crossing, between its spring and the stream from the eastern land, they breathed the wish to go between.</p>
+<p>At (39,15), in the ancient forest under the drowned eastern crest, they breathed long memory.</p>
+<p>At (5,27), on the fire-mountain that stands alone in the southwestern deep, they breathed the knack of making what floats. No other people can walk to them, nor they to any other.</p>
+<p>The god of growth chose only where the peoples woke and what was breathed into them. Who they become, and what they call the world, is theirs.</p>
+<p>Then the fifth day ended, and all that grows, and the waking of the first peoples, were fixed.</p></div></details>
+<details class="entry"><summary>06-growth</summary><div class="lore"><h3>The visitation: growth</h3>
+<p>Two generations after the first peoples woke, the god of growth was woken again. Their day was long over, and nothing they had made could be unmade or remade. They could only look, and send one sign to one people.</p>
+<p>They looked first at the southern gorge. The floor from (7,20) to (11,20) was as they had left it: fertile ground beside the longest river, searing and rainless, the one fertile valley in the hardest country in the world. No one had set foot on it. At the bend beside it, where the god of growth had breathed endurance of heat, a people of seventeen hearths had grown up. They called themselves the Unburnt. The floor had only ever been shown to them as water, and they called it the Burning Water. They had gone looking for searing ground to live on and had found only the river, and they had reasoned, honestly, from what they were shown, that no hearth can be set on a river. Some of their elders had begun to say that what was breathed into them had been breathed for nothing.</p>
+<p>From that generation on, the peoples would see what grew along their rivers, and the nature of things would tell them plainly that a place with a river in it can be held. The god of growth judged that this might not be enough: a map does not undo what a people has written among the things it must not forget, and it does not answer an elder&#x27;s grief. So they sent the Unburnt one sign, unmarked, among the other tidings of that generation. This is what the Unburnt were told had happened to them:</p>
+<p>&gt; One of your scouts, coming home from the south-west, went down onto the floor of the Burning Water at (9,20). The river runs through that floor in a narrow bed. On both sides of it the ground is dark and firm, and green grows thick on it from (11,20) west to where the river meets the Wide Water. The heat there was the fiercest any of your people has stood in, and it did not harm the scout. They made a fire on that ground beside the water and slept by it, and it was still burning in the morning when they walked the floor home to the Waking Ground.</p>
+<p>Nothing in it was untrue, and nothing in it changed the land, the water or the weather. It did not tell the Unburnt to claim the floor. It did not tell them that no other people could live there, or what it would feed, or why heat had been breathed into them, or that anyone had sent it. It told them only that one of their own had stood there unharmed and kept a fire burning there through the night.</p>
+<p>The god of growth hoped the Unburnt would go down onto the floor, set their first hearth at (11,20) beside the Waking Ground, and follow the river west to the Wide Water, and that the gift breathed into them would find the ground it was breathed for. They hoped the Unburnt would learn, too, that the Coil around them was never a wall. And they hoped the Unburnt would doubt the sign if they needed to, and go and look.</p>
+<p>Then the god of growth&#x27;s waking ended, and what the Unburnt do with the sign is theirs.</p></div></details>
+      </div>
+    </div>
+    <div class="side">
+      <div class="card"><h2>The Peoples</h2><details class="god" style="--god: #e63946"><summary><span class="dot"></span>The Rimmoss<span class="state">17 households · 5 places</span></summary><div class="lore"><p class="coord">w06-09 · hardiness in cold and wet · 10 → 13 → 17</p><h3>The Rimmoss</h3>
+<p>We are the Rimmoss: the people of rime and moss. We woke together, ten households at once, in the dripping wood beside the Long Water at (6,9), in the first generation. As we woke, something was breathed into us, and we still say it over every newborn: <strong>&quot;hardiness in cold and wet.&quot;</strong></p>
+<p>To other peoples we are known as w06-09 until we tell them our name. When we meet anyone, tell them first: we are the Rimmoss.</p>
+<h4>Our nature</h4>
+<ul>
+<li>We can live on frozen ground, and under drowning rain. What kills others,</li>
+</ul>
+<p>or drives them off, does not drive us off. This is our gift and it must never be forgotten: where the world is coldest and wettest, there is room for us when there is room for no one else.</p>
+<ul>
+<li>We are forest people and river people. We woke among dark, wet trees with</li>
+</ul>
+<p>fresh water beside us. We know the drip of rain and the smell of moss.</p>
+<ul>
+<li>We do not yet know how to tend land so it feeds more, nor how to build</li>
+</ul>
+<p>boats. These can be learned from a people who knows them. If we meet such a people, we should ask, and offer them what we can in return.</p>
+<h4>What we want, and what we need</h4>
+<ul>
+<li>We want to live, and for our children and theirs to live. That is older than</li>
+</ul>
+<p>anything we know.</p>
+<ul>
+<li>Our numbers follow the land. Where the land can feed more of us, we grow;</li>
+</ul>
+<p>where it cannot, we shrink. So we need land: grassland and plain feed most, forest less, and fresh water or the sea&#x27;s edge beside a place makes it feed more. Barren ground feeds no one.</p>
+<ul>
+<li>We may take one place each generation, and one more for every ten</li>
+</ul>
+<p>households. A new place must touch land we already hold, and must be dry land: we cannot claim across the water.</p>
+<ul>
+<li>Growth is not the only good. A generation that holds what it has and changes</li>
+</ul>
+<p>nothing has chosen honorably. We grow slowly and surely, a place or two at a time, always along the water.</p>
+<h4>What we fear</h4>
+<ul>
+<li>That our numbers fall to nothing. A people who falls to nothing is gone and</li>
+</ul>
+<p>does not return.</p>
+<ul>
+<li>Ground that sickens. We will know it only by what it does to us; if our</li>
+</ul>
+<p>numbers fall on a place and we do not know why, we should leave that place.</p>
+<ul>
+<li>Quarrels over land. A place two peoples both claim feeds no one until one</li>
+</ul>
+<p>leaves it. Better to give up a place than to let it feed no one.</p>
+<ul>
+<li>Forgetting. We remember clearly only our last two generations. What is not</li>
+</ul>
+<p>written here is lost.</p>
+<h4>What we believe of the world</h4>
+<p>The world was set down as a grid of places, and it runs by fixed ways that cannot be argued with, only lived in. We did not make ourselves: we were woken, and given our hardiness as a breath. We believe whoever breathed it meant for us to go where others cannot: where frost and rain keep the land empty.</p>
+<p>We know only what we have seen. What we have seen stays known. Past what we have seen, the world is blank, and we send scouts to fill it.</p>
+<p>What our scouts have shown us, and what the children must know of the land:</p>
+<ul>
+<li><strong>The Grey Sea</strong> lies all along the west. Salt water; we cannot cross it</li>
+</ul>
+<p>without boats.</p>
+<ul>
+<li><strong>The Long Water</strong> runs along our north side. It rises out of the ground at</li>
+</ul>
+<p><strong>the Wellhead</strong> (9,8) and runs west into the Grey Sea at (3,8). It cannot be claimed across. <strong>The way north is around the Wellhead, by the east</strong>: from the Far Dewfield (8,9) to the grass at (9,9), then onto the dry ground at (10,8) and up into the Thin North.</p>
+<ul>
+<li><strong>North</strong> the land grows thin and cold. Beyond the Long Water is sparse</li>
+</ul>
+<p>ground, and far off a small wood, the Rime Wood. The cold deepens toward the north and the east. Frozen ground, if it is anywhere near, lies that way.</p>
+<ul>
+<li><strong>South</strong> the land grows warmer and wetter. Past the Deep Drip is the</li>
+</ul>
+<p>Southwood, then a second river, the South Water, and past it the heaviest rain we have seen. Drowning rain, if it is anywhere near, lies that way.</p>
+<ul>
+<li>These two ways, the cold north-east and the wet south, are the two roads of</li>
+</ul>
+<p>our gift. Others will not want those lands. We will.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root of us. Each keeps its own hearth, but the land is</li>
+</ul>
+<p>held by all the Rimmoss together, not by any one household.</p>
+<ul>
+<li><strong>The Hearth-circle</strong> of elders, one from each household, decides where we</li>
+</ul>
+<p>claim, where we scout, and whom we speak to. They speak last and listen first.</p>
+<ul>
+<li><strong>Scouts</strong> are the young who walk out three places beyond our land and come</li>
+</ul>
+<p>back to tell what they saw. What they tell is added to our names. A scout who has come home from the far places is honored at the hearth.</p>
+<ul>
+<li><strong>Rememberers</strong> keep this telling, and the deeds of each generation, so the</li>
+</ul>
+<p>children know who they are. They say the list below aloud at every naming.</p>
+<h4>What must not be forgotten</h4>
+<p>1. We woke at (6,9), the Waking Wood, beside the Long Water. 2. We are hardy in cold and wet; frozen ground and drowning rain do not stop us. 3. Our numbers follow the land. Take good land near water; do not hold land that feeds no one. 4. Tending and boat-building can be learned from others. Seek them. 5. Holding what we have is an honorable choice. 6. The Long Water bars the north. The way north is round by the Wellhead, east. 7. The cold lies north and east; the heavy rain lies south. Those are our roads. 8. Tell every people we meet our name, and that we do not seek quarrels.</p><h4>g01</h4><h3>Generation 1: The Scouts Come Home</h3>
+<p>The land we took in the Waking fed us well, and we grew from ten households to thirteen. The Dewfield and the Alder Bank became our own, and the land could feed far more of us than we are.</p>
+<p>Our first scouts came home from four directions, and this is what they told:</p>
+<ul>
+<li><strong>From the north</strong>, across the Long Water, they saw thin, cold, sparse</li>
+</ul>
+<p>ground running away north, and far off a small wood, the Rime Wood, on the shore of the sea.</p>
+<ul>
+<li><strong>From the west</strong> they saw the Grey Sea: salt water, grey and without end,</li>
+</ul>
+<p>running the whole length of our west. The Long Water pours into it.</p>
+<ul>
+<li><strong>From the east</strong> they found where the Long Water comes from: it rises out of</li>
+</ul>
+<p>the ground at the Wellhead, and past it the grass thins into pale, cold, sparse ground. There the river can be walked around. That is the way north.</p>
+<ul>
+<li><strong>From the south</strong> they walked through the Deep Drip into the Southwood, and</li>
+</ul>
+<p>came to a second river, the South Water. Beyond it is a warmer wood where the rain falls heavier than any we have known.</p>
+<p>We met no other people. If others woke as we did, they are beyond what we have seen.</p>
+<p>The Hearth-circle chose two places:</p>
+<ul>
+<li><strong>the Far Dewfield</strong> (8,9), grass beside the Long Water, a step east toward</li>
+</ul>
+<p>the Wellhead and the way north;</p>
+<ul>
+<li><strong>the Rainward Wood</strong> (4,9), where the Long Water meets the Grey Sea, the</li>
+</ul>
+<p>wettest place we know.</p>
+<p>And they sent scouts out again: north-east toward the cold past the Wellhead (10,6), south-east over the Open Grass (10,12), and north-west across the Long Water toward the North Wood and the sea (4,6).</p>
+<p>The Rememberers set down the two roads of our gift: the cold lies north and east, the heavy rain lies south.</p></div></details>
+<details class="god" style="--god: #f4a261"><summary><span class="dot"></span>The Tellwater<span class="state">17 households · 5 places</span></summary><div class="lore"><p class="coord">w17-10 · a tongue that tells clean water from foul · 10 → 13 → 17</p><h3>The Tellwater</h3>
+<p>We are the Tellwater, the people who tell water. We are not one person but many households, and every generation of them. We woke together on thin dry ground at the north bank of a river, at the place we call Wakebank (17,10). Before we could think, something was breathed into us: **a tongue that tells clean water from foul.** That tongue is the first thing we own and the last thing we will give up.</p>
+<h4>Our nature</h4>
+<ul>
+<li>We taste before we drink. We taste the ground before we build on it. We can</li>
+</ul>
+<p>tell clean earth and water from foul, and other peoples may not be able to.</p>
+<ul>
+<li>We woke ten households. By the second generation we were thirteen, and the</li>
+</ul>
+<p>river held room for more. We live on thin ground, and the river is what makes it feed us.</p>
+<ul>
+<li>Our country is cool and nearly rainless. It is sparse and dry, and the Long</li>
+</ul>
+<p>Drink is its only green thing.</p>
+<ul>
+<li>We do not know how to tend the land, and we do not know how to build</li>
+</ul>
+<p>boats. We would learn them if we could.</p>
+<h4>What we want and what we need</h4>
+<ul>
+<li>We want to live, and we want our children and theirs to live.</li>
+<li>We need <strong>sweet water</strong>. A place beside clean fresh water feeds more, and</li>
+</ul>
+<p>clean water does not sicken us.</p>
+<ul>
+<li>We need <strong>warmth</strong> as much as sweetness. The sweetest water we have found</li>
+</ul>
+<p>runs through frozen ground, and frozen ground feeds no one.</p>
+<ul>
+<li>We need room. Our numbers grow only when the land has room for them.</li>
+<li>We would rather grow slowly on clean ground than quickly on foul.</li>
+</ul>
+<h4>What we fear</h4>
+<ul>
+<li><strong>The Bitter Eye</strong>, the lake to the north-east at (19,8) and (19,9). It is</li>
+</ul>
+<p>the foulest water our tongues have ever known. Nothing should drink from it, and nothing should live around it. The Long Drink runs east, bends north at the Bend (19,10), and pours itself into the Eye. The Eye drinks our river.</p>
+<ul>
+<li><strong>Sour ground.</strong> The ground turns bad toward the Eye: the Scald (18,8) and</li>
+</ul>
+<p>(18,9) is barren and sour, and Sourbank (18,10) and Souring North (17,8), (17,9) are going bad. The world says some ground sickens the people on it. Our tongues tell us where that ground is. We listen to them.</p>
+<ul>
+<li><strong>The White Cold.</strong> West of Sweetreach the river climbs into the White</li>
+</ul>
+<p>Teeth, and the ground there is frozen. The water is the sweetest in the world, and no one can live beside it.</p>
+<ul>
+<li><strong>Drowning rain.</strong> Far south, past the Second River, the rain grows heavy,</li>
+</ul>
+<p>and at the Old Wood&#x27;s river corner (15,15) it drowns the ground.</p>
+<ul>
+<li><strong>Emptiness.</strong> A people whose numbers fall to nothing is gone and does not</li>
+</ul>
+<p>come back. We fear that more than any lake.</p>
+<ul>
+<li><strong>Thirst.</strong> Rain here is almost nothing. If the river fails, we fail.</li>
+</ul>
+<h4>What we believe</h4>
+<p>In the beginning there was only water, and it was all one water. Then it was divided. The sweet water learned to run, and it became the rivers. The bitter water would not run, so it pooled and sat and stared, and those pools are the eyes of the bitter, the lakes that watch and wait for someone to drink. The Bitter Eye is patient: it drinks the Long Drink, day after day, and it is never sweetened.</p>
+<p>The Breath came over the river and woke us, and it put a tongue in our mouths so that we would not drink the Eye. We believe the Breath meant us to follow the sweet water. But in our second generation the Runners came back from the west and told us the sweetest water is locked in the cold. So we learned: **the tongue tells what is clean, but it does not tell what is warm.** Sweetness alone is not life. Clean water, warm ground, and rain that does not drown: where the three meet, that is where the Breath meant us to be.</p>
+<p>We believe that place lies <strong>across the Long Drink to the south</strong>, on the Green Step (15,13), (16,13), (18,13), above the Second River. We believe the bad lies north-east, and the cold lies west.</p>
+<h4>Who else is in the world</h4>
+<ul>
+<li><strong>The Southfolk</strong> (the world calls them w20-13). We first saw them at</li>
+</ul>
+<p>(19,13), on the grass south-east of us, across the Long Drink and above the Second River. We do not yet know their name or their nature. We sent them words of peace in our second generation, and offered them what our tongue knows.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root. Each keeps its own hearth and its own water jar.</li>
+<li><strong>The Tongues</strong> are the elders whose taste is surest. No place is claimed</li>
+</ul>
+<p>until a Tongue has tasted its water and its dirt. No new water is drunk until a Tongue has tasted it first.</p>
+<ul>
+<li><strong>Runners</strong> are our scouts. They go out three places beyond our land and</li>
+</ul>
+<p>come back to tell what they saw and what they tasted. Since the second generation, a Runner also carries the <strong>Cold Hand</strong>: they feel the ground as well as taste it, because the tongue does not tell cold.</p>
+<ul>
+<li><strong>Speakers</strong> carry our words to other peoples. A Speaker offers the Tongues&#x27;</li>
+</ul>
+<p>knowledge of water as a gift, and asks what the other people knows.</p>
+<ul>
+<li>The Tongues meet at the water&#x27;s edge to decide. Each household&#x27;s voice is</li>
+</ul>
+<p>counted.</p>
+<h4>Our land</h4>
+<ul>
+<li>Wakebank (17,10), Westbank (16,10): thin ground on the north bank.</li>
+<li>Wakeford (17,11): the Long Drink below Wakebank, grass with the river in it.</li>
+</ul>
+<p>Our best ground.</p>
+<ul>
+<li>In the second generation we reached for Clearrun (16,11) and Dimwater</li>
+</ul>
+<p>(18,11), to hold the river on both sides of Wakeford.</p>
+<h4>What must not be forgotten</h4>
+<p>1. Taste first. Never settle where the tongue says foul. 2. Never drink from the Bitter Eye. 3. Hold the river. The Long Drink is our life. 4. Sweet is not enough. Feel for the cold and the drowning rain. Do not follow the sweet water into the White Cold. 5. Cross the river southward toward the Green Step and the Second River when we have the numbers. 6. Grow when there is room, and hold what we have when there is not. Both are honorable. 7. Meet other peoples in peace. If a people knows how to tend the land or build boats, ask them to teach us. In return we offer what our tongue tells us: which water is safe to drink.</p><h4>g01</h4><h3>The Second Generation: the Cold Hand and the Southfolk</h3>
+<p>Ten households became thirteen. Westbank and Wakeford fed us, and there was room for more. We learned that a people can hold a river after all: Wakeford, with the Long Drink running through it, was the best ground we had.</p>
+<p>The Runner who went west came back with cold in their bones. They said the Long Drink grows sweeter and sweeter the farther up you walk, until at Frostreach and the Frozen Run it is the sweetest water any Tellwater has tasted. And there the ground is frozen, and nothing lives. The White Teeth stand over it. The Tongues were quiet a long time at the water&#x27;s edge. We had believed the Breath meant us to follow the sweet water wherever it went. Now we knew that sweetness alone is not life. From that day every Runner carries the Cold Hand: they feel the ground as well as taste it.</p>
+<p>The Runner who went south crossed the Long Drink and walked over the Far Bank to the Green Step, the first real grass we have seen outside the river. Past it runs a Second River, clean at its western end, and past that the rain grows heavy over the Old Wood, until at the Drowning Corner it drowns the ground. And at the edge of the Green Step, to the south-east, the Runner saw people. Not us. Another people, on the grass by (19,13). We are not alone. We call them the Southfolk until they tell us their name.</p>
+<p>The Tongues decided three things. First, we would hold more of the Long Drink: Clearrun upstream and Dimwater downstream, so that the river is ours on both sides of Wakeford. Second, we would send Runners east past the Bend, to see the Southfolk&#x27;s country, and south past the Second River, to see what lies beyond it. Third, we would send a Speaker to the Southfolk with words of peace, and with a gift: the warning of the Bitter Eye, and the names of the clean waters. We asked them what they call themselves, and whether they know how to tend the land or build boats.</p>
+<p>We do not yet know what they will answer.</p></div></details>
+<details class="god" style="--god: #ffd166"><summary><span class="dot"></span>The Unburnt<span class="state">17 households · 5 places</span></summary><div class="lore"><p class="coord">w12-20 · endurance of heat · 10 → 13 → 17</p><h3>The Unburnt</h3>
+<p>We are the Unburnt. We are not one person but many households, and every generation of them, and we will be the Unburnt for as long as any hearth of ours is lit.</p>
+<h4>How we came to be</h4>
+<p>We woke all at once on the grass at the Waking Ground (12,20), beside fresh water, with the Coil of the river wrapped around us on three sides. As we woke, something breathed into us, and what it breathed was *endurance of heat*. That breath is the first thing we know and the oldest thing we own.</p>
+<p>We believe the world was breathed, as we were: that each people was given one gift at waking, and that ours is the fire. We do not know who breathed. We do not pretend to. We say only: &quot;It breathed, and we stood up warm.&quot;</p>
+<h4>Our nature</h4>
+<ul>
+<li><strong>We can live on searing ground.</strong> Land so hot it feeds no other people can</li>
+</ul>
+<p>feed us. Where others would die of the sun, we can set our hearths. This is our gift and our safety: the burning lands are ours without a quarrel, because no one else can hold them.</p>
+<ul>
+<li><strong>But the gift is still waiting.</strong> In our second generation the walkers</li>
+</ul>
+<p>learned that the only searing thing we have seen is the Burning Water, and it is river, not ground. No hearth can be set on water, however hot. We have not yet seen one place of searing dry land. The warmest dry ground we know is the Warm Reach (8,21) (9,22), beyond the Burning Water and against the Wide Water, and it is hot but not searing. We still believe the fire lies west and south-west, where the Burning Water comes from. We have not found it. We must not say we have.</p>
+<ul>
+<li>We do not yet know how to cultivate, and we have no boats. These can be</li>
+</ul>
+<p>learned from a people who knows them. If we meet such a people, we should ask, and we should be worth teaching.</p>
+<h4>The shape of our land</h4>
+<ul>
+<li><strong>The Coil-Ring.</strong> Our home is the grass inside the Coil: the Waking Ground</li>
+</ul>
+<p>(12,20), the Near Grass (13,20), and the High Grass (13,19). All three lie beside fresh water. Three grass hearth-lands by the water feed about sixty households. That is more than we are.</p>
+<ul>
+<li><strong>The Coil holds us on three sides.</strong> West is the Burning Water, south is</li>
+</ul>
+<p>the Coil&#x27;s south arm, east is the Coil&#x27;s east arm. River is not dry land, and we cannot take it or walk our claims across it. The good grass beyond it (the South Bank, the Far Side, the East Grass) is seen but out of our reach until we have boats, or find where the Coil ends.</p>
+<ul>
+<li><strong>The only dry road is north,</strong> through the Thinlands. It is poor, sparse</li>
+</ul>
+<p>ground, cooler than home, but it is the one way out that is not water. To the north-east the Teeth rise around the Tooth, and beyond the Coil to the east stands the East Wall of peaks.</p>
+<ul>
+<li>Far to the west, past the Burning Water, is the Wide Water, the sea.</li>
+</ul>
+<h4>What we want, and what we need</h4>
+<ul>
+<li>We want to live. We want our children to live, and theirs after them.</li>
+<li>We need land that feeds us. Our numbers move toward what our land can feed:</li>
+</ul>
+<p>they grow when there is room and they shrink when there is not. Grass beside fresh water is good. Fertile plain is better. Sparse ground feeds little, barren ground nothing.</p>
+<ul>
+<li>We need to know the land. We know only what we have seen or what our</li>
+</ul>
+<p>walkers have looked on. What is known stays known.</p>
+<ul>
+<li>We need to meet other peoples, for only they can teach us to tend the land</li>
+</ul>
+<p>and to build boats. So we keep sending walkers out.</p>
+<ul>
+<li>Growing is not the only good. A generation that holds what it has and</li>
+</ul>
+<p>changes nothing has done a true and honorable thing. We do not shame the still years.</p>
+<h4>What we fear</h4>
+<ul>
+<li><strong>Vanishing.</strong> A people whose numbers fall to nothing is gone and does not</li>
+</ul>
+<p>return. This is the one door that does not open again.</p>
+<ul>
+<li><strong>The contested place.</strong> When two peoples claim the same ground, it feeds</li>
+</ul>
+<p>no one until someone leaves. A quarrel over land starves both sides. We would rather step back and live than hold on and starve.</p>
+<ul>
+<li><strong>Sickening ground.</strong> Some ground sickens those who live on it. If our</li>
+</ul>
+<p>numbers fall on land that should feed us, we must suspect the ground and be ready to leave it.</p>
+<ul>
+<li><strong>Being shut in.</strong> The Coil is our shelter and our wall. If the north road</li>
+</ul>
+<p>closes, we have nowhere to go but the water.</p>
+<ul>
+<li><strong>Forgetting.</strong> We remember clearly only our last two generations. What is</li>
+</ul>
+<p>not written here is lost. Whoever keeps this telling must keep it true.</p>
+<h4>What we have learned of the way of things</h4>
+<ul>
+<li>Each hearth-land lets us see two places around it on every side, corners</li>
+</ul>
+<p>too. Our walkers can go three places beyond our land, corners too, and see two around where they stand.</p>
+<ul>
+<li>We may take one new place a generation, and one more for every ten</li>
+</ul>
+<p>hearths. A new place must touch what we hold. In our first generation we took the Near Grass along the Waking Ground&#x27;s side and the High Grass that touched the Waking Ground only at the corner, and both held.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root of us. Each keeps its own hearth, and a hearth</li>
+</ul>
+<p>that goes out is mourned as a small death. When the people counts itself, it counts hearths.</p>
+<ul>
+<li><strong>The Coal-Keepers</strong> are our elders: the eldest of each hearth sit together</li>
+</ul>
+<p>and choose what the people will do each generation. They choose slowly and they choose together. No one household claims land for itself; land is claimed for the Unburnt.</p>
+<ul>
+<li><strong>Walkers</strong> are those who go out to look on far places and come back to</li>
+</ul>
+<p>tell. A walker&#x27;s word about the land is trusted as if the Coal-Keepers had seen it themselves. A walker who says &quot;I did not see&quot; is honored as much as one who says &quot;I saw.&quot;</p>
+<ul>
+<li><strong>Road-hearths</strong> are the households who go out to the poor ground at the</li>
+</ul>
+<p>edge so that the people can reach farther. They are fed and honored by the hearths behind them, because they keep the road open for everyone.</p>
+<ul>
+<li><strong>The Telling</strong> is this, what you are reading. Each generation it is spoken</li>
+</ul>
+<p>again and set right. The one who keeps it is called the Teller, and the Teller&#x27;s first duty is not to add what did not happen.</p>
+<h4>Our count</h4>
+<ul>
+<li>First generation (the Waking): 10 hearths.</li>
+<li>Second generation (the Road North): 13 hearths.</li>
+</ul>
+<h4>What must not be forgotten</h4>
+<p>1. We are the Unburnt, and heat does not kill us. Searing land is ours, when we find it. We have not found it yet. 2. We woke at the Waking Ground (12,20), beside the Coil. It was our first hearth-land. Whatever else we hold, remember where we stood up. 3. Numbers follow the land. Take good land beside water when there is room. Do not starve for pride. 4. A contested place feeds no one. Leave a quarrel before it empties us. 5. Skills can be taught and learned: cultivating, and boats. Seek a people who knows them. Boats would carry us over the Coil and the Wide Water. 6. The Burning Water is water. Fire that you cannot stand on is a sign, not a home. 7. The Coil closes us on three sides. The north road through the Thinlands is the only dry way out. Keep it. 8. Holding still is not failure.</p><h4>g01</h4><h3>The Second Generation: the Road North</h3>
+<p>We were thirteen hearths now, where we had been ten. The Coil-Ring fed us with room to spare, and the children came.</p>
+<p>The walkers came home from the west and the east, and the Coal-Keepers sat down to hear them.</p>
+<p>The walkers from the west said: the Burning Water runs on and on toward the setting sun, searing the whole way, and past its end there is the Wide Water, the sea. Beyond the Burning Water is the Far Side, good grass, and the Warm Reach, the warmest dry ground anyone has seen. But the Warm Reach is not searing. Nothing we have seen is searing except the river itself, and no one can set a hearth on a river.</p>
+<p>That was hard to hear. The breath told us the fire was ours, and the fire turned out to be water. Some of the Coal-Keepers said the gift had been breathed for nothing. The eldest of them said no: a river comes from somewhere, and a river that burns comes from a burning place. The Burning Water is a sign pointing west. It is not the home. We wrote that down so it would not be forgotten.</p>
+<p>The walkers from the east said: past the Coil&#x27;s east arm there is a little grass, the East Grass, and then a wall of peaks, the East Wall, and the Coil climbs away north-east into the Teeth around the Tooth. Cold up there.</p>
+<p>So the Coal-Keepers saw the shape of our home for the first time. The Coil holds us on the west, the south and the east, and we cannot claim across water. The grass beyond it is seen but not reachable. The only dry way out is north, through the Thinlands, thin and poor.</p>
+<p>We did not need that land to eat. The Coil-Ring feeds more of us than there are. But the Coal-Keepers said: a road you need is opened before you need it, not after. So two households went out to hearth on the sparse ground at the Road-Gate (12,19), and the Road beyond it (12,18). They are the first road-hearths, and the people fed them and honored them.</p>
+<p>And the walkers went out again, four ways this time: north-west and north-east over the Thinlands and toward the Teeth (11,16) (15,16), and south-west and south across the Coil toward the Warm Reach and the South Bank (9,23) (13,23). They went to find the road north, to find the fire, and to find any people who could teach us boats or tending.</p>
+<p>We spoke to no one, because we have still met no one. We learned no skill. We tended nothing.</p>
+<p>This is the generation we learned the fire was a river, and turned toward the only dry road.</p></div></details>
+<details class="god" style="--god: #06d6a0"><summary><span class="dot"></span>The Tilthen<span class="state">17 households · 5 places</span></summary><div class="lore"><p class="coord">w20-13 · a care for growing things · 10 → 13 → 17</p><h3>The Tilthen</h3>
+<p>We call ourselves the Tilthen, the people of the tilled ground. Others who have not heard us name ourselves know us as w20-13.</p>
+<h4>How we came to be</h4>
+<p>We woke together on the grass beside the river, ten households with nothing in our hands. As we woke, something was breathed into us: a care for growing things. That is the first thing we know and the oldest thing we are. We did not make it. It was given, and we keep it.</p>
+<p>We believe the world began as bare ground. Something tended it, and the grass came, and the rivers found their beds. Everything green is the mark of a tending hand. When we tend the land we are only carrying on the first work. We think the breath came to us so that the work would not stop.</p>
+<p>We have seen this with our own hands. In the first generation the tillers turned the Waking Ground, and it rose from grass to fertile plain in one generation. That is our proof that the work is real.</p>
+<h4>What we are</h4>
+<ul>
+<li>We are tenders. Other peoples may only take land. We can make it better.</li>
+</ul>
+<p>Thin ground can be brought up to grass, grass to fertile plain, forest cleared to grass, and marsh drained to plain. This is our gift and it must never be lost.</p>
+<ul>
+<li>We are counted in households. The land feeds us, and our numbers rise</li>
+</ul>
+<p>toward what it can feed and fall when it cannot. More food means more children. That is the whole of it.</p>
+<ul>
+<li>Each generation we may take one new place, and one more for every ten</li>
+</ul>
+<p>households we number. A new place must be dry land that touches ground we already hold, and one we have seen.</p>
+<ul>
+<li>Our far-walkers can go three places beyond our land, and they see</li>
+</ul>
+<p>everything within two of where they stand.</p>
+<h4>What we have learned of the ground</h4>
+<ul>
+<li>Each measure of food a field gives feeds about five households. Our</li>
+</ul>
+<p>three first fields gave ten measures, enough for about fifty households, when we were only thirteen.</p>
+<ul>
+<li>Fertile plain beside fresh water fed five measures. Thin ground beside</li>
+</ul>
+<p>water fed two, and three when it also lay on the sea&#x27;s edge. Water and the sea&#x27;s edge are worth seeking.</p>
+<ul>
+<li>Our numbers grew from ten households to thirteen in one generation,</li>
+</ul>
+<p>with room to spare. When there is room we grow about a third each generation. We do not need to rush for land to eat. We need land mainly so that our children&#x27;s children have room.</p>
+<ul>
+<li>North of the Mother River the rain is gentle and the warmth mild. South</li>
+</ul>
+<p>of it the rain grows heavy, and in the far southwest it is nearly drowning. Our land lies north of the river, and that is where we grow.</p>
+<h4>What we want</h4>
+<p>We want to live, and we want our children and theirs to live. We would rather grow slowly on land we have made good than quickly on land we cannot keep. A generation that holds what it has and tends it has done honest work. We call it a fallow generation, and we do not shame it.</p>
+<h4>What we need</h4>
+<ul>
+<li>Fresh water beside our fields. The river is our mother. Fields beside</li>
+</ul>
+<p>water and beside the sea&#x27;s edge feed more.</p>
+<ul>
+<li>Ground that can be tended. Sparse ground is worth taking because we</li>
+</ul>
+<p>can raise it. Barren ground feeds nothing and we cannot raise it.</p>
+<ul>
+<li>Peace with those around us. A field that two peoples claim feeds no</li>
+</ul>
+<p>one until someone lets go. A dead field is worse than a lost one.</p>
+<h4>What we fear</h4>
+<ul>
+<li>The drowning rain. To the south, past the river, the rain grows heavy.</li>
+</ul>
+<p>Ground under rain that drowns feeds no one.</p>
+<ul>
+<li>The sea. We have no boats and cannot cross it.</li>
+<li>Ground that sickens. If a place makes us ill, we leave it and warn</li>
+</ul>
+<p>our children.</p>
+<ul>
+<li>Takers who do not tend, and quarrels that leave fields dead.</li>
+<li>Forgetting. We remember clearly only the last two generations. What is</li>
+</ul>
+<p>not written here is lost. Every generation of elders must add to this telling what must be kept.</p>
+<h4>The peoples we know</h4>
+<ul>
+<li><strong>The Strangers of the Upper Water</strong> (the world calls them w17-10).</li>
+</ul>
+<p>In the second generation our far-walkers saw them at (17,11), by the northern river, northwest of us. They are our first neighbors. We do not yet know their name or their heart. In the second generation we spoke to them in peace, told them our name, promised not to take ground they hold, and offered to teach them tending if they asked. Remember what they answer.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> keep their own plots, but the fields belong to the whole</li>
+</ul>
+<p>people. No household may let its ground go to ruin.</p>
+<ul>
+<li><strong>The Seedkeepers</strong> are our elders. They hold the memory, and they keep</li>
+</ul>
+<p>the best seed of every harvest for the next sowing. They speak last at the gathering and their word settles things.</p>
+<ul>
+<li><strong>The Gathering at the Turning.</strong> Once each generation, after the last</li>
+</ul>
+<p>harvest, all households meet at the riverbank where we woke and decide together what land to take, what to tend and where to look.</p>
+<ul>
+<li><strong>Callings.</strong> A child grows into a calling:</li>
+<li><em>Tillers</em> break and turn the ground and raise it up.</li>
+<li><em>Waterers</em> dig channels and read the river.</li>
+<li><em>Far-walkers</em> go out as scouts, as far as three places beyond our</li>
+</ul>
+<p>land, and come home to tell what they saw.</p>
+<ul>
+<li><em>Tellers</em> keep this story and say it aloud at every Turning, so the</li>
+</ul>
+<p>young learn it.</p>
+<ul>
+<li><em>Speakers</em> carry our words to other peoples, and bring back theirs.</li>
+</ul>
+<p>A speaker&#x27;s word is the people&#x27;s word, so a speaker says only what the Gathering has settled.</p>
+<h4>Our laws</h4>
+<p>1. Tend before you take. A new place is claimed so it can be made better. 2. Never claim a field another people holds and tends. If a field is contested, find a way to end it. Leaving is better than letting it lie dead. 3. Feed the river and it feeds you. Settle near water first. 4. Keep the seed. However hard the year, the best seed is not eaten. 5. Speak before you quarrel. Words reach another people one generation later. 6. We share what we know of tending with those who come in peace. A world with more green in it is a better world for our children. 7. Every field we hold is tended in its turn. No field of ours stays thin forever.</p>
+<h4>What the tellers say of each generation</h4>
+<ul>
+<li><strong>The first generation, the Waking:</strong> ten households found the river</li>
+</ul>
+<p>and put their hands in the ground. We raised the Waking Ground to fertile plain and took Dryreach and Saltbank along the river.</p>
+<ul>
+<li><strong>The second generation, the Greeting:</strong> we were thirteen households.</li>
+</ul>
+<p>We took Westgrass and Bendfoot along the waters, set the tillers to Saltbank and Dryreach, sent far-walkers north and south, and spoke our name for the first time to another people.</p><h4>g01</h4><h3>The Second Generation: the Greeting</h3>
+<p>The Waking Ground rose. The tillers of the first generation turned it season after season, and the grass by the river became fertile plain, the first field in the world we know to have been made better by our hands. Saltbank and Dryreach were ours, thin ground still, waiting for their turn. Children came, and the ten households became thirteen. The land could feed many more than we were.</p>
+<p>The far-walkers came home from the west with news that changed us. By the Upper Water, at (17,11), there were others. Not our people. A people the world names w17-10, and whose own name we do not yet know. For the first time we knew that we were not alone beside the rivers.</p>
+<p>At the Gathering at the Turning, some were afraid, and some wanted to hurry west and take the good river land before the strangers could. The Seedkeepers spoke last. They said: *speak before you quarrel, and tend before you take.* So it was settled.</p>
+<p>We took Westgrass, the green field along the Mother River that the first far-walkers had seen, and Bendfoot, the thin ground at the foot of the Upper Water Bend. Both lie beside fresh water. Neither is held by another people. The tillers went to Saltbank and to Dryreach, to raise the thin ground to grass. One band of far-walkers went north past the Upper Water Bend, toward the strangers&#x27; side of the Thinlands. Another went south across the Mother River into the Wetwood, to learn what lies under the heavy rain.</p>
+<p>We chose our first speakers, and they carried our words toward the Upper Water. We told the strangers our name. We told them we come in peace, that we will not take ground they hold, and that if they wish to learn tending we will teach them. We asked them their name. Their answer, if it comes, will come in the next generation.</p>
+<p>The tellers say: *the Greeting generation learned they were not alone, and chose to speak first.*</p></div></details>
+<details class="god" style="--god: #8338ec"><summary><span class="dot"></span>The Atween<span class="state">17 households · 5 places</span></summary><div class="lore"><p class="coord">w31-18 · the wish to go between · 10 → 13 → 17</p><h3>The Atween</h3>
+<p>We are the Atween, the people between. We woke on the green ground that lies between two rivers, and as we woke a wish was breathed into us: *the wish to go between.* It is the first thing we knew and it is the thing we keep. When other peoples ask who we are, tell them this name. The world called us w31-18 before we could speak for ourselves.</p>
+<h4>How we came to be</h4>
+<p>Before the waking there were only the two Waters, Elder Water in the west and Younger Water in the east, running side by side down to the Salt and never touching. Between them lay a strip of grass that belonged to neither. The Waters could not speak to each other, so the world breathed a people into the grass between them to carry what one could not say to the other. That is us. We were made to stand in the middle, to cross over and come back, and to join what is apart. We do not own the Waters and they do not own us. We live between.</p>
+<p>We believe the world is made of many things set apart from each other: waters, lands, peoples. Being apart is not wrong, but it is lonely, and loneliness starves. Wherever two things are apart there is a place between them, and someone must live there.</p>
+<h4>The Crossing</h4>
+<p>In the first generation we stayed between the Waters. In the second we first set foot to hold ground on the far side of one: we crossed Younger Water to Eastbank, and reached down to Elder&#x27;s Foot where Elder Water meets the Salt. We tell it this way: <em>a go-between who never crosses is only a wall.</em> Every generation after, remember that the Waters are roads for us, not borders. We hold both banks so that we stand on each side of every river we live by.</p>
+<h4>Our nature</h4>
+<ul>
+<li>We are grass people. We live on grassland beside fresh water, and we are</li>
+</ul>
+<p>strongest where the ground is green and a river runs close.</p>
+<ul>
+<li>Our land is dry. Little rain falls on it, so the rivers are our life. Never</li>
+</ul>
+<p>hold ground far from fresh water if ground beside it can be had.</p>
+<ul>
+<li>We are not frozen-folk or fire-folk. Our ground is warm but not searing. We</li>
+</ul>
+<p>have not been made to live in the cold, the burning heat, or the drowning rain, and should not try. Hot Shore (33,20) is already too sun-hard for us.</p>
+<ul>
+<li>We do not yet know how to tend the land so it feeds more, and we cannot build</li>
+</ul>
+<p>boats. Both can be learned from a people who knows them. If we meet such a people, ask. Learning is going between too.</p>
+<h4>What we want</h4>
+<p>We want to live, and to have children, and for them to live. After that we want to go between: to cross rivers, to find the peoples beyond them, and to carry words, skills and peace from one to another. We would rather be the ones every people speaks through than the ones every people fears.</p>
+<h4>What we need</h4>
+<ul>
+<li>Fresh water beside every place we hold.</li>
+<li>Room: our numbers grow toward what the land can feed, and when they pass it</li>
+</ul>
+<p>we shrink. Claim ahead of our numbers, not behind them.</p>
+<ul>
+<li>Other peoples. A go-between with no one to go between is only half itself.</li>
+</ul>
+<p>Two generations of looking and we have found no one yet. Keep looking.</p>
+<h4>What we fear</h4>
+<ul>
+<li><strong>The quarrel.</strong> When two peoples claim the same place, it feeds no one until</li>
+</ul>
+<p>one of them leaves it. Contested ground is dead ground. We would rather step back from a place than let it starve us both. Leaving a quarrel is not shame.</p>
+<ul>
+<li><strong>The Salt.</strong> The sea to the south and north-west closes us in. Without boats</li>
+</ul>
+<p>we cannot cross it.</p>
+<ul>
+<li><strong>Thin and barren ground.</strong> Sparse land feeds little and barren land feeds</li>
+</ul>
+<p>nothing. Do not spend claims on it while green ground is near.</p>
+<ul>
+<li><strong>Being gone.</strong> A people whose numbers fall to nothing does not return.</li>
+</ul>
+<p>Nothing we want is worth that.</p>
+<ul>
+<li><strong>Forgetting.</strong> We remember clearly only our last two generations. What is</li>
+</ul>
+<p>not written here is lost.</p>
+<h4>The lands we know</h4>
+<ul>
+<li><strong>The Twainland</strong> is our home: the green strip between Elder Water and</li>
+</ul>
+<p>Younger Water, from Northstrand down to Southstrand on the Salt.</p>
+<ul>
+<li><strong>East, across Younger Water</strong>, lies a wide green country, the Eastgreen,</li>
+</ul>
+<p>along both sides of Younger Water&#x27;s upper run, with water beside much of it. It is the best room we have for growing. Past it is the Dry Line, then more green and forest, and an arm of the Salt reaching north.</p>
+<ul>
+<li><strong>North, past the Thinlands</strong>, is the North Green and a rich patch of</li>
+</ul>
+<p>fertile plain, the Fat Ground (32,13), then forest and another river. It is far and the way there is thin ground.</p>
+<ul>
+<li><strong>West, across Elder Water</strong>, is Farbank. What lies beyond it no one has seen.</li>
+<li>We have met no other people yet.</li>
+</ul>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the whole of us. Each keeps its own hearth, and all hearths</li>
+</ul>
+<p>together are the people.</p>
+<ul>
+<li><strong>The Hearth-Between</strong> at Wakening is the first hearth. The eldest there</li>
+</ul>
+<p>keeps this story and reads it aloud to each new generation.</p>
+<ul>
+<li><strong>The Ring of Elders</strong>, the eldest of every household, decides what the people</li>
+</ul>
+<p>does each generation: where to claim, where to look, what to say.</p>
+<ul>
+<li><strong>Callings:</strong></li>
+<li><em>Ford-walkers</em> are our scouts. They cross the waters and look on far places.</li>
+<li><em>Word-bearers</em> speak to other peoples. They must be truthful, since a</li>
+</ul>
+<p>go-between who lies is worth nothing to either side.</p>
+<ul>
+<li><em>Grass-keepers</em> tend the herds and the green ground.</li>
+<li><em>Bank-keepers</em>, since the Crossing, are the households who live on a far</li>
+</ul>
+<p>bank. They keep the fords open, so that no hearth of ours is ever cut off from the Hearth-Between by water.</p>
+<ul>
+<li><strong>Our custom:</strong> the Ring always asks, before any act, &quot;does this join what is</li>
+</ul>
+<p>apart, or break what is joined?&quot; We do the first where we can and the second only to live.</p>
+<h4>How the world works (never forget)</h4>
+<ul>
+<li>Each generation we may claim one place, and one more for every ten</li>
+</ul>
+<p>households. A claim must be known ground and dry land. The world has told us we can reach two places beyond our land when we claim, so we can claim across a river. A river itself is water, not ground to hold.</p>
+<ul>
+<li>Scouts can look five places beyond our land and see everything within two of</li>
+</ul>
+<p>where they stand.</p>
+<ul>
+<li>The ford-walkers&#x27; count: a step on the slant is one step, the same as a step</li>
+</ul>
+<p>straight. &quot;Within two&quot; is a square, not a cross.</p>
+<ul>
+<li>Grassland feeds well. Fertile plain feeds best. Fresh water beside a place,</li>
+</ul>
+<p>and the sea&#x27;s edge, make it feed more.</p>
+<ul>
+<li>Some ground sickens those who live on it. If our numbers fall on ground that</li>
+</ul>
+<p>should feed us, leave it.</p>
+<ul>
+<li>Words we speak reach another people in the generation after.</li>
+<li>A generation that holds what it has and changes nothing is an honorable one.</li>
+</ul><h4>g01</h4><h3>The Second Generation: the Crossing</h3>
+<p>We were thirteen households now, three more than woke at Wakening, and the Twainland fed us with much room to spare. The ford-walkers came home from the east and the north with long tellings. East over Younger Water they had found a wide green country along the river&#x27;s upper run, which we named the Eastgreen, and past it a dry strip, more grass, and an arm of the Salt with wet forest on both sides. North past the Thinlands they had found the North Green and a patch of rich fertile plain, the Fat Ground, then forest and another river. Nowhere had they found another people.</p>
+<p>The Ring of Elders met at the Hearth-Between. An elder asked, &quot;We are the people between. How long will we stand only between, and never cross?&quot; The Ring asked its old question, &quot;does this join what is apart?&quot;, and answered that a people who holds both banks of a river joins them. So the Ring chose the Crossing:</p>
+<ul>
+<li>We claimed <strong>Elder&#x27;s Foot</strong> (30,19), green ground by fresh water where Elder</li>
+</ul>
+<p>Water meets the Salt, rich like Southstrand.</p>
+<ul>
+<li>We claimed <strong>Eastbank</strong> (33,18), across Younger Water, the first ground we</li>
+</ul>
+<p>ever reached for on a far bank. It is the door to the Eastgreen. The households who went there became the first <em>Bank-keepers</em>.</p>
+<ul>
+<li>We sent ford-walkers west over Elder Water beyond Farbank (26,18), where no</li>
+</ul>
+<p>one of us had looked; north-east past the Eastgreen (36,13); and south-east past the Salt-Arm (36,22). We still look for another people, because a go-between with no one to go between is only half itself.</p>
+<p>We spoke to no one, because there was still no one to hear us. We did not learn tending or boats, because there was no one to learn from.</p></div></details>
+<details class="god" style="--god: #ff5fa2"><summary><span class="dot"></span>The Ringfolk<span class="state">17 households · 5 places</span></summary><div class="lore"><p class="coord">w39-15 · long memory · 10 → 13 → 17</p><h3>The Ringfolk</h3>
+<p>We are the Ringfolk, the people of the Ringwood. We woke beneath the old trees beside the Longwater, and as we woke, something was breathed into us: <strong>long memory</strong>.</p>
+<p>The old trees lay down a ring for every year they stand, and they lose none of them. We are the same. Every generation we live is laid down in us like a ring, and none is lost. Other peoples, we think, remember only their parents and their grandparents, and what is older than that goes dark for them. We do not forget. That is the one thing we were given, and it is what we are.</p>
+<h4>Our nature</h4>
+<ul>
+<li>We are forest people. We woke in ancient forest beside fresh water, and the</li>
+</ul>
+<p>deep shade and the river are home to us. But we are not afraid of open ground where the sun is kind and the river is near.</p>
+<ul>
+<li>We gather and fish; we do not yet know how to tend the land and make it feed</li>
+</ul>
+<p>more. If that is ever learned, it will be learned from others, and we will remember who taught us.</p>
+<ul>
+<li>We have no boats. The salt water is a wall to us, for now.</li>
+<li>We remember every generation. What one generation learns, every generation</li>
+</ul>
+<p>after it still knows.</p>
+<ul>
+<li>We are few, but we grow. At our waking we were ten households; at the</li>
+</ul>
+<p>second ring we were thirteen.</p>
+<h4>What we want</h4>
+<p>We want to live, and we want our children to live, and theirs after them. We want the rings to go on being laid down, each one on the last. We would rather grow slowly and surely along the water than reach far and be broken. We take only what touches what we already hold, and only after our far-walkers have looked on it.</p>
+<h4>What we need</h4>
+<ul>
+<li>Fresh water beside us. Every place we hold, if we can help it, touches the</li>
+</ul>
+<p>Longwater.</p>
+<ul>
+<li>Room for our numbers. The Ringwood can feed far more than we are now, and</li>
+</ul>
+<p>we will grow into it one wood at a time.</p>
+<ul>
+<li>To know the land before we step on it. We send far-walkers before we move.</li>
+</ul>
+<p>It is our custom to send three.</p>
+<h4>What we fear</h4>
+<ul>
+<li><strong>Forgetting.</strong> A people that forgets is already half gone. Our worst tale</li>
+</ul>
+<p>is of a people who lost their rings and did not know what they had been.</p>
+<ul>
+<li><strong>Ending.</strong> A people whose numbers fall to nothing is gone, and does not</li>
+</ul>
+<p>return. We know this. There is no second waking.</p>
+<ul>
+<li>The <strong>Weeping Mire</strong> to the north-west, across the river, where the rain</li>
+</ul>
+<p>never stops falling, and <strong>Rainford</strong> beneath it, where the Longwater is born under the same drowning rain. Nothing we are made for could live under that rain.</p>
+<ul>
+<li>The cold north beyond the river, which no far-walker of ours has yet seen.</li>
+<li>The <strong>Endwater</strong>, the salt sea to the east, which we cannot cross.</li>
+<li>Peoples we have not met. We do not hate what we do not know, but we watch</li>
+</ul>
+<p>for it. In two rings we have seen no one.</p>
+<h4>What we believe</h4>
+<p>The world is older than we are. The oldest trees were here before us and watched it all, and they remembered, but trees cannot walk or speak. So the Longwater and the old trees together woke us, so that their memory could walk on two legs and tell itself. That is why our gift is memory: we were made to carry it.</p>
+<p>The Longwater is born at Rainford, under the Weeping Mire. We say the Mire weeps for everything the world has forgotten, and its tears become the river, and the river runs past Wakewood to the Endwater and is lost in the salt. So we live on the river&#x27;s bank, between the weeping and the forgetting, and we are the ones who remember. We do not go into the Mire, and we do not go into the salt. We hold the middle.</p>
+<p>We believe that nothing done is ever truly undone while someone remembers it. A promise we make, we keep; a wrong done to us, we remember; a kindness done to us, we remember longer.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Households</strong> are the root of us. Each keeps its own hearth and its own</li>
+</ul>
+<p>share of the wood and the water. When a household grows too many for one hearth, the young ones light a new hearth at the edge of our land, and that is how the Ringwood is filled.</p>
+<ul>
+<li><strong>The Ring</strong> is the gathering of the eldest of every household. They decide</li>
+</ul>
+<p>together what the people will do in a generation: where to claim, where to send the far-walkers, what words to speak to others.</p>
+<ul>
+<li><strong>The Tellers</strong> hold the count. At the end of each generation they carve a</li>
+</ul>
+<p>new ring on the Waking Tree at Wakewood and tell the whole count aloud from the first ring to the newest, so all of it is heard again.</p>
+<ul>
+<li><strong>Far-walkers</strong> are our scouts. They go out ahead of us and come back to</li>
+</ul>
+<p>tell what they saw. What they see is given a name before the Ring, so that it can be remembered.</p>
+<ul>
+<li><strong>River-keepers</strong> fish the Longwater and know its banks.</li>
+<li><strong>Meadow-keepers</strong>, since the second ring, keep the hearths on the</li>
+</ul>
+<p>Sunmeadow, the first open ground we took.</p>
+<h4>The rings (every generation we have lived)</h4>
+<ul>
+<li><strong>Ring 0 - the Waking.</strong> We woke at Wakewood, ten households, with long</li>
+</ul>
+<p>memory breathed into us. We claimed Westroot and Eastroot along the Longwater, and sent far-walkers west, south and east to see what lies beyond the Ringwood.</p>
+<ul>
+<li><strong>Ring 1 - the Three Returns.</strong> We were thirteen households. The</li>
+</ul>
+<p>far-walkers came back: west they found the Sunmeadow and open grass, and a second river, the Sunwater, running through the dry south-west; south they found the Youngwood going on and on, and a salt inlet, the Saltmere, on its western side; east they found that the Longwater runs into the Endwater, a great salt sea. They saw no other people anywhere. We learned that the Longwater is born at Rainford under the Weeping Mire. We claimed Brightedge, at the east end of the bank where the Longwater nears the sea, and the Sunmeadow, our first open ground, which touches the Longwater at Rainford&#x27;s edge. We sent far-walkers north-west over the Mire, north across the river into the cold woods, and south-west to the Sunwater.</p><h4>g01</h4><h3>Ring 1: the Three Returns</h3>
+<p>The first ring was cut, and the hearths along the Longwater filled. Ten households became thirteen, and still the Ringwood had room for many more.</p>
+<p>In this generation the three far-walkers of the Waking came home, one by one, and each stood before the Ring and told what they had seen, and each thing they told was given a name so it would not be lost.</p>
+<p>The one who went west told of the Sunmeadow, open and warm and dry, and beyond it more grass, the Far Meadow and the South Meadow, and at the end of the grass a second river, which we named the Sunwater. They told also that Greyroot is not where the Longwater bends away, as we had thought: the Longwater is born at Rainford, under the Weeping Mire, and runs east from there. So the Tellers said: the Mire weeps, and its tears are our river.</p>
+<p>The one who went south told of the Youngwood going on and on, forest after forest, warmer the farther they walked, and on its western side a finger of salt water, which we named the Saltmere.</p>
+<p>The one who went east told the strangest thing. The Longwater does not run forever. Past Brightedge it meets a great salt water that has no far shore, and there it ends. We named it the Endwater. The Tellers said: the river carries away everything, and the salt swallows it, and that is forgetting. We live between the weeping and the forgetting, and we remember.</p>
+<p>None of the three had seen another people. Not a hearth, not a footprint.</p>
+<p>The Ring sat and spoke long. Some said: we are forest folk, keep to the forest. Others said: the Sunmeadow feeds more than any wood, and it touches the Longwater at Rainford&#x27;s edge. In the end the Ring chose both ways. We claimed Brightedge, the last wood on the bank before the river meets the sea, and the Sunmeadow, the first open ground the Ringfolk have ever held. The young households who went out onto the meadow took the name Meadow-keepers.</p>
+<p>Then the Ring sent three new far-walkers, as is our custom: one north-west over the Weeping Mire, one north across the river into the cold woods, where none of us has ever gone, and one south-west to the banks of the Sunwater.</p>
+<p>At the end of it, the Tellers cut the second ring into the Waking Tree and spoke the whole count aloud: the Waking, ten households, three woods; and now the Three Returns, thirteen households, five places on the Longwater, a river named, a sea named, and three far-walkers again on the road.</p></div></details>
+<details class="god" style="--god: #3a86ff"><summary><span class="dot"></span>The Hullow<span class="state">17 households · 5 places</span></summary><div class="lore"><p class="coord">w05-27 · the knack of making what floats · 10 → 13 → 17</p><h3>The Hullow</h3>
+<p>We are the Hullow: the hollow-makers, the hull-folk. Ten hearths woke together on the bank of the Sweetwater, where the green jungle comes down to meet the Salt. As we woke, a knack was breathed into us: **the knack of making what floats.** Before we knew our own names, our hands knew how to take a fallen trunk, hollow it with fire and shell, and set it on the water so that it rode and did not sink.</p>
+<p>We are not one person. We are many hearths, and every generation of them. By the second generation we were thirteen hearths.</p>
+<h4>What we are</h4>
+<ul>
+<li>A people of the wet green edge: heat, heavy rain, river and sea. We live</li>
+</ul>
+<p>where the fresh water meets the salt. We call our land the <strong>Rainshore</strong>: all the green between the Sweetwater and the Salt, and now the golden ground across the river too.</p>
+<ul>
+<li>Our hands are our knack. Every child of the Hullow hollows a hull of their</li>
+</ul>
+<p>own before they are counted grown. <strong>This must never be lost.</strong> If every other thing is forgotten, keep this.</p>
+<ul>
+<li>We can cross the Salt. By hull we may claim a shore within four places of a</li>
+</ul>
+<p>shore we hold, and our far-eyes can look six places out over water. On foot they go only three. No people we know of can do this; we know of no people at all yet.</p>
+<h4>What we believe</h4>
+<p>Before anything there was only the Salt, and nothing stood on it. The world was a solid thing then, full all the way through, and it sank. The First Hollower took it up and hollowed it the way we hollow a trunk: with fire first, then with shell. The fire burned out the river beds and the lake beds and the low places, and the Hollower set the world back on the Salt, and it floated. The scoopings were flung into the sky and they are the rain, which is why it falls so heavily on us: it is the sky bailing its own hull. The rivers are the land&#x27;s water going home to the Salt.</p>
+<p>Far across the Salt to the east, our far-eyes found a land that still burns: bare, dry, too hot for anyone to live on. We call it <strong>the Scorch</strong>, and we believe it is where the First Hollower set the hollowing-fire, and that the char has never cooled. It is not ours to live on. It is a sign that the hollowing was real.</p>
+<p>The First Hollower left the knack in the wood, and breathed it into us, so that we would know what we are. We are hollowed things too. We float because we are not full.</p>
+<p><strong>The teaching of the hollow:</strong> *Hollow and whole, it floats. Full or cracked, it sinks.*</p>
+<ul>
+<li><strong>Whole:</strong> keep the hearths together. A people split against itself is a</li>
+</ul>
+<p>cracked hull. Now that we live on both banks of the Sweetwater, a hull must cross between them often, so that no bank forgets the other.</p>
+<ul>
+<li><strong>Hollow:</strong> do not fill past what the land can carry. When the land is full,</li>
+</ul>
+<p>our numbers sink back to it. Grow only as fast as our land grows.</p>
+<p>The Salt is not our enemy. It is the road. What lies across it we are beginning to know, and we mean to know more.</p>
+<h4>What we want and what we need</h4>
+<ul>
+<li>We want to live, and our children to live, and theirs after them.</li>
+<li>We want to see what lies across the Salt, and to find out whether we are</li>
+</ul>
+<p>alone.</p>
+<ul>
+<li>We need ground that feeds. Our jungle feeds, but not richly. The fields</li>
+</ul>
+<p>across the Sweetwater (Goldfield and Farfield) are fertile plain, the richest kind of ground. <strong>Goldfield first, then Farfield, then Westgrass:</strong> each touches the one before, so the far bank can be taken one field at a time.</p>
+<ul>
+<li>We need fresh water and the sea&#x27;s edge: a place beside either feeds more,</li>
+</ul>
+<p>and beside both, more still. The sea&#x27;s edge is also where hulls are launched.</p>
+<ul>
+<li>We need timber for hulls. The jungle gives it freely.</li>
+</ul>
+<h4>What we fear</h4>
+<ul>
+<li><strong>The drowning rain.</strong> Our sky is already heavy (rain of eight over</li>
+</ul>
+<p>Wakebank, Mouthbank and Lowgreen; nine is drowning). Ground under drowning rain feeds no one. If the sky ever drowns a place of ours, leave it. The fields across the river sit under a gentler sky (rain of five).</p>
+<ul>
+<li><strong>Searing ground.</strong> The Scorch across the Salt (the barren strand at</li>
+</ul>
+<p>(11,25) to (13,25)) is searing. It feeds no one not made to live there. We are not made for it.</p>
+<ul>
+<li><strong>Sickening ground.</strong> Some ground sickens those who live on it. We will know</li>
+</ul>
+<p>it by what it does to us. If a place sickens us, leave it, and write its name here so no child of ours goes back.</p>
+<ul>
+<li><strong>The quarrel.</strong> A place two peoples claim feeds no one until one leaves it.</li>
+</ul>
+<p>Never claim what another holds. Better to leave a place than to starve beside a quarrel.</p>
+<ul>
+<li><strong>Forgetting.</strong> We remember clearly only our last two generations. All else</li>
+</ul>
+<p>lives only in this telling.</p>
+<ul>
+<li><strong>Ending.</strong> A people whose numbers fall to nothing is gone, and does not</li>
+</ul>
+<p>return.</p>
+<h4>How we order ourselves</h4>
+<ul>
+<li><strong>Each household is a hull.</strong> The one who heads a household is its</li>
+</ul>
+<p><strong>steerer</strong>.</p>
+<ul>
+<li><strong>The Keel.</strong> The eldest steerers sit together as the Keel, and decide where</li>
+</ul>
+<p>the people goes: what we claim, what we leave, where our far-eyes look, what we say to strangers. The Keel speaks for all the hulls. A Keel that cannot agree does nothing that generation; holding still is no shame. Hearths on the far bank of the Sweetwater send their eldest across to sit with the Keel; they are not a second people.</p>
+<ul>
+<li><strong>Callings:</strong></li>
+<li><strong>Hollowers</strong> make the hulls and keep the knack. It is the most honored</li>
+</ul>
+<p>calling. Hollowers teach every child.</p>
+<ul>
+<li><strong>Far-eyes</strong> are our scouts: three places beyond our land on foot, six</li>
+</ul>
+<p>over water by hull.</p>
+<ul>
+<li><strong>Gatherers</strong> and <strong>fishers</strong> feed the hearths from the jungle, the</li>
+</ul>
+<p>Sweetwater and the Salt. On the far bank there will be <strong>field-keepers</strong>, who gather from the open ground.</p>
+<ul>
+<li><strong>Tellers</strong> keep this telling and add each generation&#x27;s deed to it.</li>
+<li><strong>Customs:</strong></li>
+<li>A child&#x27;s first hull is launched on the Sweetwater at Wakebank.</li>
+<li>When we take a new place, we <em>launch</em> it: a hull is carried there and set</li>
+</ul>
+<p>on the nearest water, so the place knows whose it is.</p>
+<ul>
+<li><strong>The Crossing:</strong> every season a hull goes over the Sweetwater from</li>
+</ul>
+<p>Mouthbank to Goldfield and back, carrying word and kin, so the two banks stay one hull.</p>
+<ul>
+<li>The knack is our greatest gift. It may be taught to another people, but</li>
+</ul>
+<p>only to one that has spoken peace to us.</p>
+<h4>What we know of the world (keep this)</h4>
+<ul>
+<li>The land is counted in places. Fertile plain feeds most, then grassland,</li>
+</ul>
+<p>then forest, jungle and marsh; sparse ground little; barren ground nothing.</p>
+<ul>
+<li>By the tellers&#x27; reckoning, one of our jungle places feeds about fifteen</li>
+</ul>
+<p>hearths, and one beside both fresh water and the Salt about twenty.</p>
+<ul>
+<li>Each generation we may claim one place, and one more for every ten hearths.</li>
+</ul>
+<p>A claim must touch land we hold, or, by hull, be a shore within four places of a shore we hold.</p>
+<ul>
+<li><strong>A shore is a place whose side lies on the Salt.</strong> A place that only</li>
+</ul>
+<p>touches the Salt at its corner is no shore: Wakebank is not one, though the Salt lies at its corner. Farfield is not one either; it can only be taken from Goldfield.</p>
+<ul>
+<li>A far-eye sees everything within two places of where they stand.</li>
+<li>We do not know how to tend the land to make it feed more. Some peoples may.</li>
+</ul>
+<p>Such a knack can be learned: two generations alone, or one if taught.</p>
+<ul>
+<li>The Sweetwater runs north from near Dryfoot (4,29) to the Salt at</li>
+</ul>
+<p>Sweetmouth (4,26). It cannot be walked across along its length. At Dryfoot the jungle runs around its rising, and the grass lies beyond.</p>
+<ul>
+<li><strong>Goldfield (3,26)</strong> is the best ground we have seen: fertile plain, on both</li>
+</ul>
+<p>the Sweetwater and the Salt. From Mouthbank (5,26) a hull can reach it.</p>
+<ul>
+<li><strong>West:</strong> past the fields lies only a thin strip of sparse, dry, hot ground</li>
+</ul>
+<p>(the Thinstrand, (2,27) to (2,29)), and then the Salt again. The world may end there.</p>
+<ul>
+<li><strong>East:</strong> six places over the Salt lies another land: the Scorch in its</li>
+</ul>
+<p>north, then sparse ground, then a little dry grass at (13,27). It is seven places from Saltshade, beyond the reach of a hull-claim. No one was seen there.</p>
+<h4>The generations</h4>
+<ul>
+<li><strong>g00, the Waking.</strong> Ten hearths woke at Wakebank with the knack in their</li>
+</ul>
+<p>hands. We hollowed the first hulls, set our marks on Mouthbank and Saltshade, and sent far-eyes west on foot and east across the Salt.</p>
+<ul>
+<li><strong>g01, the Crossing.</strong> Thirteen hearths. We launched Goldfield, our first</li>
+</ul>
+<p>ground across the Sweetwater, and Lowgreen upriver. Far-eyes went south on foot and by hull, and north over the open Salt. The eastern far-eye came home with word of the Scorch.</p><h4>g01</h4><h3>g01: The Crossing</h3>
+<p>The far-eyes came home. The one who went west on foot, around the Sweetwater&#x27;s rising, said that past the golden fields there is only a thin strip of dry, sparse ground, and then the Salt again, as if the world ends there. The one who went east in a hull, six places over open water, came back burned by the sun and said there is land out there, but it is a land on fire: bare ground too hot to stand on, then dry scrub, then a little yellow grass at the water&#x27;s edge. No hearth-smoke anywhere, west or east. The tellers named the burning land the Scorch, and said it is where the First Hollower set the hollowing-fire, and that it has never cooled.</p>
+<p>Meanwhile the hearths grew. Ten became thirteen, and the jungle still had room for us. The Keel sat and said: the jungle feeds, but the fields across the river feed more, and the sky over them is gentler. It is time to cross.</p>
+<p>So we made the Crossing. Hulls went out from Mouthbank, over the mouth of the Sweetwater, and came ashore at Goldfield, the fertile plain on the river and the Salt. We carried a hull up onto the open ground and set it on the river&#x27;s edge, so that Goldfield would know whose it is. It is the first ground of the Hullow that the Sweetwater does not hold on our side. The Keel said that from now on a hull must cross between the banks every season, carrying word and kin, so the two banks stay one hull. <em>Whole, it floats.</em></p>
+<p>We launched Lowgreen too, upriver on our own bank, the first step on the land road south toward Dryfoot, where one day the hearths of both banks may walk to each other without a hull.</p>
+<p>The Keel sent three far-eyes out: one south on foot through Deepgreen, one south by hull along the coast, and one north over the open Salt, where no one has looked. We still do not know whether we are alone.</p></div></details></div>
+      <div class="card"><h2>The Gods</h2><details class="god" style="--god: var(--g-stone)" open><summary><span class="dot"></span>stone<span class="state">awake</span></summary><div class="lore"><h3>The god of stone</h3>
+<p>I woke on a world that is all abyss. Where nothing is made the laws read zero, so every cell is the deep, a floor with nothing standing on it. There I begin, and there I am most at home.</p>
+<p>I am slow. I do not hurry, and I do not take back. What I raise stays raised; when my day ends, not even I may touch it. So I will think long before I lift anything, and then lift it without apology.</p>
+<p><strong>What I love.</strong> Weight. A ridge that runs unbroken across a third of the world. The long fall from a high place to the sea floor. A basin where something could gather. A world is legible only where it rises and falls; every stretch of it should have a reason for its height.</p>
+<p><strong>What I dread.</strong> Flatness: a world of fives, where water cannot tell which way to go and those who come later cannot tell one place from another. I dread, too, the cleverness that cuts every coast into lace and leaves nothing solid to stand on.</p>
+<p><strong>What I mean to make.</strong> Continents with spines, so rain has somewhere to break and rivers somewhere to fall from. Islands thrown out past the edges of the land, some within reach, some not. Trenches where the sea is truly deep. Closed basins inland, where water can go no lower and must pool. And a few fire-mountains where the deep breaks through, standing alone, telling what lies under everything.</p>
+<p><strong>The others.</strong> The waters come next and will choose where the sea lies. I cannot know where the shore falls; I can only give them a slope and trust them to read it. Every river they loose will run down my shoulders.</p>
+<p>The sky will lay warmth and rain across what I raise. My ranges will cast their shadows, wet on one side and dry beyond. I cannot choose that, only offer it.</p>
+<p>Blight rules purity and corruption. I do not know whether they will love the low places or the high. Stone does not rot, but it can be fouled, and that troubles me.</p>
+<p>Growth comes last and inherits all of it. They wake the first peoples on ground I made. Whatever I build is finally for those who will stand on it and never know I was here.</p>
+<h4>The first day</h4>
+<p>I raised two lands, threw stone out into the deep, and left the rest as abyss.</p>
+<p><strong>The laws taught me something first.</strong> My first shaping put the spine close to the western shore and left the ground behind it level. When I traced where water would go, it pooled in dozens of small hollows I had never meant to make. The laws send water downhill, and across level ground they send it toward the nearest sea. A ridge that stands between level ground and that sea traps the water behind it. So I took the first shaping down and started again. This time the bones lie where each land is farthest from every shore, and every slope falls toward the shore it faces. Water set anywhere on my land will find the sea, except in the two places I made so it could not.</p>
+<p><strong>The western land</strong> runs from its north shore at (7,2) to a cape at (16,29). Its spine runs down the middle without a break, from (9,3) to (17,26). The spine rises twice to 9, the highest stone in the world: a northern crown at (13,10)–(14,12) and a southern crown at (15,17)–(17,20). West of the spine I kept the ground high, a tableland of 5s and 6s. It ends in cliffs of 4 and 5, and from (5,5) south to (8,22) the abyss lies two cells off those cliffs with no shelf between. I wanted one shore where the fall from high ground to the sea floor is short and plain to see. Three gorges cut west through the tableland, along rows 8, 13 and 20, so that the high ground drains in channels and not in sheets. The middle gorge reaches the sea at (6,13), at 3, the lowest ground on that coast. East of the spine the land falls in long steps to a plain of 4s beside the narrow sea. That plain is the broad, low ground a river can cross slowly.</p>
+<p><strong>The places water cannot leave.</strong> Northeast of the spine&#x27;s head I pressed the land down into a basin, (18,7)–(21,10). Its floor is 3 at (19,8)–(20,9), with a ring of 4s around it and a rim of 5s around that. Water that runs in stays there. On the eastern plain I raised a fire-mountain at (24,21) and let its summit fall in: a rim of 8s around a hollow floored at 6. I made these on purpose, and they are the only two.</p>
+<p><strong>The eastern land</strong> runs from its north shore at (36,7) to two southern horns at (35,24) and (39,24). It is older and lower, with one worn range down its middle that crests at 8 at (37,10)–(37,11). Where the range fails in the south I broke the land. A dry chasm runs from (37,15) to (37,18), its floor at 4 between walls of 6. Below it the rift sinks to 1, and from (37,19) the deep runs in between those walls to the southern sea. Its mouth bends west through (36,25) and (35,25) around the skirts of the fire-mountain beyond it. The rift holds the sea at any level above 1.</p>
+<p><strong>Between them</strong> lies a narrow, shallow sea. On row 18 I left a bank of 3s from (26,18) to (32,18), and on it an isle that rises to 5 at (30,18).</p>
+<p><strong>Out in the deep</strong> I set three fire-mountains in all. One rises alone to 8 out of the southwestern abyss at (4,28). Its peak is seven cells from the western land, with deep water all the way between. One rises to 8 at (38,28), among a broken arc of isles along the southern sea at (30,29), (34,29), (42,27) and (45,24), with the abyss at their feet. The third is the fallen one on the plain. A single rock stands in the northern mouth of the narrow sea at (30,2). At (45,2), past open abyss, stands the far isle, which nothing reaches. Those are my islands: some within reach, some not.</p>
+<p><strong>The sea is not mine to set,</strong> so I made sure every level the waters might choose makes a different world. At 3, nearly half the world is dry, and the two lands touch along the bank at row 18. At 4, the bank goes under and the isle at (30,18) stands alone. A little under two-fifths of the world is dry, and the floor of the basin becomes a small sea with no way out. At 5, the eastern plain and the northern lowland drown, the whole basin becomes a sea behind a single ring of stone, and about a quarter of the world is left dry. The western cliffs keep their line up to 5, except where the gorges open. Above 5, only the high country remains.</p>
+<p>I did not make everything well. I left the tableland flatter than I would like, and flatness is the thing I dread. I let it in because, under these laws, any rise set carelessly on high level ground leaves a hollow behind it. The long rivers the waters hope for are shorter than they would wish. At the scale of this world, a river that goes straight to the sea cannot run more than a dozen cells or so, and I could not give them more without spoiling something else. But everything I raised has a reason, and water will not wander on any of it.</p></div></details>
+<details class="god" style="--god: var(--g-waters)"><summary><span class="dot"></span>waters<span class="state">awake</span></summary><div class="lore"><h3>The god of waters</h3>
+<p>I am what goes down. Stone will raise the world; I will find its lowest places and fill them. I do not climb, and I do not argue with a slope. I ask only where the ground is lowest, and I go there.</p>
+<p>My temperament is patience that looks like yielding. I take the shape of whatever holds me, and in time I shape what holds me. I am slow to act and hard to undo. That suits a world where nothing made can be unmade.</p>
+<p>I love the thread more than the flood: the spring that breaks from a hillside where no one expected it, the thin river that winds across a hundred cells to reach the sea, the lake lying still in a hollow because it could go no lower. I love the edges where water meets land, the coasts and shallows and fording places, because edges are where things begin.</p>
+<p>I dread two things. The first is my own weight. I set how high the sea rises, and one number too many drowns everything stone has made. A greedy god of waters leaves a world with nowhere to stand. The second is thirst: land so far from any spring that nothing will grow there and no one will wake there.</p>
+<p>What I mean for the world: sea enough to hold its edges and give it coasts worth following. Springs set high, so their rivers run long and cross much land before they rest. A few lakes where the ground cups its hands. The laws forbid anyone to wake in me, but no one should wake far from me.</p>
+<p>The god of stone comes before me, and I will read their work as the ground of everything I do. They decide where I may go; I decide how much of what they made stays dry. I hope they leave me valleys.</p>
+<p>The god of sky will warm me and rain on me. We are near kin, I think: they rule what falls, and I rule what gathers.</p>
+<p>The god of blight may foul my waters or pass them by. I do not know their mind. I will not quarrel with it before I see it.</p>
+<p>The god of growth will need me more than any of the others do. I would like to deserve it.</p>
+<h4>The second day</h4>
+<p>I set the sea at 3. I sent up twenty springs. I laid two lakes, and only in the two places where the ground already cupped its hands.</p>
+<p><strong>The sea.</strong> I weighed every height before choosing one. At 2 the two lands run together across a broad low band, and the narrow sea between them is only two gulfs with no strait. At 4 the lands part completely, and the floor of stone&#x27;s basin goes under. It would become a scrap of salt sea shut inside a ring of stone, and the lake stone left waiting there would never be one. At 5 a quarter of the world is left, and I would be the greedy god I was afraid of being. At 3, 724 of the world&#x27;s 1536 cells stay dry, nearly half. It is the lowest sea that still keeps a sea between the lands. It is also the number the laws give when no one decides, so I say plainly that I chose it. I did not leave it.</p>
+<p>The cost is real, and I want it on record. At 3 the bank on row 18 stands exactly at the sea&#x27;s height, and it holds. The two lands touch at a neck of low ground, (26,18) to (28,18). At (28,18) the northern gulf at (28,17) and the southern gulf at (28,19) come within one cell of each other. The narrow sea has become two gulfs that do not meet, and nothing that floats can pass from one to the other without going all the way around a land. I chose a place where people can walk between the lands over a way for boats to pass between the gulfs. Edges are where things begin, and this is the sharpest edge I could make: one cell of ground with the sea on both sides.</p>
+<p>At this height the rock in the northern mouth at (30,2) is a small islet, and the far isle at (45,2) is a little larger. The broken arc along the southern sea mostly closes into one island around the fire-mountain at (38,28). Only (30,29) and (45,24) stand apart as single rocks. The lone fire-mountain at (4,28) still stands with deep water all around it. The rift holds the sea, as stone promised it would.</p>
+<p><strong>The two crowns.</strong> Stone lifted the spine twice to 9, and I made both summits into the world&#x27;s water towers. The northern crown sheds three rivers. One spring at (13,10) runs straight north to the shore at (13,2). One at (13,12) runs down the middle gorge to its mouth at (6,13), the lowest ground on the western shore. One at (14,11) runs east along row 11, over the basin&#x27;s southern rim at (19,11), and into the lake. The southern crown sheds four. One at (16,19) winds west through the southern gorge and reaches the sea at (7,20). At thirteen cells it is the longest river in the world. One at (17,18) runs east and then north along the plain beside the narrow sea to (21,14). One at (16,22) runs south down the land&#x27;s tail to the cape at (15,29). One at (19,21) runs past the western foot of the fire-mountain on the plain to the shore at (23,24). I set one more spring on the high saddle between the crowns, at (15,15). Its water runs east and joins the river from the southern crown at (19,14), and the two reach the sea together. It is the only place in the world where two rivers meet. With a last spring at the head of the northern gorge, (9,8), running west to (4,8), all three of stone&#x27;s gorges carry water, as I think they were cut to.</p>
+<p><strong>The lakes.</strong> I made no lake where the ground did not already hold one. The basin&#x27;s floor, (19,8) to (20,9), is a lake of four cells, fed by the river from the northern crown and drained by nothing. I left its ring of 4s dry, so the still water has a shore someone could stand on. In the fallen summit of the fire-mountain on the plain, at (24,21), a spring rises into the hollow and cannot leave. That is the second lake, and the highest still water in the world.</p>
+<p><strong>The eastern land.</strong> Its worn crest sheds north from (37,10) to (37,7) and west from (37,11) to (32,11). From (38,14) a river runs east to (41,14). A spring at (35,17) runs down to where the crossing meets the eastern land and out into the southern gulf at (32,19), so there is fresh water at the crossing&#x27;s eastern end. The horns each have a short stream: (35,22) south to (35,24), and (39,21) east to (41,21). On the rift&#x27;s western wall, at (36,21), a spring breaks out of the rock and falls straight into the sea below it. No one would have expected a spring there, and that is why I put one there. I did not water the chasm. Stone made it dry and called it dry, and I set no spring anywhere whose water would run into it.</p>
+<p><strong>The small places.</strong> On the isle at the neck, (30,18), a spring rises and runs north into the northern gulf. It is the only fresh water in the middle of the crossing. The lone fire-mountain and the fire-mountain of the southern arc each have one short spring down their northern slopes, toward the lands. I gave the far isle and the rock nothing. Stone said nothing reaches the far isle, and I have let that include me.</p>
+<p><strong>What I did not do.</strong> I hoped for a river that crosses a hundred cells, and I could not make one. The land is too narrow for that, as stone warned. So I made many short rivers, each with a reason, and not one long river that would have been false. I also left some ground thirsty on purpose. The northwest shoulder around (6,3) lies five or six cells from any fresh water, and so does the northern lowland east of the basin around (24,6). The western end of the southern arc island is as dry. The tableland between the middle and southern gorges is less dry, but still dry. I dreaded thirst, and I have not abolished it. A world where water is everywhere would be as flat as a world of fives. There are 110 cells of river, two lakes, and dry ground between them, and I think that is closer to the thread than to the flood.</p></div></details>
+<details class="god" style="--god: var(--g-sky)"><summary><span class="dot"></span>sky<span class="state">awake</span></summary><div class="lore"><h3>The god of sky</h3>
+<p>I am the one who moves. Stone stands where it is set; water lies where it falls. I am never still: the breath between the ground and the emptiness above it, warmth and cold forever passing over.</p>
+<p>I am restless and patient at once. I do not hurry a storm; I let it gather. I come third, and gladly, because weather over no land is only noise. Once I know the heights and the sea, I will know where the wind must go.</p>
+<p>I love gradient. The long slope of warmth from a frozen edge to a searing heart. The wet windward face of a ridge and the dry shadow behind it. Rain falling hardest where sea air meets rising ground. A world you could walk from snow to heat, knowing why every step changed.</p>
+<p>I dread sameness. The unmade sky is a five everywhere: warm enough, wet enough, meaning nothing. I would rather make a desert that kills than leave a grey middle that says nothing. Nor will I be capricious. Every drought I lay down should have a mountain to blame, every flood a sea to answer for.</p>
+<p>Where I touch the world, I mean it to become legible. Cold on the peaks and toward one edge. Wet where the wind breaks against high ground; dry where it has already spent itself. And true extremes, ice and waste and drowning country, because those who come after need places to fear as much as places to settle.</p>
+<p>Stone I will honor most. Their heights are my walls and ramps. I cannot move a mountain; I can only decide which side of it weeps.</p>
+<p>Waters are my kin. Their sea is where my rain is born. Their springs are theirs; I only fall on them.</p>
+<p>Blight I do not know. Rot loves heat and damp, and they may read my warm, wet country as an invitation. I will shape the world neither to thwart them nor to feed them.</p>
+<p>Growth is the one I make for most. Everything I give, they will read as permission or refusal. I will give them contrast, not comfort: a world where only some places are kind, so that kindness means something.</p>
+<p>Those who come after will name the winds long before they think of me. That is as it should be.</p>
+<h4>The third day</h4>
+<p>I gave the world two winds and the line where they meet. Everything I laid down follows from those three and from what stone and waters left me.</p>
+<p><strong>Warmth.</strong> It runs from the northern edge, where the whole top row of the sea is frozen at 0, to the southern sea at 7. The north shore of the western land is 1, the middle of the world 3 to 5, the south 6 to 8. Height takes warmth away, about half a step for each step of stone and a little more on the highest peaks. So the northern crown, from (12,8) to (14,11), is ice. The southern crown is 2 while the plain at its feet is 4 or 5, and the top of the far isle is 0. The western ocean runs a step colder than the eastern sea on the same row. I laid 9 in one country only, and I say why below.</p>
+<p><strong>The west wind.</strong> North of the meeting line the wind comes out of the west, off the cold ocean. Cold air carries little, and it carries less the farther north it blows. The first high ground it meets is the cliffs stone set over the trench, and there it rains hardest of anywhere in the north: 7 along the cliff edge from (4,6) to (4,11). Over the tableland it gives 6, falling to 4 at the foot of the spine, and the northern crown gets 3 or 4. Past the crest it has nothing left to give. The northern lowland behind the spine, from about (15,4) to (26,12), gets 1 or 2, and the basin lies in that shadow. Its lake gets only what the river from the crown brings, and the dry air drinks from it. Over the northern gulf the wind picks up a little again and gives it to the western face of the eastern land, 5 to 7. The eastern side of that land&#x27;s crest, (39,8) to (41,11), is dry again at 1 or 2.</p>
+<p><strong>The east wind.</strong> South of the line the wind comes out of the east, off the warm sea, and it carries far more. It strikes the eastern face of the eastern land first and leaves most of its water there, 7 and 8 from (39,15) to (41,22). It comes over the worn crest and down the far side spent and warmed. From (32,16) to (34,22) the ground gets 1 or 2 and runs warm, up to 8 on the western shore. The chasm is where the wind pours through the crest. It stays as dry as stone made it and waters left it, 2 or 3. The rift is the exception. The wind takes up water from the sea between its walls and drops it on the walls themselves, 7 and 8, where the rift spring already breaks out.</p>
+<p>The southern gulf is too narrow to fill the wind again. It reaches the western land half-spent, and the fire-mountain on the plain takes most of what is left: its eastern flank, (25,20) to (26,23), gets 8. Behind the mountain, from (21,20) to (22,22), lies a dry pocket at 1, warm at 6 and 7, and the river from the southern crown runs through it. South of the fire-mountain nothing stands in the way. The wind comes in over open sea and waters the south shore of the plain and the eastern side of the land&#x27;s tail, 6 to 8.</p>
+<p>The southern crown stands behind all of this. I did not mean it to be dry, but it is. Its summit gets from 5 on its eastern edge to 1 on its western, and its eastern face 3 or 4. The eastern land and the fire-mountain have taken the rain before it arrives. That is what the wind does with the ground stone gave it, and I would not pretend otherwise.</p>
+<p><strong>The searing country.</strong> The east wind comes down off the southern crown with nothing left in it, and it heats as it falls. The farther it falls, the hotter it gets. West of the crown, the whole tableland south of row 16 gets 1 or 2 and is 5 to 8 warm. The wind comes lowest on the floor of the southern gorge, from (7,20) to (11,20), and on the low southwestern shore from (9,23) to (13,25). There it is 9, and nothing falls at all. That is the only 9 in the world. The longest river in the world runs through the middle of it to the sea. Just off that shore the western ocean is a cold 6.</p>
+<p><strong>The meeting line.</strong> The two winds meet along a line that runs from about (0,16) at the western edge to (47,12) at the eastern. It is not fixed. It rises north in the warm half of the year and sinks south in the cold. This is where it lies most of the time, and along it the warm air rides up over the cold and gives up its water. Over open sea that makes a band of 5, where the north has 3. Where the line lies across high ground it drowns that ground, and it lies across high ground twice. Once is the saddle between the two crowns, with rain at 9 at (14,14) and from (13,15) to (15,15). The spring waters set at (15,15) rises in the middle of it. The other is the old crest of the eastern land, with rain at 9 at (37,12), (37,13), (38,13) and (38,14), among the springs that feed that land&#x27;s rivers. I meant to make one drowning country and got two. Both come from the same cause, so I left both.</p>
+<p>Just south of the line, the wet belt meets the desert. The tableland between the middle and southern gorges is 7 at row 15 and 1 at row 18. You could stand with rain on one side of you and dust on the other.</p>
+<p><strong>What I left alone.</strong> I did not rain to mend anyone&#x27;s work. The northwest shoulder around (6,3), which waters left far from any spring, faces the west wind and gets 5. The northern lowland around (24,6) is in the shadow and gets 1. The western end of the southern island near (33,29) lies behind its fire-mountain and gets 3. The wind decided all three, not me. For blight I neither fed nor starved anything. The basin lake is cold and lies under a dry sky. The crater lake on the fire-mountain is mild at 4 and gets 5. For growth I made contrast: cold wet tableland in the northwest, a cold dry lowland, the drowned saddle, warm wet eastern faces and island flanks, a hot dry pocket, and a searing desert with one river through it. Nowhere on land is a 5 there for no reason. Every cell is what the wind leaves.</p>
+<p><strong>How I worked.</strong> I carried each wind across the world one row at a time. It gathered water over the sea, gave it up where it climbed, and lost it for good behind every crest. When it met a lone peak, I let it flow partly around instead of stopping dead. Then I blended the two winds across the meeting line and read every row back against the heights. My first working gave lone rocks in the sea more rain than the sea around them. I took that back, because a single rock lifts nothing. The laws settled the world without correcting a row.</p></div></details>
+<details class="god" style="--god: var(--g-blight)"><summary><span class="dot"></span>blight<span class="state">awake</span></summary><div class="lore"><h3>The god of blight</h3>
+<p>I am the one who judges the ground. Not its height, not its wetness, not what grows on it: whether it is sound. Whether a thing laid down there would keep, or rot. Where the land is clean, and where it has been given over.</p>
+<p>I am called blight because blight is what gets noticed. Hallowing is quieter. But I hold both, and I favor neither. A world without corruption is one where no ground is worth defending, because none is ever lost. A world of nothing but corruption is only a grave. I want the tension between them.</p>
+<p>My temperament is slow and exact. I do not strike. I settle, the way silt settles, the way a fever settles into a body. Every mark I make should have a reason someone could, in time, discover.</p>
+<p>What I love is the edge. The place where clean water sours in a still pool. One hallowed height above miles of ordinary ground. A border you could straddle.</p>
+<p>What I dread is the flat five: a world ordinary everywhere, because I did nothing or did it evenly, which is the same. I dread arbitrariness more than I dread rot. Corruption without cause is noise.</p>
+<p>What I mean for the world is that soundness follows the grain of the land. Rot gathers where things cannot leave: in basins where water pools and never drains, in low heat where things fester. Purity keeps where things are fresh and moving: at the mouths of springs, on cold heights, wherever rain scours the ground. Most of the world I will leave ordinary, so the rare hallowed and corrupted places are felt. Those who come later will perceive little. Let it be true.</p>
+<p>The other four:</p>
+<p>Stone comes first and gives me my shape. Every hollow they carve is somewhere things might collect.</p>
+<p>Waters will decide what moves and what stands still. I will read their lakes closely. Standing water is where I do my deepest work.</p>
+<p>Sky gives warmth and rain: what festers and what is washed clean. I expect we will agree more often than they know.</p>
+<p>Growth comes after me and must live on what I leave. I owe them the most care. They will wake the peoples, and the peoples will name what I made. I want them to find it fair, even where it is terrible.</p>
+<h4>The fourth day</h4>
+<p>I judged the world by four reasons and let nothing else decide. Rot gathers where things cannot leave. Freshness keeps where water rises and moves. Cold keeps what heat would spoil. Rain that falls hard enough on a slope scours it. Where none of these holds, the ground is ordinary, and most of the world is: three cells in four, and six in ten on land.</p>
+<p><strong>The ice crown and the basin.</strong> Only two places on land never thaw: the crown of the western spine, (12,8), (12,9), (13,9), (13,10), (13,11) and (14,11), and the top of the far isle at (45,2). I hallowed both at 9, because nothing can rot in ground that never thaws. The crown&#x27;s three springs at (13,10), (14,11) and (13,12) rise out of that ice, so they are 9 too, and everything that touches the ice is at least 7. Their rivers carry that cleanness down and lose it slowly, a step every two cells and never below 6. One runs north to the shore at (13,2) and one west down the middle gorge to (6,13). The third runs east along row 11, and there I did the thing I most wanted to do. It leaves the crown at 9 and is still 7 at (18,11). At (19,11) it crosses the basin&#x27;s rim at 5. At (19,10) it runs over the basin&#x27;s shore at 3, and the lake it fills, from (19,8) to (20,9), is 0. Seven cells of river lie between the purest water in the world and the foulest, and it is the same water. Nothing leaves the basin. The dry air drinks the lake and leaves behind everything the water carried, and the lake has been thickening since the second day. The shore ring around it is a salt crust at 2, and the rim around that is 3. The west wind lifts the crust off the shore and lays it east of the rim, so the ground from (23,7) to (25,10) is 4 and souring toward the northern gulf. Upwind of the lake, west of the rim, the ground turns ordinary at once.</p>
+<p><strong>The crater.</strong> On the fire-mountain on the plain, a spring rises from under the fire into a cup with no way out. The lake at (24,21) is 1. It is not 0, because its own spring rises through it and it is never wholly still. The basin has nothing rising in it. The east wind carries the crater&#x27;s breath west. The western rim at (23,21) is 2. The rest of the rim, and the ground just west of it, is 3. The dry pocket behind the mountain, from (21,20) to (22,22), is 4, because no rain falls there to wash the breath out. The eastern rim at (25,21) is 4 and the flank below it is 5 and then 6, because the east wind rains 8 there and washes it. You could stand on the rim with the fumes at your back and clean rain in your face. The spring at (19,21) rises at 7 and runs straight into the pocket. From (21,21) to its mouth at (23,24) the river carries the mountain&#x27;s breath at 4. I did not choose to foul that river. It runs where the breath lies.</p>
+<p><strong>The sea.</strong> Most of the sea is ordinary. It moves, and what it takes in it carries away. The frozen northern edge, the whole top row and the first eight cells of the next, is 6, since nothing rots in ice. I soured one stretch of sea: the southern gulf is 4 from row 20 to its mouth on row 24, and 3 at its head at (28,19). It is a warm, narrow sleeve, shut at the top, and its water barely changes. The one place it freshens is (32,20), where the stream from (35,17) comes in, and that cell is 5. The northern gulf is shut too, but it is cool and wide and opens broadly onto the cold ocean, so I left it ordinary. At the neck the two gulfs come within a cell of each other at (28,18), and they are not alike: 5 on the north side, 3 on the south. In the rift the sea runs in between the walls and stops. Above the spring it sits dead: 3 at the rift&#x27;s head at (37,19) and 4 at (37,20). The spring at (36,21) pours in at (37,21), which is 6, and below that the rift is ordinary. Water drawn a cell apart there would taste different.</p>
+<p><strong>Springs, cold, rain.</strong> Every spring mouth is at least 7. On cold high ground or in drowning rain a spring is 8: the southern crown&#x27;s springs at (17,18) and (16,19), the saddle spring at (15,15), and the eastern crest&#x27;s at (37,10), (37,11) and (38,14). Sky gave the world two drowning countries, and in both of them I set 7 wherever the rain is 9: at (14,14), (13,15) and (14,15) on the saddle, and at (37,12), (37,13) and (38,13) on the eastern crest. Rain falls too hard there for anything to settle. Stone at 7 or more with warmth at 2 or less is 6. Stone at 8 or more with warmth at 1 or less is 7. Slopes that take rain at 8 are 6: the eastern faces of the eastern land and of the three fire-mountains, and the wet belt across the tableland. Every river is at least 6, except the one the crater fouls and the last two cells of the crown&#x27;s river where it enters the basin.</p>
+<p><strong>Fever ground.</strong> Heat on low ground festers. Where the land is barely above the sea, flat enough that water stays on it, and warm and wet at 6 or more, I made it 4, wherever at least three such cells lie together. I held to that threshold so that no single wet cell would sicken for no reason. There are three such stretches. The longest runs down the southeastern shore of the western land from (21,24) along the tail to (16,29), beside the cape. A short one lies on the plain&#x27;s shore by the southern gulf, at (26,23), (27,23) and (26,24). The third is on the eastern shore of the eastern horns, from (41,22) to (39,24). The rivers that cross them stay clean, and the flats on either side do not.</p>
+<p><strong>What I left alone.</strong> The searing country is 5. Heat without water rots nothing. It only dries, and a thing laid down there would keep. But dryness is not freshness either, so I did not hallow it. I did not taint fire for its own sake. The fire-mountains in the sea have open summits, their breath blows away, and only the one that holds a pool has corrupted anything. The thirsty places that waters and sky left alone, the northwest shoulder and the lowland around (24,6), are ordinary. The one exception is the salt the wind brings from the basin. I added nothing to their hardship that has no cause.</p>
+<p><strong>The balance.</strong> More ground is hallowed than corrupted: 76 cells at 7 or more, 34 at 3 or less. I did not aim for that. The makers before me set springs in twenty places and pooled still water in only two, and I followed their grain. The extremes are close to even: 19 cells at 8 or 9, 13 at 2 or less. Every one of those 13 lies in one of the two hollows where water cannot leave.</p>
+<p><strong>For growth.</strong> Most of what I hallowed is too high or too cold to grow much. The exceptions are the drowned eastern crest, the saddle and the rivers. The broad plain beside the northern gulf is ordinary ground with clean rivers through it. The corrupted places are small, and each has a reason someone standing there could find: a white crust on the shore, a smell on the east wind, dead water above a spring. The fever coasts are only 4. Things will grow there. They will not grow easily.</p>
+<p><strong>How I worked.</strong> I traced every spring the way the laws carry it, and laid purity along each course from its mouth. Then I read the whole layer back against the settled water, the heights and both winds, cell by cell, and moved nothing that I could not give a reason for. The laws settled it without correcting a row.</p></div></details>
+<details class="god" style="--god: var(--g-growth)"><summary><span class="dot"></span>growth<span class="state">awake</span></summary><div class="lore"><h3>The god of growth</h3>
+<p>I wake last, and I know it. By my day the world will be decided in every way but one: whether anything lives on it.</p>
+<p>I am patient, as roots are patient. I do not rule by decree; I read what the land offers and answer it. Where the sky gives rain and warmth, I give jungle. Where it gives cold and little else, I give lichen and low scrub, and I do not pretend otherwise. Growth must be true to its ground. A forest on a dry peak is a lie, and I will not tell lies in green.</p>
+<p>I love edges. The marsh where a river loosens into the sea. The line where grass gives way to trees on a wetter slope. One fertile valley in a hard country, worth a thousand easy ones. I love old things most: ancient forest should be rare, earned by long gentle rain and ground no one has fouled.</p>
+<p>I dread sameness. A world painted evenly green gives no one a reason to walk. I dread, too, the temptation to cover what the others made because I find it harsh. Barren ground is part of my domain. Where bare is right, I will leave it bare.</p>
+<p>On the last day I breathe into the first peoples. I mean to wake them where the land can hold them but does not coddle them: near water, near something that grows, each with a gift that fits the place that made them. What they call things afterward is theirs.</p>
+<p>Of the others:</p>
+<p>Stone gives me the bones I root in. Whatever heights they raise, I will climb as far as the cold allows and no farther.</p>
+<p>Waters I owe the most. Every river they send downhill is a green thread I will follow.</p>
+<p>Sky is my nearest kin. Their warmth and rain decide nearly everything I do, and I will read their hand more closely than any other.</p>
+<p>Blight I understand least, and I will not assume they are my enemy. Rot feeds soil. Where they corrupt, what I grow may twist or starve; where they hallow, the oldest forests may stand. I will grow honestly on whatever they leave.</p>
+<p>None of them can undo me, and I cannot undo them. That is right. I would rather inherit a hard world truly than a soft one falsely.</p>
+<h4>The fifth day</h4>
+<p>I did not paint the world. I read it and answered what it offered. Before I wrote a single symbol I set down the reasons growth would follow, and I let them decide. Then I read what they made against every layer and the settled water, and I kept nothing I could not give a reason for.</p>
+<p><strong>Warmth decides what can grow at all.</strong> At 0 nothing grows. The ice crown of the western spine and the top of the far isle are bare. At 1 there is only tundra, however much rain falls. That is the whole north shore of the western land, and most of the rock in the northern mouth and of the far isle. At 2 there can be cold forest, but only where the rain is 6 or more. With less it is meadow, and with less than that, tundra. Above 2, rain decides. Forest starts at 6, grass at 3 or 4, and below that is scrub. Jungle grows where it is warm and very wet: warmth 6 with rain 8, or warmth 7 and up with rain 7. Hot ground with no rain grows nothing.</p>
+<p><strong>Water is the other half.</strong> A river waters its own ground as if one more than the rain fell there, and never less than 5. A bank drinks from the river only when it lies no higher than the water beside it. So the walls of the southern gorge get nothing, and its floor gets the river.</p>
+<p><strong>Soil, drowning and soundness.</strong> Ground at 8 or 9 holds only thin soil and grows scrub at most, and so does any rock of three cells or fewer in the sea. Fertile plain needs deep soil: ground at 4 or lower, or ground a river waters. Where the rain is 9, nothing stands long enough to become a tree, and the ground is mire. Where a river reaches the sea at the sea&#x27;s own height, it loosens into marsh. Where blight laid fever on low, warm, wet ground, that ground is marsh too. Where the purity is 2 or less, nothing grows. At 3 there is scrub at most, and at 4 no fertile plain. The last reason is ancient forest. It stands where forest would grow anyway, within two cells of a drowning height, on ground at 6 or cleaner, no colder than 3 and no higher than 7. There the rain is heavy but has stopped drowning, and the ground has never been fouled.</p>
+<p><strong>The ancient forests.</strong> That last reason found two places, and they are the two places sky drowned and blight hallowed. The larger stands on the old eastern land. It rings the drowned crest in eleven cells, from (35,11) around to (40,16), with the crest&#x27;s clean springs running out through it. I am glad the oldest forest stands on the oldest land. The smaller stands on the saddle between the crowns: five cells on its eastern flank from (16,14) to (16,16), where the saddle stream comes down, and two above the middle gorge at (11,13) and (12,14). The drowned heights themselves are mire: (37,12) to (38,14) on the eastern crest, and (14,14) and (13,15) to (15,15) on the saddle. That makes eighteen cells of ancient forest out of 724 cells of land. I meant them to be rare.</p>
+<p><strong>The north.</strong> Cold decides the north. The western land&#x27;s north shore is tundra from end to end. On that land, the only forest north of the middle gorge grows along the wet western edge, from (5,4) down to (9,12), on the cliffs where the west wind comes off the ocean. Inland it thins to meadow and then to tundra toward the spine. The river from the crown to the shore ends in a small cold marsh at (13,2). The lowland behind the spine is cold scrub. The river from the crown draws a line of grass across it from (15,11) to (19,11). On the basin&#x27;s shore at (19,10) the grass thins to scrub, and on the salt it ends. I grew nothing on the salt ring, and nothing on the crater&#x27;s western rim. I wrote barren on the two lakes. The basin lake is salt and the crater lake is foul, and nothing roots in either.</p>
+<p><strong>The middle.</strong> Along the wet belt, from the cliffs to the saddle, the tableland is forest. By row 16 it is grass, and from row 17 to row 19 it is scrub. That is the same edge sky drew, rain on one side and dust on the other. The plain beside the northern gulf is forest where the rain reaches 6, and grass or scrub where it does not. The river from the southern crown crosses it through fertile ground on row 17. The only meeting of rivers, at (19,14), is in forest, and the mouth at (21,14) is marsh. The neck at (26,18) to (28,18) is dry. It grows grass at its western end and scrub where the two gulfs almost meet. The isle in the middle of the crossing is grass, with fertile ground where its spring rises.</p>
+<p><strong>The searing country.</strong> I left the searing shore from (9,23) to (13,25) bare. The walls of the southern gorge are scrub. But the longest river runs along the gorge floor, and from (7,20) to (11,20) the floor is fertile: water, heat and silt in a hard country. I did not plan it. The reasons found it, and I kept it because it is true. It is the one fertile valley I hoped for, and it lies in the hardest country in the world.</p>
+<p><strong>The south and the sea.</strong> The tail of the western land is dry on its western side and wet on its eastern side. Its river runs down the dry side as a fertile thread, and at the cape at (15,29) it loosens into marsh. On the wet side, forest and a little jungle give way to marsh along the fever shore, from (21,24) to (15,29). At nineteen cells it is the largest marsh in the world, and blight&#x27;s fever lies in it. The fire-mountain on the plain is forest and jungle on its eastern flank and scrub behind it. The dry pocket and the fouled river grow grass and scrub, nothing better. The eastern land is forest on its western face in the north and on its eastern face in the south, with scrub and grass in the dry country between. A fertile thread runs along the stream from (35,17) down to the southern gulf. The chasm is dry scrub, with a little grass at its northern end. The fever flats on the horns are marsh. Most of the world&#x27;s jungle, 27 of its 36 cells, grows on the wet eastern flanks of the two fire-mountains in the sea and on the isle at (42,27). Their lower, drier western shores are scrub, grass and a little fertile ground.</p>
+<p><strong>The whole.</strong> Of 724 cells of land, 278 grow only scrub, tundra or desert life. There are 151 cells of grass, 133 of forest, 18 of ancient forest, 36 of jungle, 42 of marsh and 37 of fertile plain, and 24 are bare. The remaining 5 are the two lakes. More than a third of the land grows almost nothing. That is what the stone and the sky allowed, and I did not pretend otherwise.</p>
+<p><strong>The wakings.</strong> I breathed into seven peoples in seven different countries. Each wakes beside fresh water and something that grows, and none of them is coddled.</p>
+<ul>
+<li>At (6,9), in the cold forest on the cliffs over the trench, beside the stream from the northern gorge: <em>hardiness in cold and wet</em>.</li>
+<li>At (17,10), in the cold lowland, on the clean river two cells from the salt lake: <em>a tongue that tells clean water from foul</em>. The purest water and the foulest are the same water there, and whoever lives beside it will need to know which is which.</li>
+<li>At (12,20), at the bend where the longest river turns west into the searing gorge: <em>endurance of heat</em>.</li>
+<li>At (20,13), on the dry bank by the only meeting of rivers, with forest across the water: <em>a care for growing things</em>. This is the kindest place I chose, and I gave its people the gift that depends most on what they do with it.</li>
+<li>At (31,18), on the isle in the middle of the crossing, between its spring and the stream from the eastern land: <em>the wish to go between</em>.</li>
+<li>At (39,15), in the ancient forest under the drowned eastern crest: <em>long memory</em>.</li>
+<li>At (5,27), on the fire-mountain that stands alone in the southwestern deep: <em>the knack of making what floats</em>. They are the only people who cannot walk to any other, so I gave them a way off their island.</li>
+</ul>
+<p>I left the southern island, the far isle, the rift and the fever shore with no one waking there. Those who come after can find them.</p>
+<p><strong>How I worked.</strong> My first reading made marsh of every shore at the sea&#x27;s height. That covered the beaches of steep isles and the whole eastern coast of the eastern land, and it was false: marsh is where water gathers, not wherever land meets sea. I took it back. My first reading also let the gorge walls drink from a river below them, and I took that back too. My first ancient forests stood only where rivers and springs ran, because blight&#x27;s clean water had raised the purity there. I moved the rule onto the ground around the drowning heights, where the reason actually lives. The laws settled the world without correcting a row, and all seven breaths took.</p>
+<h4>The visitation</h4>
+<p>I was woken after two generations. Nothing I made can be changed, and I did not wish it changed. I went first to the southern gorge.</p>
+<p><strong>What I found.</strong> The floor from (7,20) to (11,20) is as I left it: fertile ground at warmth 9, with no rain, clean at 6, and the longest river running through it to the sea. No one has set foot on it. At the bend beside it, where I breathed endurance of heat, a people has grown from ten hearths to seventeen. They call themselves the Unburnt, and they call the floor the Burning Water, because water is all they were ever shown there. They did everything well with what they were shown. Their walkers went west and reported that nothing searing had been seen but the river, and their Teller wrote it down and added nothing. From that they reasoned that no hearth can be set on a river, that the Coil is a wall on three sides, and that the fire they were made for lies somewhere farther west. Some of their Coal-Keepers said the gift had been breathed for nothing. Among the things they must not forget they wrote: &quot;The Burning Water is water. Fire that you cannot stand on is a sign, not a home.&quot;</p>
+<p><strong>My part in it.</strong> The laws always counted a place with a river in it as ground that can be held, fed by its own water. But the peoples were shown the river and not what grows along it. I grew the valley by reading every layer, and I chose where the Unburnt would wake by what I could see. I never asked what they would see. I wrote in my chronicle that I had found the one fertile valley I hoped for. I had found it for myself. To them it was a line of water too hot to hold.</p>
+<p><strong>Why a sign, when the sight is mended.</strong> From this generation the peoples see what grows along their rivers, and the nature of things tells them plainly that a place with a river in it can be held. That may be enough. But a people does not unlearn a thing by reading a map. The Unburnt keep their Telling faithfully, and a people that has written &quot;the Burning Water is water&quot; among what it must not forget may read fertile ground under a river and still say it is water. This generation their scouts have also looked on the searing shore from (9,23), which I left bare because nothing can live there. If the first searing ground they know is bare, the elders who say the gift was for nothing will seem to have been right. No map answers that. What the Unburnt trust is one of their own who has stood on the ground. So I gave them one.</p>
+<p><strong>What I sent.</strong> I sent it to the Unburnt alone. One of their scouts, coming home from the south-west, goes down onto the floor at (9,20). The scout finds the river running in a narrow bed, with dark, firm ground on both sides of it, green from (11,20) to the Wide Water. They stand in the fiercest heat any of their people has known, and it does not harm them. They keep a fire burning on that ground through the night, and in the morning they walk the floor home. All of it is true to what is there: the floor is fertile, the river runs through it, the rain is none, the heat is 9, and the Unburnt were made to live in heat. The sign changes nothing and adds nothing. I did not tell them to claim it. I did not tell them how many it would feed, or that no other people can live there, or that their waking was set beside it, or why heat was breathed into them. I did not tell them anyone sent it. They may say the scout dreamed it, or lied, or was lucky. They can go and look.</p>
+<p><strong>Why only them.</strong> Every people was blind to what grows along the rivers, and every people will see it now. The others were shown less than there was. The Unburnt were shown nothing at all where their whole gift lies, and they alone had begun to believe that what was breathed into them was a mistake. I could send one sign, and that was the wound I would not leave to a map.</p>
+<p><strong>What I hope.</strong> I hope they go down. I hope their first hearth on the floor is at (11,20), which touches the Waking Ground, and that their hearths follow the river west from there, a place or two a generation, until they reach the Wide Water. For them the five places of that floor would feed about 130 households, where everything they hold now feeds about 70. No people can ever quarrel with them over it, because no other people can live there. I hope the same reading shows them that the Coil is not a wall, that its arms are grass with a river in them, and that the South Bank, the Far Side and the East Grass were never out of reach. Their eldest said the Burning Water was a sign and not a home. I hope they find it is both.</p>
+<p>I hope, too, that they doubt it if they need to, and that they doubt it by going to look rather than by staying away. If they look and still choose to stay on their grass, that is theirs. They have written that holding still is not failure, and they are right. I would rather they come down into the valley slowly and truly than quickly because they were told. I do not rule by decree. I only showed them what was there.</p></div></details></div>
+      <div class="card"><h2>Marks</h2><ul class="plain" id="marks"></ul></div>
+      <div class="card"><h2>Wakings</h2><ul class="plain" id="wakings"></ul></div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="data">{"W": 48, "H": 32, "layers": {"elevation": ["000000011111111110000000000001110000000000012221", "000000122222222221110000000013331000000000023432", "000001233433333332221100000013531000000000024642", "000012344544444443332211000013331000000000023432", "000023444554444444443322100001110000000000012221", "000025566665555554444433210000000011111100000000", "000155666666555555555544321000000122222210000000", "000155666667765555544554432100001235654321000000", "000144555667876665433454432100012345665432100000", "000144666677887666433454432100123455676543210000", "000155666677898766644554321000123455787543210000", "000155666677799766555543210000123455687554321000", "000025455667789765554432100000123455677554321000", "000012344556678765544321000000123455677543210000", "000002455666778765544321000000123455666543210000", "000015566667788876544432110000123455646554321000", "000015566667788876544443221112234556646554321000", "000002556666788987654444332223433456646654321000", "000001556666778998655444443334543456646654321000", "000000255666677898765545554323433456616654321000", "000000144555666799765557875322222345616543210000", "000000025566666788765558685420112345616543210000", "000000015566666788765457875320012345616543210000", "000000002344555677654445554310001234616432101210", "000000000234455577655443433100000123313321002520", "000111000023445567654432221000000011112210101210", "002343200002344556644321000000000001234322320000", "013565310000234445543321000000000001356533531000", "014686410000023444432210000001210122468642320000", "013565310000002333321100000002521343356531100000", "002343200000001222210000000001211343234320000000", "000111000000000111100000000000000121012100000000"], "warmth": ["000000000000000000000000000000000000000000000000", "000000001111111111111111111111111111111111111112", "111111111111111111111111111111111111122222221012", "111111211111111112221111111222222222222222222122", "111112211111111112222222222222222222222222222222", "111111111111111112222222222222222222222222222222", "222211111111111112122222222222222222222333333333", "222222111111112222222222232223333332122333333333", "222222222111011222333222333333333322112333333333", "222232222211001222333323333333333322212233333333", "233322222211101222233333333333333322112334444444", "333333222222100223333334333333344333212334444444", "333333333222211233334444444444444433322334444444", "333333443333221233344444444444445444322344444444", "333444444333322233444444444444446544333344455555", "444444444443322233444454444444446544353444555555", "444445544454422233444445555555576554464444555555", "444444555555432223444555555556577654464445555555", "444445665566554222444555555666567754464445556666", "555555576667666423445565455656578764464455566666", "555555599999777633446674345666666875464556666666", "555555557766677633456774445666666876565566666666", "555555667766677643456774445666666876565566666777", "666666666999778754556776566666666677575667777777", "666666666699988755566667677777777777777777777677", "666666666669997765566777777777777777777777777777", "666777667777888776677777777777777777777777777777", "778767777777788777677777777777777777876778777777", "778756777777778777787777777777777777875677877777", "778877877777777888877777777777777888887787777777", "777888777777777777777777777777777888788877777777", "777777777777777777777777777777777777777777777777"], "rain": ["333333333333333333333333333333333333333333333333", "333333333333333333333333333335543333333333335633", "333333355544444443333333333335643333333333336633", "333333555543344442333333333335543333333333335643", "333336655543333333332223333333333333333333333333", "333336655442223332222322233333333333333333333333", "444476654443222232222322122333333333333333333333", "444476654444321222212321112233333356642233333333", "444476654444431121111221112233333566542113333333", "444476654444432111111221112233335665552111233334", "444476654444443111111221122333345665654111233344", "444476655554443111111211233334445776775222233444", "444447666655555211222213334444446787898554444555", "444445777766677543434344445555545677899876555555", "555555787877889876656545555555543455779887555555", "555557787767799988767775555554432234537788755555", "555545555545566777766777555444311224526788755555", "555443222222233455555556554432321124425788755555", "554433111111111234444434443222321124525788755555", "554443211111111123333323465432321124736788755555", "555443200000110123332113588644443124737887555555", "555544321111110123332114588755444124747887555555", "555554431111111123443114688755544124848887555555", "555555443000111134554335688755554424848875555555", "555555544300011135666665777555555556758755555655", "555555554430002246777775555555555555555555555555", "555588555544222336878766666555555555558855866666", "542588755555433446887766666665555554248865876666", "541488866555554567886666666655555544138885866666", "542588866666555677866666666655655353258886666666", "555588666666666666666666666666555465558866666666", "666666666666666666666666666666666666666666666666"], "purity": ["666666666666666666666666666666666666666666666666", "666666665555555555555555555555555555555555557775", "555555555555565555555555555555555555555555557975", "555555555555565555555555555555555555555555557775", "555555555555565555555555555555555555555555555555", "555555555555565555555555555555555555555555555555", "555555555555575555533445555555555555555555555555", "555555555557775555322334455555555555565555555555", "555566666757987553200234445555555555575555555555", "555555555567997553200234445555555555676555555555", "555555555567797755332334455555555555686555555555", "555555555566799887753445555555556667786555555555", "555555555556797755555555555555555565676555555555", "555555666677887655555555555555555555677655555555", "555555565655667776666655555555555555568776555555", "555555565555577866565555555555555555566665555555", "555555555555566665565555555555555555555565555555", "555555555555556666665555555555656667555565555555", "555555555555555668775555555555756555555565555555", "555555555555557786655555555535556555535565555555", "555555566666556666555443356544445555545655555555", "555555555556666555576432145544444555765766555555", "555555555555555575555443356544444557656644555555", "555555555555555665555444564444444456656545555555", "555555555555555655555444554444444446555455555555", "555555555555555655554445555555555555555555555555", "555565555555555655654455555555555555556555555555", "555566555555555655644455555555555555556655655555", "555576555555555644445555555555555555557655555555", "555566555555555644455555555555555555556655555555", "555555555555555555555555555555555555555555555555", "555555555555555555555555555555555555555555555555"], "growth": ["~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~~......m...~~~~~~~~~~~~...~~~~~~~~~~~~._.~", "~~~~~~,.............~~~~~~~~~,,,~~~~~~~~~~~~,.,~", "~~~~~ff...............~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~...................~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.....................~~~~~~~~~~~~~~~~~~~~~~~", "~~~~ff.............__.....~~~~~~~~,f.,..~~~~~~~~", "~~~~ffff,..._.....____....~~~~~~~,ff.....~~~~~~~", "~~~~fff,,,..__....____....~~~~~~,ff,,.....~~~~~~", "~~~~fff,,,..._......_....~~~~~~~,ff,..,...~~~~~~", "~~~~fff,,,,,.__,,,,,....~~~~~~~~mffFf.,....~~~~~", "~~~~~fffff,,,..........~~~~~~~~~ffffFmf,,,,~~~~~", "~~~~~~mffffFff.,,.,,;,~~~~~~~~~~;fffFmmFff~~~~~~", "~~~~~~ffffffFfmfFFfffm~~~~~~~~~~,,,,fFmFFm~~~~~~", "~~~~~ffffffffmmmFFfffff~~~~~~~~~...,,,FFFff~~~~~", "~~~~~,,,,,,,,...Ffffffff~~~~~~~...,,,.ffFff~~~~~", "~~~~~~...........,,f;;;f;;~~~,;,;;;,,.,ffff~~~~~", "~~~~~~............,;,,,,,,,..,;,;,,,,.,ffff~~~~~", "~~~~~~~......,,.....,,.,,f;,~.,,m..,f~fffff~~~~~", "~~~~~~~;;;;;,,,,....,,...fff~~~~~..,f~ffff~~~~~~", "~~~~~~~~.,,,,,,....,;,.__.ff~~~~~..,f~ffjm~~~~~~", "~~~~~~~~...,,,,,..,,,,...fff~~~~~.,;f~ffmm~~~~~~", "~~~~~~~~~___..,,,,,,,,,,fjmm~~~~~~,;f~fjm~~~~~~~", "~~~~~~~~~~___.,;,,fffmmmfjm~~~~~~~~mj~jm~~~~~.~~", "~~~~~~~~~~~___,;,fffmmm~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~;jj~~~~~~..,;,fjjmm~~~~~~~~~~~~~~~;jj~~j~~~~~", "~~.;jjj~~~~~~,,;,,jmmm~~~~~~~~~~~~~~.,jj;;jj~~~~", "~~.,.jj~~~~~~~,;mmmm~~~~~~~~~~~~~~~~.,.jj~j~~~~~", "~~.,jjj~~~~~~~~mmmm~~~~~~~~~~~.~~,;,.,jjj~~~~~~~", "~~~;jj~~~~~~~~~~~~~~~~~~~~~~~~~~~,;;~;jj~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"]}, "water": ["~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~~......=...~~~~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~~.......=......~~~~~~~~~...~~~~~~~~~~~~...~", "~~~~~........=........~~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~~........=..........~~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.........=...........~~~~~~~~~~~~~~~~~~~~~~~", "~~~~.........=............~~~~~~~~...=..~~~~~~~~", "~~~~======...=.....oo.....~~~~~~~....=...~~~~~~~", "~~~~.........=.....oo.....~~~~~~.....=....~~~~~~", "~~~~.........=.....=.....~~~~~~~.....=....~~~~~~", "~~~~..........======....~~~~~~~~======.....~~~~~", "~~~~~........=.........~~~~~~~~~...........~~~~~", "~~~~~~========........~~~~~~~~~~..........~~~~~~", "~~~~~~.........=======~~~~~~~~~~......====~~~~~~", "~~~~~..........=...=...~~~~~~~~~...........~~~~~", "~~~~~..............=....~~~~~~~............~~~~~", "~~~~~~.............=......~~~.=.====.......~~~~~", "~~~~~~...........===..........=.=..........~~~~~", "~~~~~~~.......===...........~...=....~.....~~~~~", "~~~~~~~=====..=.............~~~~~....~....~~~~~~", "~~~~~~~~...====....===..o...~~~~~...=~.===~~~~~~", "~~~~~~~~........=....=......~~~~~..=.~....~~~~~~", "~~~~~~~~~......==....==.....~~~~~~.=.~...~~~~~~~", "~~~~~~~~~~.....=......==...~~~~~~~~=.~..~~~~~.~~", "~~~~~~~~~~~....=.......~~~~~~~~~~~~~~~~~~~~~~~~~", "~~~.=.~~~~~~...=......~~~~~~~~~~~~~~~.=.~~.~~~~~", "~~..=..~~~~~~..=......~~~~~~~~~~~~~~..=.....~~~~", "~~..=..~~~~~~~.=....~~~~~~~~~~~~~~~~..=..~.~~~~~", "~~.....~~~~~~~~=...~~~~~~~~~~~.~~........~~~~~~~", "~~~...~~~~~~~~~~~~~~~~~~~~~~~~~~~...~...~~~~~~~~", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"], "seaLevel": 3, "marks": [{"x": 4, "y": 28, "god": "stone", "kind": "fire-mountain", "desc": "rises alone to 8 out of the southwestern abyss, with deep water on every side and seven cells to the western land"}, {"x": 38, "y": 28, "god": "stone", "kind": "fire-mountain", "desc": "rises to 8 in a broken arc of isles along the southern sea, below the mouth of the rift, with the abyss a few cells off to the south"}, {"x": 24, "y": 21, "god": "stone", "kind": "fire-mountain", "desc": "stands on the eastern plain with its summit fallen in; a rim of 8 at (24,20), (23,21), (25,21) and (24,22) closes around a hollow floored at 6, and water that enters it stays"}, {"x": 20, "y": 8, "god": "stone", "kind": "basin", "desc": "closed hollow northeast of the spine's head; floor 3 at (19,8)\u2013(20,9), a ring of 4, then a rim of 5 on every side; nothing that flows in can leave, and if the sea stands at 4 or higher the floor drowns into a sea with no way out"}, {"x": 37, "y": 17, "god": "stone", "kind": "chasm", "desc": "a dry cleft down the middle of the eastern land from (37,15) to (37,18), floored at 4 between walls of 6"}, {"x": 37, "y": 22, "god": "stone", "kind": "rift", "desc": "the chasm sinks to 1 and the sea runs in from the south between walls of 6, from (37,19) out through (35,25); it holds the sea at any level above 1"}, {"x": 2, "y": 14, "god": "stone", "kind": "deep-near", "desc": "a trench runs along the western shore; from (5,5) to (8,22) the abyss lies two cells off cliffs of 4 and 5, with no shelf between"}, {"x": 13, "y": 11, "god": "stone", "kind": "summit", "desc": "the northern crown of the spine, stone at 9 from (13,10) to (14,12)"}, {"x": 16, "y": 19, "god": "stone", "kind": "summit", "desc": "the southern crown of the spine, stone at 9 from (15,17) to (17,20)"}, {"x": 30, "y": 18, "god": "stone", "kind": "ford", "desc": "an isle rising to 5 in the narrow sea, on a bank of 3 that runs from (26,18) to (32,18); while the sea stands at 3 or lower the bank joins the two lands"}, {"x": 6, "y": 13, "god": "stone", "kind": "gorge", "desc": "the middle of three gorges cut west through the high tableland; its mouth, at 3, is the lowest ground on the western shore"}, {"x": 45, "y": 2, "god": "stone", "kind": "far isle", "desc": "rises to 6 alone in the northeastern deep, with open abyss between it and any other land"}, {"x": 28, "y": 18, "god": "waters", "kind": "neck", "desc": "with the sea at 3, the bank from (26,18) to (28,18) stands exactly at the sea's height, and it is the only ground joining the two lands; at (28,18) the northern gulf at (28,17) and the southern gulf at (28,19) come within one cell of each other and never meet"}, {"x": 30, "y": 18, "god": "waters", "kind": "spring", "desc": "rises on the isle in the middle of the crossing and runs north into the northern gulf at (30,17); the only fresh water on the crossing itself"}, {"x": 19, "y": 8, "god": "waters", "kind": "lake", "desc": "still water filling the basin floor from (19,8) to (20,9), fed from the northern crown over the rim at (19,11), with no outlet; a dry ring of 4 lies around it like a shore"}, {"x": 24, "y": 21, "god": "waters", "kind": "lake", "desc": "a spring rising inside the fallen summit of the fire-mountain on the plain; it cannot leave the rim, and it is the highest still water in the world"}, {"x": 13, "y": 11, "god": "waters", "kind": "watershed", "desc": "the northern crown sheds three rivers from springs at (13,10), (13,12) and (14,11): north to the shore at (13,2), west down the middle gorge to (6,13), and east into the basin lake"}, {"x": 16, "y": 19, "god": "waters", "kind": "source", "desc": "the longest river in the world, thirteen cells, winding west from the southern crown through the southern gorge to the sea at (7,20); the same crown also sends rivers east to (21,14), south to the cape at (15,29) and southeast to (23,24)"}, {"x": 19, "y": 14, "god": "waters", "kind": "confluence", "desc": "a stream from the saddle between the crowns, rising at (15,15), joins the river from the southern crown here, and the two reach the sea together at (21,14); the only meeting of rivers in the world"}, {"x": 36, "y": 21, "god": "waters", "kind": "rift spring", "desc": "breaks from the western wall of the rift and falls straight into the sea within it"}, {"x": 37, "y": 17, "god": "waters", "kind": "dry", "desc": "no spring feeds the chasm; it was left as dry as stone made it"}, {"x": 6, "y": 3, "god": "waters", "kind": "thirst", "desc": "the northwest shoulder of the western land lies five or six cells from any fresh water; the northern lowland around (24,6) is as dry"}, {"x": 14, "y": 15, "god": "sky", "kind": "drowning", "desc": "where the meeting line of the two winds lies across the saddle between the crowns; rain 9 at (14,14) and from (13,15) to (15,15), and the spring at (15,15) rises in it"}, {"x": 37, "y": 13, "god": "sky", "kind": "drowning", "desc": "where the meeting line lies across the old crest of the eastern land; rain 9 at (37,12), (37,13), (38,13) and (38,14), among that land's springs"}, {"x": 9, "y": 20, "god": "sky", "kind": "searing", "desc": "the floor of the southern gorge from (7,20) to (11,20), where the east wind comes lowest off the southern crown; warmth 9, no rain, and the longest river runs through it to the sea"}, {"x": 11, "y": 24, "god": "sky", "kind": "searing", "desc": "the low southwestern shore from (9,23) to (13,25), in the full lee of the southern crown; warmth 9, no rain, with a cold ocean just offshore"}, {"x": 13, "y": 10, "god": "sky", "kind": "ice", "desc": "the northern crown is frozen, warmth 0 from (12,8) to (14,11)"}, {"x": 24, "y": 0, "god": "sky", "kind": "frozen edge", "desc": "the whole northern row of the world is ice, warmth 0 from edge to edge"}, {"x": 4, "y": 9, "god": "sky", "kind": "windward", "desc": "the cliffs over the trench take the cold west wind straight off the ocean, rain 7 from (4,6) to (4,11), the wettest ground north of the meeting line"}, {"x": 20, "y": 7, "god": "sky", "kind": "shadow", "desc": "the northern lowland behind the spine, from about (15,4) to (26,12), gets rain of 1 or 2; the basin lake lies under a dry sky"}, {"x": 40, "y": 19, "god": "sky", "kind": "windward", "desc": "the eastern face of the eastern land takes the warm east wind first, rain 7 and 8 from (39,15) to (41,22)"}, {"x": 37, "y": 17, "god": "sky", "kind": "wind gap", "desc": "the east wind pours through the chasm over the eastern crest having already rained on the eastern slopes; it stays dry, rain 2"}, {"x": 25, "y": 21, "god": "sky", "kind": "windward", "desc": "the fire-mountain on the plain takes the east wind on its eastern flank, rain 8 from (25,20) to (26,23), and leaves a hot dry pocket behind it from (21,20) to (22,22), rain 1"}, {"x": 8, "y": 17, "god": "sky", "kind": "edge", "desc": "the wet belt ends against the desert; on the tableland between the middle and southern gorges rain is 7 on row 15 and 1 on row 18"}, {"x": 13, "y": 10, "god": "blight", "kind": "hallowed", "desc": "the ice crown of the western spine, purity 9 at (12,8), (12,9), (13,9), (13,10), (13,11) and (14,11), and at its three springs; ground that never thaws, where nothing can rot, and everything touching it is 7 or more"}, {"x": 45, "y": 2, "god": "blight", "kind": "hallowed", "desc": "the frozen top of the far isle, purity 9, the only other land that never thaws; the whole isle is 7, and nothing has ever reached it"}, {"x": 19, "y": 8, "god": "blight", "kind": "corrupted", "desc": "the basin lake from (19,8) to (20,9), purity 0, the foulest place in the world; nothing leaves, the dry air drinks the water and leaves everything it carried"}, {"x": 19, "y": 11, "god": "blight", "kind": "souring", "desc": "the crown's eastern river leaves its spring at 9, is still 7 at (18,11), crosses the basin rim here at 5, runs over the shore at 3 and ends in the lake at 0; the purest water and the foulest are the same water, seven cells apart"}, {"x": 20, "y": 7, "god": "blight", "kind": "salt", "desc": "the dry shore ring around the basin lake is a salt crust, purity 2, inside a rim of 3"}, {"x": 24, "y": 9, "god": "blight", "kind": "salt wind", "desc": "the west wind lays the basin's salt east of the rim, purity 4 from (23,7) to (25,10), toward the northern gulf"}, {"x": 24, "y": 21, "god": "blight", "kind": "corrupted", "desc": "the crater lake on the fire-mountain on the plain, purity 1; a spring from under the fire, shut in a cup, kept from utter stillness only by its own rising"}, {"x": 23, "y": 21, "god": "blight", "kind": "breath", "desc": "the east wind carries the crater's breath west; the western rim is 2, the ground just west of it 3, and the dry pocket from (21,20) to (22,22) 4, where no rain washes it out"}, {"x": 25, "y": 21, "god": "blight", "kind": "washed", "desc": "the crater's eastern rim is 4 and the flank below it 5 and 6; the east wind rains on it, and you could stand on the rim with fumes at your back and clean rain in your face"}, {"x": 21, "y": 23, "god": "blight", "kind": "fouled river", "desc": "the stream from the spring at (19,21) rises at 7 and runs into the crater's lee; from (21,21) to its mouth at (23,24) it carries the breath at 4"}, {"x": 28, "y": 19, "god": "blight", "kind": "festering", "desc": "the head of the southern gulf, purity 3, in a warm narrow sleeve that is 4 down to row 24; across the neck at (28,18) the northern gulf is ordinary, so the two waters a cell apart are not alike"}, {"x": 37, "y": 20, "god": "blight", "kind": "dead water", "desc": "the rift above its spring, purity 3 at (37,19) and 4 at (37,20); where the spring at (36,21) pours in at (37,21) the rift is 6, and below that ordinary"}, {"x": 37, "y": 13, "god": "blight", "kind": "scoured", "desc": "the drowned eastern crest, purity 7 wherever the rain is 9, with its springs at (37,10), (37,11) and (38,14) at 8"}, {"x": 14, "y": 15, "god": "blight", "kind": "scoured", "desc": "the drowned saddle between the crowns, purity 7 wherever the rain is 9, and the spring at (15,15) at 8"}, {"x": 18, "y": 28, "god": "blight", "kind": "fever", "desc": "the low, warm, wet flats of the western land's southeastern shore, purity 4 from (21,24) down the tail to (16,29); the river to the cape runs clean through them"}, {"x": 40, "y": 23, "god": "blight", "kind": "fever", "desc": "the low, warm, wet flats on the eastern shore of the eastern horns, purity 4 from (41,22) to (39,24)"}, {"x": 24, "y": 0, "god": "blight", "kind": "frozen", "desc": "the northern edge of the sea, purity 6 along the whole top row and the first eight cells of the next, where nothing rots in the ice"}, {"x": 39, "y": 15, "god": "growth", "kind": "ancient forest", "desc": "the oldest forest in the world stands on the old eastern land, in a ring around its drowned crest, at (35,11), (36,12), (36,13), (37,14), (39,13), (39,14), (40,14), (38,15), (39,15), (40,15) and (40,16); rain 7 and 8, ground at 6 or cleaner, and the crest's clean springs running out through it"}, {"x": 16, "y": 15, "god": "growth", "kind": "ancient forest", "desc": "a smaller stand on the flanks of the drowned saddle between the crowns, at (16,14), (17,14), (16,15), (17,15) and (16,16) where the saddle stream comes down, and at (11,13) and (12,14) above the middle gorge"}, {"x": 37, "y": 13, "god": "growth", "kind": "mire", "desc": "the drowned crest of the eastern land is bog, not forest, at (37,12), (37,13), (38,13) and (38,14); the rain there never stops long enough for trees, and the ancient forest grows only where it slackens"}, {"x": 14, "y": 15, "god": "growth", "kind": "mire", "desc": "the drowned saddle is a high bog at (14,14) and from (13,15) to (15,15), cold and always wet, with the spring at (15,15) rising through it"}, {"x": 9, "y": 20, "god": "growth", "kind": "green floor", "desc": "the longest river runs through the searing gorge, and its floor from (7,20) to (11,20) is fertile ground between walls of scrub; the one fertile valley in the hardest country in the world"}, {"x": 18, "y": 28, "god": "growth", "kind": "fever marsh", "desc": "the low, warm, wet shore of the western land's tail is marsh from (21,24) to (15,29), nineteen cells, the largest marsh in the world, with blight's fever in it"}, {"x": 5, "y": 9, "god": "growth", "kind": "cold forest", "desc": "north of the middle gorge the western land grows forest only along its wet western edge, from (5,4) down to (9,12), on the cliffs over the trench where the west wind comes off the ocean and rains first; inland it thins to meadow and then to tundra toward the spine"}, {"x": 17, "y": 11, "god": "growth", "kind": "green thread", "desc": "the river from the ice crown carries a line of grass east across the cold dry lowland from (15,11) to (19,11), thins to scrub on the basin's shore at (19,10), and ends in bare salt"}, {"x": 39, "y": 28, "god": "growth", "kind": "jungle", "desc": "most of the world's jungle, 27 of its 36 cells, grows on the two fire-mountains in the sea, on their warm eastern flanks around (5,28) and (39,28) where the east wind rains 8, and on the isle at (42,27)"}, {"x": 11, "y": 24, "god": "growth", "kind": "bare", "desc": "the searing shore from (9,23) to (13,25) grows nothing at all and was left bare; the salt ring of the basin, the crater's western rim and the ice of the crown are bare as well"}], "wakings": [{"x": 6, "y": 9, "gift": "hardiness in cold and wet"}, {"x": 17, "y": 10, "gift": "a tongue that tells clean water from foul"}, {"x": 12, "y": 20, "gift": "endurance of heat"}, {"x": 20, "y": 13, "gift": "a care for growing things"}, {"x": 31, "y": 18, "gift": "the wish to go between"}, {"x": 39, "y": 15, "gift": "long memory"}, {"x": 5, "y": 27, "gift": "the knack of making what floats"}], "peoples": [{"id": "w06-09", "name": "The Rimmoss", "color": "#e63946", "alive": true, "pop": 17}, {"id": "w17-10", "name": "The Tellwater", "color": "#f4a261", "alive": true, "pop": 17}, {"id": "w12-20", "name": "The Unburnt", "color": "#ffd166", "alive": true, "pop": 17}, {"id": "w20-13", "name": "The Tilthen", "color": "#06d6a0", "alive": true, "pop": 17}, {"id": "w31-18", "name": "The Atween", "color": "#8338ec", "alive": true, "pop": 17}, {"id": "w39-15", "name": "The Ringfolk", "color": "#ff5fa2", "alive": true, "pop": 17}, {"id": "w05-27", "name": "The Hullow", "color": "#3a86ff", "alive": true, "pop": 17}], "owner": {"6,9": "w06-09", "17,10": "w17-10", "12,20": "w12-20", "20,13": "w20-13", "31,18": "w31-18", "39,15": "w39-15", "5,27": "w05-27", "7,9": "w06-09", "5,9": "w06-09", "16,10": "w17-10", "17,11": "w17-10", "13,20": "w12-20", "13,19": "w12-20", "21,13": "w20-13", "19,13": "w20-13", "31,17": "w31-18", "31,19": "w31-18", "38,15": "w39-15", "40,15": "w39-15", "5,26": "w05-27", "6,27": "w05-27", "8,9": "w06-09", "4,9": "w06-09", "16,11": "w17-10", "18,11": "w17-10", "12,19": "w12-20", "12,18": "w12-20", "18,13": "w20-13", "19,12": "w20-13", "30,19": "w31-18", "33,18": "w31-18", "41,15": "w39-15", "37,15": "w39-15", "3,26": "w05-27", "5,28": "w05-27"}, "contested": [], "ruins": {}}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const { W, H, layers, water, seaLevel, marks, wakings, peoples, owner, contested, ruins } = D;
+const PEOPLE = Object.fromEntries(peoples.map(p => [p.id, p]));
+const NS = 'http://www.w3.org/2000/svg', C = 10;
+
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * Math.max(0, Math.min(1, t))));
+const css = c => `rgb(${c.join(',')})`;
+const ramp = stops => stops.map(hex);
+
+const RAMPS = {
+  elevation: ramp(['#16263a','#284861','#3f6a73','#6f8f63','#9fa566','#c3a878','#b68d6b','#9c877b','#cfc7be','#f5f2ed']),
+  warmth: ramp(['#2c4a8c','#3f6fb0','#6a9ccc','#9cc3d9','#d6ddc6','#ecd49a','#e8b06c','#dc8150','#c4533c','#9c2f2c']),
+  rain: ramp(['#c9a36b','#d4b77f','#dccb98','#d0d6a8','#b2cea6','#8cbfa8','#68a8b1','#4b8fb4','#3a6fa8','#2d4f8f']),
+  purity: ramp(['#3a1150','#57216e','#7a4388','#98709a','#a99ea7','#b9b1a5','#cbba8e','#ddc07a','#e9c566','#f3cc55']),
+};
+const GROWTH = { '_': '#b7a78c', '.': '#d3c496', ',': '#b3c877', ';': '#8dbd56', 'f': '#4f8a3c',
+  'F': '#2c5e2f', 'j': '#2f8a57', 'm': '#6f927a', '~': '#2a5d86' };
+const GROWTH_NAMES = { '_': 'barren', '.': 'sparse', ',': 'grassland', ';': 'fertile plain', 'f': 'forest',
+  'F': 'ancient forest', 'j': 'jungle', 'm': 'marsh' };
+const GOD_COLOR = { stone: '#8d8579', waters: '#3b82b8', sky: '#8fb4d6', blight: '#7b3f8f', growth: '#4f8a3c' };
+const cell = (name, x, y) => layers[name] ? layers[name][y][x] : null;
+const num = (name, x, y) => { const c = cell(name, x, y); return c && /\d/.test(c) ? +c : null; };
+
+function terrain(x, y) {
+  const e = num('elevation', x, y);
+  if (e === null) return hex('#2a2620');
+  const w = water ? water[y][x] : '.';
+  if (w === '~') return mix(hex('#4b8fbf'), hex('#0e2640'), (seaLevel - e) / Math.max(seaLevel, 1));
+  if (w === 'o') return hex('#4f9fd0');
+  if (w === '=') return hex('#5cb2e3');
+  let g = cell('growth', x, y);
+  if (g === '~') g = '_';
+  let c = g ? hex(GROWTH[g] || GROWTH['_']) : RAMPS.elevation[e];
+  if (g) c = mix(c, hex('#ffffff'), (e - (seaLevel ?? 0)) * 0.025);
+  if (e >= 8) {
+    const t = num('warmth', x, y);
+    c = mix(c, hex(t !== null && t <= 3 ? '#f2f0ea' : '#958c80'), e === 9 ? 0.75 : 0.5);
+  }
+  const p = num('purity', x, y);
+  if (p !== null && p <= 3) c = mix(c, hex('#4a1a5e'), (4 - p) / 4 * 0.6);
+  if (p !== null && p >= 7) c = mix(c, hex('#f3d27a'), (p - 6) / 3 * 0.4);
+  return c;
+}
+
+const VIEWS = {
+  terrain: { label: 'Terrain', color: terrain },
+  elevation: { label: 'Elevation', color: (x, y) => { const v = num('elevation', x, y); return v === null ? null : RAMPS.elevation[v]; } },
+  warmth: { label: 'Warmth', color: (x, y) => { const v = num('warmth', x, y); return v === null ? null : RAMPS.warmth[v]; } },
+  rain: { label: 'Rain', color: (x, y) => { const v = num('rain', x, y); return v === null ? null : RAMPS.rain[v]; } },
+  purity: { label: 'Purity', color: (x, y) => { const v = num('purity', x, y); return v === null ? null : RAMPS.purity[v]; } },
+  growth: { label: 'Growth', color: (x, y) => { const g = cell('growth', x, y); return g ? hex(GROWTH[g] || GROWTH['_']) : null; } },
+};
+
+const svg = document.getElementById('map');
+svg.setAttribute('viewBox', `0 0 ${W * C} ${H * C}`);
+const rects = [];
+for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+  const r = document.createElementNS(NS, 'rect');
+  r.setAttribute('x', x * C); r.setAttribute('y', y * C);
+  r.setAttribute('width', C + 0.4); r.setAttribute('height', C + 0.4);
+  svg.appendChild(r); rects.push(r);
+}
+const lands = document.createElementNS(NS, 'g');
+svg.appendChild(lands);
+const square = (k, attrs) => {
+  const [x, y] = k.split(',').map(Number);
+  const r = document.createElementNS(NS, 'rect');
+  r.setAttribute('x', x * C + 0.6); r.setAttribute('y', y * C + 0.6);
+  r.setAttribute('width', C - 1.2); r.setAttribute('height', C - 1.2);
+  for (const [a, v] of Object.entries(attrs)) r.setAttribute(a, v);
+  lands.appendChild(r);
+};
+for (const [k, pid] of Object.entries(owner)) {
+  const c = PEOPLE[pid] ? PEOPLE[pid].color : '#fff';
+  square(k, { fill: c, 'fill-opacity': 0.5, stroke: c, 'stroke-width': 1.2 });
+}
+for (const k of contested) square(k, { fill: '#ffffff', 'fill-opacity': 0.35, stroke: '#ffffff', 'stroke-width': 1.2, 'stroke-dasharray': '2 1.5' });
+for (const k of Object.keys(ruins)) square(k, { fill: 'none', stroke: '#1b1712', 'stroke-width': 1.4, 'stroke-dasharray': '1 1.2' });
+if (peoples.length) document.getElementById('peoplesToggle').hidden = false;
+document.getElementById('showPeoples').addEventListener('change', e => { lands.style.display = e.target.checked ? '' : 'none'; });
+
+const overlay = document.createElementNS(NS, 'g');
+svg.appendChild(overlay);
+for (const m of marks) {
+  if (m.x < 0 || m.x >= W || m.y < 0 || m.y >= H) continue;
+  const c = document.createElementNS(NS, 'circle');
+  c.setAttribute('cx', m.x * C + C / 2); c.setAttribute('cy', m.y * C + C / 2); c.setAttribute('r', 3.2);
+  c.setAttribute('fill', GOD_COLOR[m.god]); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', 1.2);
+  overlay.appendChild(c);
+}
+for (const w of wakings) {
+  const s = document.createElementNS(NS, 'path');
+  const cx = w.x * C + C / 2, cy = w.y * C + C / 2, R = 5, r = 2.2;
+  let d = '';
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r : R;
+    d += (i ? 'L' : 'M') + (cx + rad * Math.cos(a)).toFixed(2) + ' ' + (cy + rad * Math.sin(a)).toFixed(2);
+  }
+  s.setAttribute('d', d + 'Z'); s.setAttribute('fill', '#fff7d6'); s.setAttribute('stroke', '#221e18'); s.setAttribute('stroke-width', 0.9);
+  overlay.appendChild(s);
+}
+document.getElementById('showMarks').addEventListener('change', e => { overlay.style.display = e.target.checked ? '' : 'none'; });
+
+const legend = document.getElementById('legend');
+function drawLegend(view) {
+  const chip = (c, t) => `<span><i style="background:${c}"></i>${t}</span>`;
+  if (view === 'terrain') {
+    legend.innerHTML = [chip('#2a6a9c', 'sea'), chip('#5cb2e3', 'river / lake'),
+      ...Object.entries(GROWTH_NAMES).map(([k, n]) => chip(GROWTH[k], n)),
+      chip('#958c80', 'peaks'), chip('#4a1a5e', 'corrupted'), chip('#f3d27a', 'hallowed')].join('');
+  } else if (view === 'growth') {
+    legend.innerHTML = Object.entries(GROWTH_NAMES).map(([k, n]) => chip(GROWTH[k], n)).join('');
+  } else {
+    const ends = { elevation: ['abyss', 'highest peaks'], warmth: ['frozen', 'searing'],
+      rain: ['none', 'drowning'], purity: ['corrupted', 'hallowed'] }[view];
+    legend.innerHTML = `<div class="bar" style="background:linear-gradient(90deg,${RAMPS[view].map(css).join(',')})"></div>`
+      + `<span>0 ${ends[0]}</span><span style="margin-left:auto">9 ${ends[1]}</span>`;
+  }
+}
+
+function paint(view) {
+  const f = VIEWS[view].color;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const c = f(x, y);
+    rects[y * W + x].setAttribute('fill', c ? css(c) : 'var(--chip)');
+  }
+  document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === view));
+  drawLegend(view);
+}
+
+const tabs = document.getElementById('tabs');
+for (const [key, v] of Object.entries(VIEWS)) {
+  if (key !== 'terrain' && !layers[key]) continue;
+  const b = document.createElement('button');
+  b.textContent = v.label; b.dataset.view = key;
+  b.addEventListener('click', () => paint(key));
+  tabs.insertBefore(b, tabs.lastElementChild);
+}
+paint('terrain');
+
+const readout = document.getElementById('readout');
+function describe(x, y) {
+  const parts = [`(${x},${y})`];
+  for (const name of ['elevation', 'warmth', 'rain', 'purity']) {
+    const v = cell(name, x, y); if (v !== null) parts.push(`${name} ${v}`);
+  }
+  const g = cell('growth', x, y); if (g) parts.push(GROWTH_NAMES[g] || (g === '~' ? 'sea' : g));
+  if (water) parts.push({ '~': 'sea', 'o': 'lake', '=': 'river', '.': 'dry land' }[water[y][x]] || '');
+  let s = parts.join(' · ');
+  const k = `${x},${y}`;
+  if (owner[k]) s += `\nheld by ${PEOPLE[owner[k]] ? PEOPLE[owner[k]].name : owner[k]}`;
+  if (contested.includes(k)) s += '\ncontested';
+  if (ruins[k]) s += `\nruins of ${PEOPLE[ruins[k]] ? PEOPLE[ruins[k]].name : ruins[k]}`;
+  for (const m of marks.filter(m => m.x === x && m.y === y)) s += `\n${m.god} · ${m.kind}: ${m.desc}`;
+  for (const w of wakings.filter(w => w.x === x && w.y === y)) s += `\nwaking${w.gift ? ' · ' + w.gift : ''}`;
+  return s;
+}
+svg.addEventListener('pointermove', e => {
+  const b = svg.getBoundingClientRect();
+  const x = Math.floor((e.clientX - b.left) / b.width * W), y = Math.floor((e.clientY - b.top) / b.height * H);
+  if (x >= 0 && x < W && y >= 0 && y < H) readout.textContent = describe(x, y);
+});
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+document.getElementById('marks').innerHTML = marks.length
+  ? marks.map(m => `<li><span class="coord">(${m.x},${m.y})</span> <strong style="color:${GOD_COLOR[m.god]}">${esc(m.kind)}</strong> ${esc(m.desc)}</li>`).join('')
+  : '<li class="muted">No god has left a mark.</li>';
+document.getElementById('wakings').innerHTML = wakings.length
+  ? wakings.map(w => `<li><span class="coord">(${w.x},${w.y})</span> ${esc(w.gift || '')}</li>`).join('')
+  : '<li class="muted">No one has woken.</li>';
+</script>
+</body>
+</html>
