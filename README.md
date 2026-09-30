@@ -27,6 +27,9 @@ a minimal hub that links out to my game-mod and tooling projects, floating over 
   down a sidebar, the chosen post beside them — straight from the blog's own build. It starts folded
   down to a thin floating line of light that gives nothing away, and powers up when clicked. See
   below.
+- **An Atlas at [`/atlas/`](atlas/).** Maps of the Nameless World, one per age of its making, drawn
+  by the world's own renderer and published here by a script. A page of its own rather than part of
+  the hub. See below.
 - **Two stylesheets.** [`house.css`](house.css) is the house style every dataterminals page shares —
   the palettes, the background layers, the theme switch, post prose — and the blog loads it from
   here; [`styles.css`](styles.css) is this page's own. That makes the token *names* in `house.css`
@@ -385,6 +388,55 @@ worth knowing about — `--bg-blur`, how far the clip is pushed out of focus; th
 the clip survives being cropped to the viewport. A busier, darker or brighter
 clip needs different values from the ember loop's — night, flare and transit
 set the first two, stone the blur alone, morning all three.
+
+## The Atlas
+
+[`atlas/`](atlas/) holds maps of the Nameless World, a world being made in a private project. Each
+map is the page that world's own renderer draws: terrain, elevation, warmth,
+rain, purity and growth views with a hover readout, the gods' marks and wakings, their writings and
+the chronicle, all embedded in one self-contained file. One map is published per age: `dawn.html`,
+`day-1.html` and so on. [`atlas/index.html`](atlas/index.html) lists them, newest first.
+
+```
+atlas/
+  index.html        the Atlas: house style, and the list of maps
+  snapshots.json    the ages, in the order the world reached them (written by the script)
+  dawn.html         one map per age, as the renderer drew it
+```
+
+**To draw a new map**, after a day of the world's making has ended:
+
+```bash
+python scripts/atlas.py
+```
+
+[`scripts/atlas.py`](scripts/atlas.py) runs the world's `physics/render.py` into a temporary
+directory, reads the age from the page's own header ("The Dawn", "After the first day") and
+publishes it under that age's name, then rewrites the list between the `atlas:maps` markers in
+`index.html`. Only the rendered page crosses over. Nothing of the world is read here but that page,
+and nothing is written back to the world: the renderer changes nothing, and the script keeps Python
+from leaving a bytecode cache behind in it either. The world is looked for in a `world_experiment`
+directory beside this repo; `--world PATH` or `$ATLAS_WORLD` points elsewhere. It isn't part of CI,
+since GitHub can't reach the world. Committing and pushing are left to you.
+
+- **Running it again in the same age refreshes that map.** A run that finds nothing changed writes
+  identical bytes, so git shows no diff.
+- **A map is kept once taken.** While a day is still being made, the page announces the age
+  before it, so a run mid-day would draw a half-made world over a finished one. If the world has
+  changed since an age's map was taken, the script stops and says so. `--replace` overwrites the
+  map anyway, and `--as NAME` publishes the new one beside it. `--label TEXT` titles it; otherwise
+  it takes the age the page announces.
+- **The page is published as drawn**, bar three things: a `<title>` naming the age, the hub's tab
+  icon, and a thin strip at the top leading back to the Atlas, set in the page's own palette. The
+  map pages keep the renderer's parchment look rather than the house style. They are the world's
+  own documents; the Atlas around them is the site's.
+
+The index loads `house.css` and `theme.js` from one level up, the way the blog does, so it carries
+the same six themes and the same remembered choice. Its `<head>` boot script replays any stored
+theme name rather than checking a list, like the blog's, so a new theme needs no edit here. Those
+two files are unstamped here, since `stamp-assets.mjs` only covers the hub's own `index.html`, so
+the Atlas can trail a change to either by the ten-minute window. Its own styles are inline in
+`index.html` and never go stale against it.
 
 ## Local preview
 

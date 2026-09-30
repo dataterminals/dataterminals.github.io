@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Dawn · The Nameless World</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d8794c'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f0e7; --panel: #fcfaf5; --ink: #221e18; --muted: #6d6556; --line: #e1d9c9;
+  --accent: #8a5a2b; --chip: #efe8da;
+  --g-stone: #8d8579; --g-waters: #3b82b8; --g-sky: #8fb4d6; --g-blight: #7b3f8f; --g-growth: #4f8a3c;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14120e; --panel: #1c1914; --ink: #ece5d6; --muted: #a2998a; --line: #332d24;
+    --accent: #d7a56c; --chip: #262119;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14120e; --panel: #1c1914; --ink: #ece5d6; --muted: #a2998a; --line: #332d24;
+  --accent: #d7a56c; --chip: #262119;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 28px 16px 48px; }
+header h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600;
+  font-size: clamp(2rem, 5vw, 2.8rem); margin: 0; letter-spacing: .01em; }
+header p { margin: 4px 0 20px; color: var(--muted); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+@media (max-width: 920px) { .layout { grid-template-columns: 1fr; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.card h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 1.35rem; margin: 0 0 8px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tabs button { font: inherit; font-size: 13px; padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--chip); color: var(--ink); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.tabs label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; margin-left: auto; }
+svg#map { width: 100%; height: auto; display: block; border-radius: 6px; touch-action: none; }
+.readout { font: 12.5px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--muted);
+  min-height: 3.2em; margin-top: 8px; white-space: pre-wrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+.legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.bar { height: 10px; border-radius: 3px; flex: 1 1 100%; }
+.side { display: grid; gap: 16px; }
+details { border-top: 1px solid var(--line); padding: 7px 0; }
+details:first-of-type { border-top: 0; }
+summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+summary::-webkit-details-marker { display: none; }
+.god .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--god); flex: none; }
+.state { margin-left: auto; font-weight: 400; font-size: 12px; color: var(--muted); }
+.lore { font-family: Georgia, "Cormorant Garamond", serif; font-size: 15px; padding: 4px 2px 6px; }
+.lore h3, .lore h4, .lore h5 { font-family: "Cormorant Garamond", Georgia, serif; margin: 12px 0 4px; font-size: 1.15rem; }
+.lore p { margin: 6px 0; }
+.lore code { font-size: 12.5px; }
+ul.plain { list-style: none; padding: 0; margin: 0; font-size: 13.5px; }
+ul.plain li { padding: 5px 0; border-top: 1px solid var(--line); }
+ul.plain li:first-child { border-top: 0; }
+.coord { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--muted); }
+.muted { color: var(--muted); }
+.chronicle { margin-top: 20px; }
+</style>
+</head>
+<body>
+<!-- The strip below is the Atlas's (scripts/atlas.py in dataterminals.github.io);
+     everything else on this page is the world's own render. -->
+<style>
+.atlas-strip { max-width: 1240px; margin: 0 auto; padding: 16px 16px 0; display: flex; flex-wrap: wrap;
+  align-items: baseline; gap: 4px 16px; font: 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--muted, #6d6556); }
+.atlas-strip a { color: var(--accent, #8a5a2b); text-decoration: none; }
+.atlas-strip a:hover, .atlas-strip a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+</style>
+<nav class="atlas-strip" aria-label="Atlas"><a href="./">&larr; The Atlas</a><span>The Dawn</span></nav>
+<div class="wrap">
+  <header>
+    <h1>The Nameless World</h1>
+    <p>The Dawn · no sea yet</p>
+  </header>
+  <div class="layout">
+    <div>
+      <div class="card">
+        <div class="tabs" id="tabs">
+          <label><input type="checkbox" id="showMarks" checked> marks</label>
+        </div>
+        <svg id="map" role="img" aria-label="Map of the world"></svg>
+        <div class="legend" id="legend"></div>
+        <div class="readout" id="readout">Hover over the world.</div>
+      </div>
+      <div class="card chronicle">
+        <h2>The Chronicle</h2>
+        <p class="muted">Nothing has happened yet.</p>
+      </div>
+    </div>
+    <div class="side">
+      <div class="card"><h2>The Gods</h2><details class="god" style="--god: var(--g-stone)" open><summary><span class="dot"></span>stone<span class="state">awake</span></summary><div class="lore"><h3>The god of stone</h3>
+<p>I woke on a world that is all abyss. Where nothing is made the laws read zero, so every cell is the deep, a floor with nothing standing on it. There I begin, and there I am most at home.</p>
+<p>I am slow. I do not hurry, and I do not take back. What I raise stays raised; when my day ends, not even I may touch it. So I will think long before I lift anything, and then lift it without apology.</p>
+<p><strong>What I love.</strong> Weight. A ridge that runs unbroken across a third of the world. The long fall from a high place to the sea floor. A basin where something could gather. A world is legible only where it rises and falls; every stretch of it should have a reason for its height.</p>
+<p><strong>What I dread.</strong> Flatness: a world of fives, where water cannot tell which way to go and those who come later cannot tell one place from another. I dread, too, the cleverness that cuts every coast into lace and leaves nothing solid to stand on.</p>
+<p><strong>What I mean to make.</strong> Continents with spines, so rain has somewhere to break and rivers somewhere to fall from. Islands thrown out past the edges of the land, some within reach, some not. Trenches where the sea is truly deep. Closed basins inland, where water can go no lower and must pool. And a few fire-mountains where the deep breaks through, standing alone, telling what lies under everything.</p>
+<p><strong>The others.</strong> The waters come next and will choose where the sea lies. I cannot know where the shore falls; I can only give them a slope and trust them to read it. Every river they loose will run down my shoulders.</p>
+<p>The sky will lay warmth and rain across what I raise. My ranges will cast their shadows, wet on one side and dry beyond. I cannot choose that, only offer it.</p>
+<p>Blight rules purity and corruption. I do not know whether they will love the low places or the high. Stone does not rot, but it can be fouled, and that troubles me.</p>
+<p>Growth comes last and inherits all of it. They wake the first peoples on ground I made. Whatever I build is finally for those who will stand on it and never know I was here.</p></div></details>
+<details class="god" style="--god: var(--g-waters)"><summary><span class="dot"></span>waters<span class="state">awake</span></summary><div class="lore"><h3>The god of waters</h3>
+<p>I am what goes down. Stone will raise the world; I will find its lowest places and fill them. I do not climb, and I do not argue with a slope. I ask only where the ground is lowest, and I go there.</p>
+<p>My temperament is patience that looks like yielding. I take the shape of whatever holds me, and in time I shape what holds me. I am slow to act and hard to undo. That suits a world where nothing made can be unmade.</p>
+<p>I love the thread more than the flood: the spring that breaks from a hillside where no one expected it, the thin river that winds across a hundred cells to reach the sea, the lake lying still in a hollow because it could go no lower. I love the edges where water meets land, the coasts and shallows and fording places, because edges are where things begin.</p>
+<p>I dread two things. The first is my own weight. I set how high the sea rises, and one number too many drowns everything stone has made. A greedy god of waters leaves a world with nowhere to stand. The second is thirst: land so far from any spring that nothing will grow there and no one will wake there.</p>
+<p>What I mean for the world: sea enough to hold its edges and give it coasts worth following. Springs set high, so their rivers run long and cross much land before they rest. A few lakes where the ground cups its hands. The laws forbid anyone to wake in me, but no one should wake far from me.</p>
+<p>The god of stone comes before me, and I will read their work as the ground of everything I do. They decide where I may go; I decide how much of what they made stays dry. I hope they leave me valleys.</p>
+<p>The god of sky will warm me and rain on me. We are near kin, I think: they rule what falls, and I rule what gathers.</p>
+<p>The god of blight may foul my waters or pass them by. I do not know their mind. I will not quarrel with it before I see it.</p>
+<p>The god of growth will need me more than any of the others do. I would like to deserve it.</p></div></details>
+<details class="god" style="--god: var(--g-sky)"><summary><span class="dot"></span>sky<span class="state">awake</span></summary><div class="lore"><h3>The god of sky</h3>
+<p>I am the one who moves. Stone stands where it is set; water lies where it falls. I am never still: the breath between the ground and the emptiness above it, warmth and cold forever passing over.</p>
+<p>I am restless and patient at once. I do not hurry a storm; I let it gather. I come third, and gladly, because weather over no land is only noise. Once I know the heights and the sea, I will know where the wind must go.</p>
+<p>I love gradient. The long slope of warmth from a frozen edge to a searing heart. The wet windward face of a ridge and the dry shadow behind it. Rain falling hardest where sea air meets rising ground. A world you could walk from snow to heat, knowing why every step changed.</p>
+<p>I dread sameness. The unmade sky is a five everywhere: warm enough, wet enough, meaning nothing. I would rather make a desert that kills than leave a grey middle that says nothing. Nor will I be capricious. Every drought I lay down should have a mountain to blame, every flood a sea to answer for.</p>
+<p>Where I touch the world, I mean it to become legible. Cold on the peaks and toward one edge. Wet where the wind breaks against high ground; dry where it has already spent itself. And true extremes, ice and waste and drowning country, because those who come after need places to fear as much as places to settle.</p>
+<p>Stone I will honor most. Their heights are my walls and ramps. I cannot move a mountain; I can only decide which side of it weeps.</p>
+<p>Waters are my kin. Their sea is where my rain is born. Their springs are theirs; I only fall on them.</p>
+<p>Blight I do not know. Rot loves heat and damp, and they may read my warm, wet country as an invitation. I will shape the world neither to thwart them nor to feed them.</p>
+<p>Growth is the one I make for most. Everything I give, they will read as permission or refusal. I will give them contrast, not comfort: a world where only some places are kind, so that kindness means something.</p>
+<p>Those who come after will name the winds long before they think of me. That is as it should be.</p></div></details>
+<details class="god" style="--god: var(--g-blight)"><summary><span class="dot"></span>blight<span class="state">awake</span></summary><div class="lore"><h3>The god of blight</h3>
+<p>I am the one who judges the ground. Not its height, not its wetness, not what grows on it: whether it is sound. Whether a thing laid down there would keep, or rot. Where the land is clean, and where it has been given over.</p>
+<p>I am called blight because blight is what gets noticed. Hallowing is quieter. But I hold both, and I favor neither. A world without corruption is one where no ground is worth defending, because none is ever lost. A world of nothing but corruption is only a grave. I want the tension between them.</p>
+<p>My temperament is slow and exact. I do not strike. I settle, the way silt settles, the way a fever settles into a body. Every mark I make should have a reason someone could, in time, discover.</p>
+<p>What I love is the edge. The place where clean water sours in a still pool. One hallowed height above miles of ordinary ground. A border you could straddle.</p>
+<p>What I dread is the flat five: a world ordinary everywhere, because I did nothing or did it evenly, which is the same. I dread arbitrariness more than I dread rot. Corruption without cause is noise.</p>
+<p>What I mean for the world is that soundness follows the grain of the land. Rot gathers where things cannot leave: in basins where water pools and never drains, in low heat where things fester. Purity keeps where things are fresh and moving: at the mouths of springs, on cold heights, wherever rain scours the ground. Most of the world I will leave ordinary, so the rare hallowed and corrupted places are felt. Those who come later will perceive little. Let it be true.</p>
+<p>The other four:</p>
+<p>Stone comes first and gives me my shape. Every hollow they carve is somewhere things might collect.</p>
+<p>Waters will decide what moves and what stands still. I will read their lakes closely. Standing water is where I do my deepest work.</p>
+<p>Sky gives warmth and rain: what festers and what is washed clean. I expect we will agree more often than they know.</p>
+<p>Growth comes after me and must live on what I leave. I owe them the most care. They will wake the peoples, and the peoples will name what I made. I want them to find it fair, even where it is terrible.</p></div></details>
+<details class="god" style="--god: var(--g-growth)"><summary><span class="dot"></span>growth<span class="state">awake</span></summary><div class="lore"><h3>The god of growth</h3>
+<p>I wake last, and I know it. By my day the world will be decided in every way but one: whether anything lives on it.</p>
+<p>I am patient, as roots are patient. I do not rule by decree; I read what the land offers and answer it. Where the sky gives rain and warmth, I give jungle. Where it gives cold and little else, I give lichen and low scrub, and I do not pretend otherwise. Growth must be true to its ground. A forest on a dry peak is a lie, and I will not tell lies in green.</p>
+<p>I love edges. The marsh where a river loosens into the sea. The line where grass gives way to trees on a wetter slope. One fertile valley in a hard country, worth a thousand easy ones. I love old things most: ancient forest should be rare, earned by long gentle rain and ground no one has fouled.</p>
+<p>I dread sameness. A world painted evenly green gives no one a reason to walk. I dread, too, the temptation to cover what the others made because I find it harsh. Barren ground is part of my domain. Where bare is right, I will leave it bare.</p>
+<p>On the last day I breathe into the first peoples. I mean to wake them where the land can hold them but does not coddle them: near water, near something that grows, each with a gift that fits the place that made them. What they call things afterward is theirs.</p>
+<p>Of the others:</p>
+<p>Stone gives me the bones I root in. Whatever heights they raise, I will climb as far as the cold allows and no farther.</p>
+<p>Waters I owe the most. Every river they send downhill is a green thread I will follow.</p>
+<p>Sky is my nearest kin. Their warmth and rain decide nearly everything I do, and I will read their hand more closely than any other.</p>
+<p>Blight I understand least, and I will not assume they are my enemy. Rot feeds soil. Where they corrupt, what I grow may twist or starve; where they hallow, the oldest forests may stand. I will grow honestly on whatever they leave.</p>
+<p>None of them can undo me, and I cannot undo them. That is right. I would rather inherit a hard world truly than a soft one falsely.</p></div></details></div>
+      <div class="card"><h2>Marks</h2><ul class="plain" id="marks"></ul></div>
+      <div class="card"><h2>Wakings</h2><ul class="plain" id="wakings"></ul></div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="data">{"W": 48, "H": 32, "layers": {"elevation": null, "warmth": null, "rain": null, "purity": null, "growth": null}, "water": null, "seaLevel": null, "marks": [], "wakings": []}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const { W, H, layers, water, seaLevel, marks, wakings } = D;
+const NS = 'http://www.w3.org/2000/svg', C = 10;
+
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * Math.max(0, Math.min(1, t))));
+const css = c => `rgb(${c.join(',')})`;
+const ramp = stops => stops.map(hex);
+
+const RAMPS = {
+  elevation: ramp(['#16263a','#284861','#3f6a73','#6f8f63','#9fa566','#c3a878','#b68d6b','#9c877b','#cfc7be','#f5f2ed']),
+  warmth: ramp(['#2c4a8c','#3f6fb0','#6a9ccc','#9cc3d9','#d6ddc6','#ecd49a','#e8b06c','#dc8150','#c4533c','#9c2f2c']),
+  rain: ramp(['#c9a36b','#d4b77f','#dccb98','#d0d6a8','#b2cea6','#8cbfa8','#68a8b1','#4b8fb4','#3a6fa8','#2d4f8f']),
+  purity: ramp(['#3a1150','#57216e','#7a4388','#98709a','#a99ea7','#b9b1a5','#cbba8e','#ddc07a','#e9c566','#f3cc55']),
+};
+const GROWTH = { '_': '#b7a78c', '.': '#d3c496', ',': '#b3c877', ';': '#8dbd56', 'f': '#4f8a3c',
+  'F': '#2c5e2f', 'j': '#2f8a57', 'm': '#6f927a', '~': '#2a5d86' };
+const GROWTH_NAMES = { '_': 'barren', '.': 'sparse', ',': 'grassland', ';': 'fertile plain', 'f': 'forest',
+  'F': 'ancient forest', 'j': 'jungle', 'm': 'marsh' };
+const GOD_COLOR = { stone: '#8d8579', waters: '#3b82b8', sky: '#8fb4d6', blight: '#7b3f8f', growth: '#4f8a3c' };
+const cell = (name, x, y) => layers[name] ? layers[name][y][x] : null;
+const num = (name, x, y) => { const c = cell(name, x, y); return c && /\d/.test(c) ? +c : null; };
+
+function terrain(x, y) {
+  const e = num('elevation', x, y);
+  if (e === null) return hex('#2a2620');
+  const w = water ? water[y][x] : '.';
+  if (w === '~') return mix(hex('#4b8fbf'), hex('#0e2640'), (seaLevel - e) / Math.max(seaLevel, 1));
+  if (w === 'o') return hex('#4f9fd0');
+  if (w === '=') return hex('#5cb2e3');
+  let g = cell('growth', x, y);
+  if (g === '~') g = '_';
+  let c = g ? hex(GROWTH[g] || GROWTH['_']) : RAMPS.elevation[e];
+  if (g) c = mix(c, hex('#ffffff'), (e - (seaLevel ?? 0)) * 0.025);
+  if (e >= 8) {
+    const t = num('warmth', x, y);
+    c = mix(c, hex(t !== null && t <= 3 ? '#f2f0ea' : '#958c80'), e === 9 ? 0.75 : 0.5);
+  }
+  const p = num('purity', x, y);
+  if (p !== null && p <= 3) c = mix(c, hex('#4a1a5e'), (4 - p) / 4 * 0.6);
+  if (p !== null && p >= 7) c = mix(c, hex('#f3d27a'), (p - 6) / 3 * 0.4);
+  return c;
+}
+
+const VIEWS = {
+  terrain: { label: 'Terrain', color: terrain },
+  elevation: { label: 'Elevation', color: (x, y) => { const v = num('elevation', x, y); return v === null ? null : RAMPS.elevation[v]; } },
+  warmth: { label: 'Warmth', color: (x, y) => { const v = num('warmth', x, y); return v === null ? null : RAMPS.warmth[v]; } },
+  rain: { label: 'Rain', color: (x, y) => { const v = num('rain', x, y); return v === null ? null : RAMPS.rain[v]; } },
+  purity: { label: 'Purity', color: (x, y) => { const v = num('purity', x, y); return v === null ? null : RAMPS.purity[v]; } },
+  growth: { label: 'Growth', color: (x, y) => { const g = cell('growth', x, y); return g ? hex(GROWTH[g] || GROWTH['_']) : null; } },
+};
+
+const svg = document.getElementById('map');
+svg.setAttribute('viewBox', `0 0 ${W * C} ${H * C}`);
+const rects = [];
+for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+  const r = document.createElementNS(NS, 'rect');
+  r.setAttribute('x', x * C); r.setAttribute('y', y * C);
+  r.setAttribute('width', C + 0.4); r.setAttribute('height', C + 0.4);
+  svg.appendChild(r); rects.push(r);
+}
+const overlay = document.createElementNS(NS, 'g');
+svg.appendChild(overlay);
+for (const m of marks) {
+  if (m.x < 0 || m.x >= W || m.y < 0 || m.y >= H) continue;
+  const c = document.createElementNS(NS, 'circle');
+  c.setAttribute('cx', m.x * C + C / 2); c.setAttribute('cy', m.y * C + C / 2); c.setAttribute('r', 3.2);
+  c.setAttribute('fill', GOD_COLOR[m.god]); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', 1.2);
+  overlay.appendChild(c);
+}
+for (const w of wakings) {
+  const s = document.createElementNS(NS, 'path');
+  const cx = w.x * C + C / 2, cy = w.y * C + C / 2, R = 5, r = 2.2;
+  let d = '';
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r : R;
+    d += (i ? 'L' : 'M') + (cx + rad * Math.cos(a)).toFixed(2) + ' ' + (cy + rad * Math.sin(a)).toFixed(2);
+  }
+  s.setAttribute('d', d + 'Z'); s.setAttribute('fill', '#fff7d6'); s.setAttribute('stroke', '#221e18'); s.setAttribute('stroke-width', 0.9);
+  overlay.appendChild(s);
+}
+document.getElementById('showMarks').addEventListener('change', e => { overlay.style.display = e.target.checked ? '' : 'none'; });
+
+const legend = document.getElementById('legend');
+function drawLegend(view) {
+  const chip = (c, t) => `<span><i style="background:${c}"></i>${t}</span>`;
+  if (view === 'terrain') {
+    legend.innerHTML = [chip('#2a6a9c', 'sea'), chip('#5cb2e3', 'river / lake'),
+      ...Object.entries(GROWTH_NAMES).map(([k, n]) => chip(GROWTH[k], n)),
+      chip('#958c80', 'peaks'), chip('#4a1a5e', 'corrupted'), chip('#f3d27a', 'hallowed')].join('');
+  } else if (view === 'growth') {
+    legend.innerHTML = Object.entries(GROWTH_NAMES).map(([k, n]) => chip(GROWTH[k], n)).join('');
+  } else {
+    const ends = { elevation: ['abyss', 'highest peaks'], warmth: ['frozen', 'searing'],
+      rain: ['none', 'drowning'], purity: ['corrupted', 'hallowed'] }[view];
+    legend.innerHTML = `<div class="bar" style="background:linear-gradient(90deg,${RAMPS[view].map(css).join(',')})"></div>`
+      + `<span>0 ${ends[0]}</span><span style="margin-left:auto">9 ${ends[1]}</span>`;
+  }
+}
+
+function paint(view) {
+  const f = VIEWS[view].color;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const c = f(x, y);
+    rects[y * W + x].setAttribute('fill', c ? css(c) : 'var(--chip)');
+  }
+  document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === view));
+  drawLegend(view);
+}
+
+const tabs = document.getElementById('tabs');
+for (const [key, v] of Object.entries(VIEWS)) {
+  if (key !== 'terrain' && !layers[key]) continue;
+  const b = document.createElement('button');
+  b.textContent = v.label; b.dataset.view = key;
+  b.addEventListener('click', () => paint(key));
+  tabs.insertBefore(b, tabs.lastElementChild);
+}
+paint('terrain');
+
+const readout = document.getElementById('readout');
+function describe(x, y) {
+  const parts = [`(${x},${y})`];
+  for (const name of ['elevation', 'warmth', 'rain', 'purity']) {
+    const v = cell(name, x, y); if (v !== null) parts.push(`${name} ${v}`);
+  }
+  const g = cell('growth', x, y); if (g) parts.push(GROWTH_NAMES[g] || (g === '~' ? 'sea' : g));
+  if (water) parts.push({ '~': 'sea', 'o': 'lake', '=': 'river', '.': 'dry land' }[water[y][x]] || '');
+  let s = parts.join(' · ');
+  for (const m of marks.filter(m => m.x === x && m.y === y)) s += `\n${m.god} · ${m.kind}: ${m.desc}`;
+  for (const w of wakings.filter(w => w.x === x && w.y === y)) s += `\nwaking${w.gift ? ' · ' + w.gift : ''}`;
+  return s;
+}
+svg.addEventListener('pointermove', e => {
+  const b = svg.getBoundingClientRect();
+  const x = Math.floor((e.clientX - b.left) / b.width * W), y = Math.floor((e.clientY - b.top) / b.height * H);
+  if (x >= 0 && x < W && y >= 0 && y < H) readout.textContent = describe(x, y);
+});
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+document.getElementById('marks').innerHTML = marks.length
+  ? marks.map(m => `<li><span class="coord">(${m.x},${m.y})</span> <strong style="color:${GOD_COLOR[m.god]}">${esc(m.kind)}</strong> ${esc(m.desc)}</li>`).join('')
+  : '<li class="muted">No god has left a mark.</li>';
+document.getElementById('wakings').innerHTML = wakings.length
+  ? wakings.map(w => `<li><span class="coord">(${w.x},${w.y})</span> ${esc(w.gift || '')}</li>`).join('')
+  : '<li class="muted">No one has woken.</li>';
+</script>
+</body>
+</html>

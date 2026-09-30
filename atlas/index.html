@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Atlas of the Nameless World</title>
+  <meta name="color-scheme" content="dark">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Atlas of the Nameless World">
+  <meta property="og:url" content="https://dataterminals.github.io/atlas/">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d8794c'/%3E%3C/svg%3E">
+
+  <!-- Replay the theme before the first paint, the same as the hub and the blog.
+       Any stored name is replayed rather than checked against a list, as the
+       blog does, so a theme added to the hub needs no edit here: one with no
+       palette in house.css falls back to the default until theme.js corrects it. -->
+  <script>
+    try {
+      var t = localStorage.getItem('dt:theme');
+      if (t && /^[a-z]+$/.test(t)) document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+
+  <!-- The house style, off the hub one level up: palettes, background layers,
+       theme switch. Unstamped, like the blog's copy of it — stamp-assets.mjs
+       only covers the hub's own index.html — so at worst this page trails a
+       change to house.css by its ten-minute window. What's below is only this
+       page's own, in the house tokens, lifted from the blog's header and post
+       list so the three read as one site. -->
+  <link rel="stylesheet" href="../house.css">
+  <style>
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: var(--sans);
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--ink);
+      background: var(--bg-0);
+      -webkit-font-smoothing: antialiased;
+      text-shadow: 0 1px 2px rgba(var(--shade-rgb), 0.5);
+    }
+    ::selection { background: rgba(var(--accent-rgb), 0.3); }
+
+    .wrapper {
+      width: 100%;
+      max-width: calc(var(--maxw) + var(--pad) * 2);
+      margin-inline: auto;
+      padding-inline: var(--pad);
+    }
+
+    /* Header: wordmark left, the way home right — the blog's, verbatim in spirit. */
+    .atlas-header {
+      padding: clamp(1.6rem, 5vh, 2.6rem) 0 clamp(1.4rem, 4vh, 2rem);
+      border-bottom: 1px solid var(--hair);
+    }
+    .atlas-header .wrapper {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+    }
+    .atlas-title {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: clamp(1.5rem, 4.5vw, 1.9rem);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.25s var(--ease);
+    }
+    .atlas-title:hover,
+    .atlas-title:focus-visible { color: var(--accent-soft); outline: none; }
+    .home {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5em;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+    .home:hover,
+    .home:focus-visible { color: var(--accent-soft); border-bottom-color: var(--hair-strong); outline: none; }
+    .home__back {
+      font-size: 1.15em;
+      line-height: 1;
+      color: var(--accent);
+      transition: transform 0.25s var(--ease);
+    }
+    .home:hover .home__back,
+    .home:focus-visible .home__back { transform: translateX(-3px); }
+
+    main { padding: clamp(2.2rem, 7vh, 3.6rem) 0 clamp(3rem, 9vh, 5rem); }
+
+    .world-name {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: clamp(1.9rem, 5.5vw, 2.7rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+    }
+    .world-about {
+      margin: 1rem 0 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--ink-dim);
+    }
+
+    /* A section per kind of page. Only the maps exist yet; regions and peoples
+       would each take an eyebrow and a list of their own below this one. */
+    .eyebrow {
+      margin: clamp(2.4rem, 7vh, 3.2rem) 0 1.4rem;
+      font-weight: 400;
+      font-size: 0.7rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .maps { margin: 0; padding: 0; list-style: none; }
+    .maps > li { margin-bottom: clamp(1.5rem, 4vh, 2.1rem); }
+    .map-meta {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-faint);
+      font-variant-numeric: tabular-nums;
+    }
+    .map-link {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: clamp(1.12rem, 2.5vw, 1.32rem);
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.25s var(--ease);
+    }
+    .map-link:hover,
+    .map-link:focus-visible { color: var(--accent-soft); outline: none; }
+    .map-link__arrow {
+      font-family: var(--sans);
+      font-size: 0.95em;
+      color: var(--ink-faint);
+      transform: translateX(-2px);
+      opacity: 0;
+      transition: transform 0.3s var(--ease), opacity 0.3s var(--ease), color 0.25s var(--ease);
+    }
+    .map-link:hover .map-link__arrow,
+    .map-link:focus-visible .map-link__arrow { opacity: 1; transform: translateX(2px); color: var(--accent); }
+    .maps .empty { font-family: var(--serif); font-style: italic; color: var(--ink-dim); }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <video class="bg__video" autoplay muted loop playsinline preload="auto"></video>
+  </div>
+  <div class="bg__scrim" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="theme" hidden>
+    <button class="theme__switch" type="button" id="theme-switch">
+      <span class="theme__track" aria-hidden="true"><span class="theme__thumb"></span></span>
+      <span class="theme__name" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <header class="atlas-header">
+    <div class="wrapper">
+      <a class="atlas-title" href="./">Atlas</a>
+      <a class="home" href="../"><span class="home__back" aria-hidden="true">&#8592;</span>the hub</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrapper">
+      <h1 class="world-name">The Nameless World</h1>
+      <p class="world-about">Forty-eight places wide and thirty-two deep, raised and watered and grown
+        one day at a time by gods who have no names. Nothing in it has a name yet. Each map below is
+        the world as it stood at the close of an age.</p>
+
+      <h2 class="eyebrow">Maps</h2>
+      <!-- The list between these markers is written by scripts/atlas.py from
+           snapshots.json, newest first. Edits inside them are overwritten. -->
+      <ol class="maps" reversed>
+        <!-- atlas:maps -->
+        <li>
+          <span class="map-meta"><time datetime="2026-09-30T01:50-04:00">30 Sep 2026</time> · no sea yet</span>
+          <a class="map-link" href="dawn.html">The Dawn<span class="map-link__arrow" aria-hidden="true">&#8594;</span></a>
+        </li>
+        <!-- /atlas:maps -->
+      </ol>
+    </div>
+  </main>
+
+  <!-- theme.js is the hub's: the theme on show, its background clip and the
+       switch. It resolves the clips against its own url, so they load from the
+       hub's assets/ from here too. -->
+  <script src="../theme.js"></script>
+</body>
+</html>
