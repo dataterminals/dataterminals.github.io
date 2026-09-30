@@ -1528,12 +1528,21 @@ main {
   align-items: center;
   gap: clamp(1.5rem, 6vw, 3rem);
 }
-/* Seven icons need less air than six did. At 375px the row came to 327.75px
-   against a 327px column — over by a hair, which drops the last icon onto a
-   line of its own and reads as a mistake rather than a wrap. Narrow screens
-   only; the gap above 416px is untouched. */
-@media (max-width: 26rem) {
-  .shelf { gap: clamp(0.8rem, 4.2vw, 1.5rem); }
+/* Nine icons have to share the column's width with less air between them, or
+   the last one drops onto a line of its own and reads as a mistake rather
+   than a wrap. The column is the viewport less --pad each side, up to --maxw,
+   so each band's gap is sized to keep the row inside it, with a few px to
+   spare against the float drifting icons into each other:
+     > 42rem   6vw, untouched — the row fits from ~656px up
+     ≤ 42rem   4vw — at 481px the row is 424px in a 433px column
+     ≤ 30rem   2.6vw — 309px in 312px at 360px, 314px in 327px at 375px
+   The last two were written for eight icons and seven before that, and each
+   addition wrapped the row somewhere below 700px: re-measure on the next. */
+@media (max-width: 42rem) {
+  .shelf { gap: clamp(0.8rem, 4vw, 1.75rem); }
+}
+@media (max-width: 30rem) {
+  .shelf { gap: clamp(0.5rem, 2.6vw, 1.5rem); }
 }
 
 .shelf__link {
@@ -1579,6 +1588,7 @@ main {
 .shelf__link:nth-child(6) { --gd: 10.7s; --ff: 7.2s; --fd1: -3.8s; --fd2: -8.5s; }
 .shelf__link:nth-child(7) { --gd: 9.2s;  --ff: 8.8s; --fd1: -6.5s; --fd2: -2.6s; }
 .shelf__link:nth-child(8) { --gd: 11.4s; --ff: 7.5s; --fd1: -2.9s; --fd2: -7.3s; }
+.shelf__link:nth-child(9) { --gd: 10.3s; --ff: 8.6s; --fd1: -8.2s; --fd2: -5.6s; }
 
 @keyframes shelf-float {
   0%   { transform: translate3d(0, 0, 0) rotate(0deg); }

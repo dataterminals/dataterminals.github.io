@@ -435,6 +435,8 @@ since GitHub can't reach the world. Committing and pushing are left to you.
   markers, so adding an age gives the one before it its link forward without touching a byte the
   renderer drew. A map with no markers stops the run rather than being dressed twice.
 
+The hub's shelf carries a folded-map icon that leads here, between the Blog and the project sites.
+
 The index loads `house.css` and `theme.js` from one level up, the way the blog does, so it carries
 the same six themes and the same remembered choice. Its `<head>` boot script replays any stored
 theme name rather than checking a list, like the blog's, so a new theme needs no edit here. Those
